@@ -1,0 +1,17 @@
+﻿@*@model object
+
+@Html.Kendo().TextBoxFor(model => model)*@
+
+
+@(Html.Kendo().Upload()
+                            .Name("files")
+                            .Async(a => a
+                                .Save("Save", "RuleEngine")
+                                .Remove("Remove", "RuleEngine")
+                                .AutoUpload(true)
+                             )
+                             .HtmlAttributes(new { style = "" })
+                             .ShowFileList(true)
+                             .Multiple(false)
+                             .Events(e => e.Complete("OnCompleted").Success("OnSuccessCompleted").Upload("fileuploadParameter"))
+)

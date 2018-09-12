@@ -1,0 +1,22 @@
+﻿@(
+       Html.Kendo().DropDownList()
+
+                   .Name("ddlTrade")
+                   .DataTextField("Name")
+                   .DataValueField("Id")
+                     .DataSource(source =>
+                     {
+                         source.Read(read => { read.Action("GetddlTrade", "Inspire"); });
+                     })
+                     .Events(e =>
+                     {
+                         e.DataBound("ddlUserTradeBound");
+                     })
+
+                  .OptionLabel("Select Trade")
+
+)
+
+
+
+

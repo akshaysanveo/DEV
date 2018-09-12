@@ -1,0 +1,20 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+      .Name("ddlMeasurementList")
+      .OptionLabel("Select Unit")
+      .HtmlAttributes(new {style = "width:100%"})
+      .DataTextField("Name")
+      .DataValueField("Id")
+
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("GetMeasurementName", "QuantityTest");
+          })
+              .ServerFiltering(true);
+      })
+      .Events(e => { e.DataBound("ddlMeasurementBound"); })
+   
+    )

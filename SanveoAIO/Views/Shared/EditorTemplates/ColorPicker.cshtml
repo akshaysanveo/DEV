@@ -1,0 +1,7 @@
+﻿
+@(Html.Kendo().ColorPicker()
+                .Name("Colorpickers")
+                .Value("#ffffff")
+                 .HtmlAttributes(new { style = "width: 100%" })
+ .Events(events => events.Select("pickerSelect"))
+)

@@ -1,0 +1,2400 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Sanveo Inspire</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <!-- Autodesk Forge Viewer files -->
+    <script src="https://ase-cdn.autodesk.com/adp/v1.0.3/js/adp-web-analytics-sdk.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
+    <script src="~/Scripts/FloatThead.js"></script>
+
+    <style>
+        #gridRunrule .k-loading-image {
+            background-image: url('') !important;
+        }
+
+        .k-progress-status {
+            display: block !important;
+        }
+
+        .modal {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            /*-moz-opacity: 0.8;*/
+        }
+
+        .center {
+            z-index: 1000;
+            margin: 300px auto;
+            /*padding: 20px;*/
+            width: 120px;
+            background-color: #000000;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            transform: none;
+            /*-moz-opacity: 1;*/
+        }
+
+            .center img {
+                height: 30px;
+                width: 30px;
+            }
+    </style>
+</head>
+<body>
+    <div id="" class="k-content">
+
+        <ul class="nav nav-tabs" id="ResportTabStrip">
+            <li class="active" id="ReportTab1"><a data-toggle="tab" href="#ReportOption1" onclick="ActiveTab1();">Report</a></li>
+            <li id="ReportTab2"><a data-toggle="tab" href="#ReportOption2" onclick="ActiveTab2();">Excel Grid</a></li>
+
+            @*<li class="active" id="ReportTab1"><a data-toggle="tab" href="#ReportOption" onclick="ActiveTab1();">Report</a></li>
+                <li id="ReportTab2"><a data-toggle="tab" href="#ReportOption1" style="overflow:auto" onclick="ActiveTab2();">Excel Grid</a></li>*@
+        </ul>
+
+        <div class="tab-content">
+            <div id="ReportOption1" class="tab-pane fade in active " style="height:70%;margin-top:1%">
+
+                <div class="col-xs-11" style="padding-left:0px;">
+                    <div id="" class="col-xs-3"style="padding-left:0px;">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                      .Events(e => { e.Change("onFileChange"); })
+                        )
+                    </div>
+                </div>
+
+                <div class="col-xs-12" style="padding-top: 8px;padding-left:0px;"">
+                    @*<br />*@
+                    @(Html.Kendo().Grid<SanveoAIO.Domain.Models.GetSaveModelUrnDetails_Result>()
+                      .Name("gridRunrule")
+                      .Columns(columns =>
+                      {
+                          columns.Bound(c => c.FileName).Title("File Name").ClientTemplate("#: FileName #").Width(150).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Bound(c => c.Urn).Title("Urn").Visible(false).Width(10);
+                          columns.Bound(c => c.VersionNo).Title("Version No").ClientTemplate("#: VersionNo #").Width(60).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Bound(c => c.ModifiedDate).Title("Modified Date").ClientTemplate("#= kendo.toString(kendo.parseDate(ModifiedDate), 'MM/dd/yy - hh:mm tt (PDT)') #").Width(100).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Bound(e => e.RuleName).Title("Rule Name").ClientTemplate("#: RuleName #").EditorTemplateName("Template").HtmlAttributes(new { style = "font-size:12px" }).Width(100);
+                          columns.Bound(e => e.Template).Title("Template").Visible(false).Width(10);
+                          columns.Bound(c => c.Dextract).Title("Dextract Done").ClientTemplate("#: Dextract #").Width(60).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Bound(c => c.RunRule).Title("Run Rule Done").ClientTemplate("#: RunRule #").Width(60).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Command(command => { command.Edit().Text(" ").UpdateText(" ").CancelText(" "); }).Title("Update").Width(130).HtmlAttributes(new { style = "font-size:12px" });
+                          columns.Command(command => command.Custom("excel").Click("showHTMLHistory").Text(" ")).Title("ShowExcel").Width(90).HtmlAttributes(new { style = "font-size:15px" });
+
+
+                      })
+                    .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                     .Events(m => m.Edit("editRunrule").Save("onsaveRuleReport").Change("onChangeReportGrid").DataBound("onDataBoundReportGrid")
+                     )
+                    .Editable(editable => editable.Mode(GridEditMode.InLine))
+                    .HtmlAttributes(new { style = "height:415px;width:101%;" })
+                   // .Resizable(resize => resize.Columns(true))
+                   .Reorderable(reorder => reorder.Columns(true))
+                    .Scrollable()
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(20)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.FileName);
+                            // model.Field(p => p.Template).Editable(true);
+                            model.Field(p => p.FileName).Editable(false);
+                            model.Field(p => p.VersionNo).Editable(false);
+                            model.Field(p => p.Dextract).Editable(false);
+                            model.Field(p => p.ModifiedDate).Editable(false);
+                            model.Field(p => p.RunRule).Editable(true);
+                            model.Field(p => p.Urn).Editable(false);
+
+                        })
+                       .Events(events =>
+                       {
+                           events.RequestEnd("onRunruleRequestEnd");
+                       })
+                        .Read(read => read.Action("GetModelUrnGridData", "Report").Data("GetFileName")
+                        //.Data("gridRunrule_Data")
+                        )
+                       .Update(update => update.Action("GetCategoryData", "Report").Data("OnReportUpdate"))
+                    )
+                    )
+
+                </div>
+
+                <div class="modal">
+                    <div class="center">
+                        <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="ReportOption2" class="tab-pane fade in" style="height:70%;margin-top:1%">
+
+                <div class="k-content col-xs-12" style="padding-left:0px;padding-right:0px;">
+                    <div class="col-xs-7" style="padding-left:0px;padding-right:0px;">
+                        <div class="col-xs-7" style="padding-left:0px;padding-top:0px;">
+                            <fieldset>
+                                <legend>Parameters</legend>
+                                <label class="" id="YesId" style="background-color:yellow;font-size:10px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> Parameter found &nbsp;&nbsp;
+                                <label class="" id="NoId" style="background-color:red;font-size:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> No Parameter found &nbsp;&nbsp;
+                                <label class="" id="ValueId" style="background-color:cornflowerblue;font-size:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>Parameter+Value found
+                            </fieldset>
+                        </div>
+                        <div class="col-xs-2" style="padding-left:0px;padding-top:0px;padding-right:0px;">
+                            <fieldset>
+                                <legend>Profile</legend>
+                                <label class="" id="FieldId" style="background-color:lightsalmon;font-size:10px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> Field &nbsp;&nbsp;
+                                <label class="" id="OfficeId" style="background-color:mediumorchid;font-size:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> Office &nbsp;&nbsp;
+                            </fieldset>
+                        </div>
+                        <div class="col-xs-3" style="padding-left:10px;padding-top:0px;padding-right:10px;">
+                            <fieldset>
+                                <legend>Verification</legend>
+                                <label class="" id="NotVerifiedId" style="background-color:lightpink;font-size:10px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> To be Verified &nbsp;&nbsp;
+                                <label class="" id="VerifiedId" style="background-color:paleturquoise;font-size:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> Verified &nbsp;&nbsp;
+                            </fieldset>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-3" style="padding-left:0px;padding-right:0px;">
+                        <div class="row">
+                            <div class="col-xs-7" style="padding-left:15px;padding-right:0px;">
+                                <select id="ddlCategoryName" class="form-control" style="padding-left:0px;padding-right:0px;" onchange="OnCategorySelect();"><option>Select Category</option></select>
+                            </div>
+
+                            <div class="col-xs-5" style="padding-left:10px;padding-right:0px;">
+                                <select id="ddlProfileName" class="form-control" onchange="OnProfileColorSelect(this);" style="padding-left:0px;padding-right:0px;"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:10px;padding-left:15px;">
+                            <div class="col-xs-12" style="padding-left:0px;padding-bottom:30px;">
+
+                                <input type="button" id="excelexportdata" value="Export Orginal" style="text-transform:capitalize;margin-right:10px;width:110px;padding-right:0px;padding-left:0px;" class="k-button" onclick="excelexportdata();" />
+                                <input type="button" id="excelexportcopydata" value="Export Changes" style="text-transform:capitalize;margin-right:10px;width:110px;padding-right:0px;padding-left:0px;" class="k-button" onclick="excelexportcopydata();" />
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-1" style="padding-left:30px;">
+                        <input type="button" id="Updatecopydata" value="Bring Orginal" style="text-transform:capitalize;margin-right:10px;width:110px;padding-right:0px;padding-left:0px;" class="k-button" onclick="UpdateCopyExcelData();" /><br />
+
+
+                    </div>
+
+
+
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="col-xs-5">
+                        <span style="font-size:13px;color:red;">Note : </span><span style="font-size:13px;color:#3c8dbc;">Click on Property value for editing. Press Enter for saving or ESC for cancel.</span>
+                    </div>
+                </div>
+
+                <div id="tbldash1" class="k-content col-xs-12"></div>
+
+                <div id="tblExcelData">
+                    <br /><br />
+
+                    <div class="col-xs-12 dvTable" style="overflow:scroll;height:380px">
+                        <table class="table dataTable table-hover" id="tblExcel" style="height:50%">
+                            <thead id="HeaderTemp" style="background-color:white;"></thead>
+                            <tbody id="DataTemp" style="overflow:auto;height:40%"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="here">
+                        <table align="center" class="bordered" id="tableb_copy" style="display:none;">
+                            @*Copy Of Edited Table without textbox*@
+                        </table>
+                    </div>
+
+                </div>
+
+                <div id="tblfinaldash" class="k-content col-xs-12"></div>
+                <div class="modal">
+                    <div class="center">
+                        <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        @(Html.Kendo().Window()
+                            .Name("VerifyWindow")
+                            .Title("VerifyWindow")
+                            .Content(@<text>
+                                <div>
+                                    <table style="width:90%;height:90%">
+                                        <tr style="font-size:19px;height:50px;width:100px;border:1px solid black">
+                                            <th style="border:1px solid black;">Property Name</th>
+                                            <th style="border:1px solid black;">Rule Name</th>
+                                            <th style="border:1px solid black;">IsVerified</th>
+                                        </tr>
+                                        <tbody id="verifyTableBody" style="border:1px solid black;">
+                                            @*<tr>Property Name</tr>
+                                                <tr>Rule Name</tr>
+                                                <tr><input type="checkbox" /></tr>*@
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </text>)
+                                 .Draggable()
+                                        .Resizable()
+                                        .Height(350)
+                                         .Width(450)
+
+        )
+    </div>
+    <!-- Script for Excel Table -->
+    <script type="text/javascript">
+
+        var versionNo = "";
+        var ModelName = "";
+        var TemplateName = "";
+        var rulename = "";
+        var ColorForYes = "";
+        var ColorForNo = "";
+        var ColorForValue = "";
+        var ColorForField = "";
+        var ColorForOffice = "";
+        var ColorForIsVerify = "";
+        var ColorForVerified = "";
+
+        var Edit_Report = "@ViewBag.Edit_Report";
+
+        function onDataBoundReportGrid() {
+            if (Edit_Report == "False") {
+
+                $(".k-grid-edit").css("display", "none");
+                var grid = $("#gridRunrule").data("kendoGrid");
+
+                //     grid.hideColumn(6);
+
+            }
+        }
+
+        function GetProfileData() {
+            var listcategory = " <option id='optnnothing' value='nuthing' style='font-size:smaller'>Select Profile</option>";
+            listcategory += " <option id='optnAll' value='All'>All</option>";
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                //   data: value,
+                url: '@Url.Action("GetProfileData", "Report")',
+                dataType: "json",
+
+                success: function (result) {
+                    //console.log(result);
+                    var data = result;
+                    for (var i = 0; i < data["Table"].length; i++) {
+
+                        console.log("-------------------------");
+                        console.log(data["Table"][i].Id);
+                        console.log(data["Table"][i].Profile);
+
+                        listcategory += '<option value="' + data["Table"][i].Profile + '" id="' + data["Table"][i].Value + '"  style="background-color:' + data["Table"][i].Color + '" data-colorname="' + data["Table"][i].Color + '">' + data["Table"][i].Profile + '</option>';
+                        if (data["Table"][i].Value == "YES") {
+                            $("#YesId").css("background-color", data["Table"][i].Color);
+                            ColorForYes = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "NO") {
+                            $("#NoId").css("background-color", data["Table"][i].Color);
+                            ColorForNo = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "VALUE") {
+                            $("#ValueId").css("background-color", data["Table"][i].Color);
+                            ColorForValue = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "ToVerify") {
+                            $("#NotVerifiedId").css("background-color", data["Table"][i].Color);
+                            ColorForIsVerify = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "Verified") {
+                            $("#VerifiedId").css("background-color", data["Table"][i].Color);
+                            ColorForVerified = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "Field") {
+                            $("#FieldId").css("background-color", data["Table"][i].Color);
+                            ColorForField = data["Table"][i].Color;
+                        }
+                        if (data["Table"][i].Value == "Office") {
+                            $("#OfficeId").css("background-color", data["Table"][i].Color);
+                            ColorForOffice = data["Table"][i].Color;
+                        }
+                    }
+
+
+                    $('#ddlProfileName').empty().append(listcategory);
+                },
+                error: function (result) {
+
+                }
+            });
+
+        }
+
+        function OnProfileColorSelect(s) {
+            var profileValue = s[s.selectedIndex].value;
+            var profileId = s[s.selectedIndex].id;
+            var a = document.getElementById("ddlProfileName");
+            var strUser = s.options[a.selectedIndex].value;
+            //rahin
+            if (profileId == "NO" || profileId == "YES" || profileId == "VALUE" || profileId == "ToVerify" || profileId == "Verified") {
+                GridValues(profileId);
+            }
+            else {
+                GridProfile(profileValue, profileId);
+
+            }
+
+        }
+
+
+
+        function GridProfile(profileValue, profileId) {
+            GetProfileData();
+            var RunRuleDonee = "";
+            var TemplateName = "";
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            selectedIndex = grid.select().index();
+
+            var versionNo = selectedItem["VersionNo"]
+            var ModelName = selectedItem["FileName"];
+            TemplateName = selectedItem["Template"];
+            var rulename = selectedItem["RuleName"];
+
+
+
+            if ($("#ddlTemplate").length != 0) {
+
+                TemplateName = $("#ddlTemplate").data("kendoDropDownList").value();
+                rulename = $("#ddlTemplate").data("kendoDropDownList").text()
+
+            }
+
+
+
+
+            $("#ReportTab1").removeClass("active");
+            $("#ReportOption1").hide();
+
+            $("#ReportTab2").addClass("active");
+            $("#ReportOption2").show();
+
+
+            var value = JSON.stringify({
+                "FileName": TemplateName,
+                "ModelName": ModelName,
+                "VersionNo": versionNo,
+                "RuleName": rulename
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetExcelDataReport", "Report")',
+                data: value,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.modal').show();
+                },
+                complete: function () {
+                    $('.modal').hide();
+                },
+                success: function (data) {
+                    var userprofile = "@Session["ProfileId"].ToString()";
+                    $("#tblExcel tbody").html(" ");
+                    var $table = $('#tblExcel');
+                    $table.floatThead('destroy');
+
+                    var HeaderTemp = '<tr><th style="border:1px solid;">Forge Id</th><th style="border:1px solid;">Revit Id</th><th style="border:1px solid;">Family Name</th><th style="border:1px solid;">Family Type</th><th style="border:1px solid;">Category Name</th>';
+                    for (var i = 0; i < data["Table"].length; i++) {
+                        HeaderTemp += '<th style="border:1px solid;background-color:' + data["Table"][i].Color + ';" class="' + data["Table"][i].Profile + ' ' + data["Table"][i].Verify + '" id="' + data["Table"][i].PropertyName + '" >' + data["Table"][i].PropertyName + '</th>';
+
+                    }
+                    HeaderTemp += '/tr>';
+                    $("#HeaderTemp").html(HeaderTemp);
+
+                    var headercount = document.getElementById('tblExcel').rows[0].cells.length
+                    var myTable = document.getElementById("tblExcel");
+                    var ths = myTable.getElementsByTagName("th");
+                    var myTH = "";
+                    var myClass = "";
+                    var columcnt = 5;
+
+                    var tdCount = data["Table"].length;
+
+                    var DataTemp = "";
+
+                    for (var i = 0; i < data["Table1"].length; i++) {
+                        DataTemp += '<tr data-id="1">';
+
+                        var str = data["Table1"][i].RuleValues;
+                        var array = str.split('~}');
+                        if (array[3] != undefined) {
+                            // DataTemp += '<td>' + array[3] + '</td>';
+                            DataTemp += '<td>' + '<button id="' + array[3] + '" onclick= window.parent.Forgeid(this.id);>' + array[3] + ' </button>' + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+                        if (array[1] != undefined) {
+                            DataTemp += '<td>' + array[1] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        DataTemp += '<td>' + array[0] + '</td>';
+
+                        if (array[2] != undefined) {
+                            DataTemp += '<td>' + array[2] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+
+                        DataTemp += '<td style="display:none">' + data["Table1"][i].Emailid + '</td>';
+                        DataTemp += '<td>' + data["Table1"][i].Category_Name + '</td>';
+
+                        var textbox = "";
+                        var array1 = "";
+                        for (var j = 0; j < tdCount; j++) {
+                            var str = data["Table1"][i].RuleValues;
+                            var pattern = data["Table1"][i].Category_Name + "~}";
+                            if (str != "") {
+
+                                var truncateBefore = function (str, pattern) {
+                                    return str.slice(str.indexOf(pattern) + pattern.length);
+                                }
+                                array1 = truncateBefore(str, pattern).split('~}');
+                            }
+
+                            textbox = data["Table1"][i].ID;
+
+                            if (array1[j] != undefined) {
+                                var yesVal = array1[j].includes("Blank");
+                                var noVal = array1[j].includes("NA");
+                                var valuefortd = "";
+                                var filterVerify = "";
+                                var bckcolor = "";
+                                if (array1[j].includes("Blank") == true || array1[j].includes("NA") == true) {
+                                    if (array1[j].includes("(v)")) {
+                                        var res = array1[j].split("(v)");
+                                        valuefortd = res[0];
+                                        filterVerify = 1;
+                                    }
+                                    else {
+                                        valuefortd = array1[j];
+                                        filterVerify = 0;
+                                    }
+
+                                }
+                                else if (array1[j].includes("(v)") == true) {
+                                    var res = array1[j].split("(v)");
+                                    valuefortd = res[0];
+                                    filterVerify = 1;
+                                }
+                                else {
+                                    valuefortd = array1[j];
+                                    filterVerify = 0;
+                                }
+
+                                if (filterVerify == 1) {
+                                    bckcolor = ColorForVerified;
+                                }
+                                else {
+                                    bckcolor = ColorForIsVerify;
+                                }
+                                if (array1[j].trim() == "0.000 ft") {
+                                    array1[j] = "Blank";
+                                }
+
+
+                                myTH = ths[columcnt];
+                                if (myTH != undefined) {
+                                    myClass = myTH.className;
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+                                }
+
+                                if (myClass1.includes(userprofile) == true) {
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;" header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+
+
+                                }
+                                else if (userprofile.trim() == "") {
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)"   style="color:black !important;text-decoration: underline;" header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;" title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+
+                                }
+
+
+                                else {
+                                    if (verify.trim() == "Yes") {
+
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+                                        else if (valuefortd.trim() == "NA") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+
+                                        }
+                                    }
+                                    else {
+
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForYes + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" >' + array1[j] + '</td>';
+                                        }
+                                        else if (valuefortd.trim() == "NA") {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForNo + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" >' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForValue + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId + '">' + array1[j] + '</td>';
+
+                                        }
+
+                                    }
+
+
+
+
+
+                                }
+                                columcnt++;
+                            }
+
+                            else {
+                                myTH = ths[columcnt];
+                                if (myTH != undefined) {
+                                    myClass = myTH.className;
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+                                }
+
+                                for (var j = 0; j < tdCount; j++) {
+                                    DataTemp += '<td class="' + myClass + '"></td>';
+                                }
+                                columcnt++;
+                            }
+
+                        }
+
+                        DataTemp += '</tr>';
+                        columcnt = 5;
+
+                    }
+                    $("#DataTemp").html(DataTemp);
+
+                    var items = [], options = [];
+
+                    $('#tblExcel tbody tr td:nth-child(6)').each(function () {
+                        items.push($(this).text());
+                    });
+                    items.sort();
+                    var items = $.unique(items);
+                    var listcategory = "<option value=''>All</option>";
+                    $.each(items, function (i, item) {
+                        listcategory += '<option value="' + item + '">' + item + '</option>';
+                    })
+                    $('#ddlCategoryName').empty().append(listcategory);
+                    OnProfileSelect(profileValue, profileId);
+
+                    //var $table1 = $('#tblExcel');
+                    //$table1.floatThead(
+                    //    {
+                    //        zIndex: 70,
+                    //        scrollContainer: function ($table) {
+                    //            return $table.closest('div.dvTable');
+                    //        },
+                    //        floatTableClass: 'flotTClass'
+                    //    });
+                }
+
+            });
+
+
+        }
+
+        function GridValues(profileId) {
+            GetProfileData();
+
+            var RunRuleDonee = "";
+            var TemplateName = "";
+
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            selectedIndex = grid.select().index();
+
+            var versionNo = selectedItem["VersionNo"]
+            var ModelName = selectedItem["FileName"];
+
+            TemplateName = selectedItem["Template"];
+            var rulename = selectedItem["RuleName"];
+
+            if ($("#ddlTemplate").length != 0) {
+
+                TemplateName = $("#ddlTemplate").data("kendoDropDownList").value();
+                rulename = $("#ddlTemplate").data("kendoDropDownList").text()
+
+            }
+
+            $("#ReportTab1").removeClass("active");
+            $("#ReportOption1").hide();
+
+            $("#ReportTab2").addClass("active");
+            $("#ReportOption2").show();
+
+
+            var value = JSON.stringify({
+                "FileName": TemplateName,
+                "ModelName": ModelName,
+                "VersionNo": versionNo,
+                "RuleName": rulename
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetExcelDataReport", "Report")',
+                data: value,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.modal').show();
+                },
+                complete: function () {
+                    $('.modal').hide();
+                },
+                success: function (data) {
+                    var userprofile = "@Session["ProfileId"].ToString()";
+                    $("#tblExcel tbody").html(" ");
+                    var $table = $('#tblExcel');
+                    $table.floatThead('destroy');
+                    //Create Header Of HTML Table
+                    var HeaderTemp = '<tr><th style="border:1px solid;">Forge Id</th><th style="border:1px solid;">Revit Id</th><th style="border:1px solid;">Family Name</th><th style="border:1px solid;">Family Type</th><th style="border:1px solid;">Category Name</th>';
+
+                    for (var i = 0; i < data["Table"].length; i++) {
+                        HeaderTemp += '<th style="border:1px solid;background-color:' + data["Table"][i].Color + ';" class="' + data["Table"][i].Profile + ' ' + data["Table"][i].Verify + '" id="' + data["Table"][i].PropertyName + '" >' + data["Table"][i].PropertyName + '</th>';
+                    }
+                    HeaderTemp += '/tr>';
+                    $("#HeaderTemp").html(HeaderTemp);
+                   // $("#HeaderTemp").html(HeaderTemp);
+                    var myTable = document.getElementById("tblExcel");
+                    var ths = myTable.getElementsByTagName("th");
+                    var myTH = "";
+                    var myClass = "";
+                    var columcnt = 5;
+                    var tdCount = data["Table"].length;
+                    var strUser = profileId;
+                    var DataTemp = "";
+
+                    for (var i = 0; i < data["Table1"].length; i++) {
+                        DataTemp += '<tr data-id="1">';
+
+                        var str = data["Table1"][i].RuleValues;
+                        var array = str.split('~}');
+
+                        if (array[3] != undefined) {
+                            // DataTemp += '<td>' + array[3] + '</td>';
+                            DataTemp += '<td>' + '<button id="' + array[3] + '" onclick= window.parent.Forgeid(this.id);>' + array[3] + ' </button>' + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        if (array[1] != undefined) {
+                            DataTemp += '<td>' + array[1] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        DataTemp += '<td>' + array[0] + '</td>';
+
+                        if (array[2] != undefined) {
+                            DataTemp += '<td>' + array[2] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+
+                        DataTemp += '<td style="display:none">' + data["Table1"][i].Emailid + '</td>';
+                        DataTemp += '<td>' + data["Table1"][i].Category_Name + '</td>';
+
+                        var textbox = "";
+                        var array1 = "";
+                        for (var j = 0; j < tdCount; j++) {
+                            var str = data["Table1"][i].RuleValues;
+                            var pattern = data["Table1"][i].Category_Name + "~}";
+                            //console.log(str);
+                            //console.log(pattern);
+
+                            if (str != "") {
+
+                                var truncateBefore = function (str, pattern) {
+                                    return str.slice(str.indexOf(pattern) + pattern.length);
+                                }
+                                array1 = truncateBefore(str, pattern).split('~}');
+                            }
+
+                            textbox = data["Table1"][i].ID;
+
+
+                            //console.log(array1);
+                            if (array1[j] != undefined) {
+                                var yesVal = array1[j].includes("Blank");
+                                var noVal = array1[j].includes("NA");
+                                var valuefortd = "";
+                                var filterVerify = "";
+                                var bckcolor = "";
+                                if (array1[j].includes("Blank") == true || array1[j].includes("No") == true) {
+                                    if (array1[j].includes("(v)")) {
+                                        var res = array1[j].split("(v)");
+                                        valuefortd = res[0];
+                                        filterVerify = 1;
+                                    }
+                                    else {
+                                        valuefortd = array1[j];
+                                        filterVerify = 0;
+                                    }
+
+                                }
+                                else if (array1[j].includes("(v)") == true) {
+                                    var res = array1[j].split("(v)");
+                                    valuefortd = res[0];
+                                    filterVerify = 1;
+                                }
+                                else {
+                                    valuefortd = array1[j];
+                                    filterVerify = 0;
+                                }
+
+                                if (filterVerify == 1) {
+                                    bckcolor = ColorForVerified;
+                                }
+                                else {
+                                    bckcolor = ColorForIsVerify;
+                                }
+                                if (array1[j].trim() == "0.000 ft") {
+                                    array1[j] = "Blank";
+                                }
+                                myTH = ths[columcnt];
+                                if (myTH != undefined) {
+
+                                    myClass = myTH.className;
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+
+                                }
+
+                              //  var a = document.getElementById("ddlProfileName");
+                              //  var strUser = a.options[e.selectedIndex].value;
+                                if (myClass1.includes(userprofile) == true || userprofile.trim() == "") {
+                                    if (strUser == "YES") {
+
+                                        if (array1[j].trim() == "Blank") {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForYes + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td></td>';
+
+                                        }
+                                    }
+                                    if (strUser == "NO") {
+
+                                        if (array1[j].trim() == "NA") {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForNo + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                        }
+                                        else {
+                                            DataTemp += '<td></td>';
+
+                                        }
+                                    }
+                                    if (strUser == "VALUE") {
+
+                                        if (array1[j].trim() == "Blank" || array1[j].trim() == "NA") {
+
+                                            DataTemp += '<td></td>';
+                                        }
+                                        else if (array1[j].includes("(v)") == true) {
+                                            DataTemp += '<td></td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForValue + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;" title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                        }
+                                    }
+
+                                    if (strUser == "ToVerify") {
+
+                                        DataTemp += '<td></td>';
+                                    }
+
+                                    if (strUser == "Verified") {
+                                        if (verify == "No") {
+                                            DataTemp += '<td></td>';
+                                        }
+                                        else if (verify == "Yes" && array1[j].includes("(v)") != true) {
+                                            DataTemp += '<td></td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                    }
+                                }
+                                else {
+
+                                    if (strUser == "YES") {
+
+                                        if (array1[j].trim() == "Blank") {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '">' + array1[j] + '</td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td></td>';
+                                        }
+                                    }
+                                    if (strUser == "NO") {
+                                        if (array1[j].trim() == "NA") {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '">' + array1[j] + '</td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td></td>';
+                                        }
+                                    }
+                                    if (strUser == "VALUE") {
+
+
+                                        if (array1[j].includes("(v)") == true) {
+
+                                            DataTemp += '<td></td>';
+                                        }
+                                        else if (array1[j].trim() != "Blank" && array1[j].trim() != "NA") {
+                                            DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '">' + array1[j] + '</td>';
+                                        }
+                                        else {
+                                            DataTemp += '<td></td>';
+                                        }
+                                    }
+
+                                    if (strUser == "ToVerify") {
+                                        if (verify == "Yes" && array1[j].includes("(v)") != true) {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td></td>';
+                                        }
+                                    }
+
+                                    if (strUser == "Verified") {
+                                        if (verify == "Yes" && array1[j].includes("(v)") == true) {
+
+                                            DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td></td>';
+                                        }
+                                    }
+                                }
+                                columcnt++;
+                            }
+                            else {
+
+                                for (var j = 0; j < tdCount; j++) {
+                                    DataTemp += '<td></td>';
+                                }
+                                columcnt++;
+                            }
+
+                        }
+
+                        DataTemp += '</tr>';
+                        columcnt = 5;
+                    }
+                    $("#DataTemp").html(DataTemp);
+
+                    $table.floatThead(
+                        {
+                            //zIndex: 70,
+                            scrollContainer: function ($table) {
+                                return $table.closest('div.dvTable');
+                            },
+                            floatTableClass: 'flotTClass'
+                        });
+                    //Done
+                }
+
+            });
+        }
+        function OnProfileSelect(profileValue, profileId) {
+            var profileValue = profileValue;
+            var profileId = profileId;
+            var x = document.getElementById('ddlProfileName');
+            var Prflid = "";
+            var Profileval = "";
+            for (var i = 0; i < x.length; i++) {
+                Prflid = x[i].id;
+                Profileval = x[i].value;
+                if (profileId == "optnAll") {
+                    $("." + profileValue).css("display", "");
+
+                }
+                else {
+
+                    if (Profileval == profileValue) {
+                        $("." + profileValue).css("display", "");
+
+                    }
+                    else {
+                        $("." + Profileval).css("display", "none");
+                        $("." + Profileval).css("display", "none");
+                    }
+                }
+            }
+            var $table = $('#tblExcel');
+            $table.floatThead('destroy');
+
+            //var $table1 = $('#tblExcel');
+            //$table1.floatThead(
+            //    {
+            //        zIndex: 70,
+            //        scrollContainer: function ($table) {
+            //            return $table.closest('div.dvTable');
+            //        },
+            //        floatTableClass: 'flotTClass'
+            //    });
+
+        }
+
+
+
+        function showHTMLHistory(e) {
+            GetProfileData();
+            e.preventDefault();
+            var RunRuleDonee = "";
+            var TemplateName = "";
+
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            grid.select($(e.currentTarget).closest("tr"));
+            selectedIndex = grid.select().index();
+
+            RunRuleDonee = dataItem.RunRule;
+            TemplateName = dataItem.Template;
+            rulename = dataItem.RuleName;
+
+
+
+            if ($("#ddlTemplate").length != 0) {
+
+                TemplateName = $("#ddlTemplate").data("kendoDropDownList").value();
+                rulename = $("#ddlTemplate").data("kendoDropDownList").text()
+
+                if (rulename == "Select RuleName" || rulename == "null") {
+                    e.preventDefault();
+                    alert("Please Select Template");
+                    return;
+                }
+
+            }
+
+            if (RunRuleDonee == "No") {
+                e.preventDefault();
+                alert("Please Run Rule First For HTML Table");
+                return;
+            }
+
+
+            $("#ReportTab1").removeClass("active");
+            $("#ReportOption1").hide();
+
+            $("#ReportTab2").addClass("active");
+            $("#ReportOption2").show();
+
+            versionNo = dataItem.VersionNo;
+
+            ModelName = dataItem.FileName;
+
+            var value = JSON.stringify({
+                "FileName": TemplateName,
+                "ModelName": ModelName,
+                "VersionNo": versionNo,
+                "RuleName": rulename
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetExcelDataReport", "Report")',
+                data: value,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.modal').show();
+                },
+                complete: function () {
+                    $('.modal').hide();
+                },
+                success: function (data) {
+                    var userprofile = "@Session["ProfileId"].ToString()";
+                    $("#tblExcel tbody").html(" ");
+                    var $table = $('#tblExcel');
+                    $table.floatThead('destroy');
+                    //Create Header Of HTML Table
+                    var HeaderTemp = '<tr><th style="border:1px solid;">Forge Id</th><th style="border:1px solid;">Revit Id</th><th style="border:1px solid;">Family Name</th><th style="border:1px solid;">Family Type</th><th style="border:1px solid;">Category Name</th>';
+
+
+                    for (var i = 0; i < data["Table"].length; i++) {
+                        HeaderTemp += '<th style="border:1px solid;background-color:' + data["Table"][i].Color + ';" class="' + data["Table"][i].Profile + ' ' + data["Table"][i].Verify + '" id="' + data["Table"][i].PropertyName + '" >' + data["Table"][i].PropertyName + '</th>';
+                    }
+                    HeaderTemp += '/tr>';
+                    $("#HeaderTemp").html(HeaderTemp);
+
+                    var headercount = document.getElementById('tblExcel').rows[0].cells.length
+                    var myTable = document.getElementById("tblExcel");
+                    var ths = myTable.getElementsByTagName("th");
+                    var myTH = "";
+                    var myClass = "";
+                    var columcnt = 5;
+
+                    var tdCount = data["Table"].length;
+
+                    var DataTemp = "";
+
+                    for (var i = 0; i < data["Table1"].length; i++) {
+                        DataTemp += '<tr data-id="1">';
+
+                        var str = data["Table1"][i].RuleValues;
+                        var array = str.split('~}');
+
+                        if (array[3] != undefined) {
+                            // DataTemp += '<td>' + array[3] + '</td>';
+                            DataTemp += '<td>' + '<button id="' + array[3] + '" onclick= window.parent.Forgeid(this.id);>' + array[3] + ' </button>' + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        if (array[1] != undefined) {
+                            DataTemp += '<td>' + array[1] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        DataTemp += '<td>' + array[0] + '</td>';
+
+                        if (array[2] != undefined) {
+                            DataTemp += '<td>' + array[2] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+
+                        DataTemp += '<td style="display:none">' + data["Table1"][i].Emailid + '</td>';
+                        DataTemp += '<td>' + data["Table1"][i].Category_Name + '</td>';
+
+                        var textbox = "";
+                        var array1 = "";
+                        for (var j = 0; j < tdCount; j++) {
+                            var str = data["Table1"][i].RuleValues;
+                            var pattern = data["Table1"][i].Category_Name + "~}";
+                            //console.log(str);
+                            //console.log(pattern);
+
+                            if (str != "") {
+
+                                var truncateBefore = function (str, pattern) {
+                                    return str.slice(str.indexOf(pattern) + pattern.length);
+                                }
+
+                                array1 = truncateBefore(str, pattern).split('~}');
+                            }
+
+                            textbox = data["Table1"][i].ID;
+
+
+                            console.log(array1);
+                            if (array1[j] != undefined) {
+                                var yesVal = array1[j].includes("Blank");
+                                var noVal = array1[j].includes("NA");
+                                var valuefortd = "";
+                                var filterVerify = "";
+                                var bckcolor = "";
+                                if (array1[j].includes("Blank") == true || array1[j].includes("NA") == true) {
+                                    if (array1[j].includes("(v)")) {
+                                        var res = array1[j].split("(v)");
+                                        valuefortd = res[0];
+                                        filterVerify = 1;
+                                    }
+                                    else {
+                                        valuefortd = array1[j];
+                                        filterVerify = 0;
+                                    }
+
+                                }
+                                else if (array1[j].includes("(v)") == true) {
+                                    var res = array1[j].split("(v)");
+                                    valuefortd = res[0];
+                                    filterVerify = 1;
+                                }
+                                else {
+                                    valuefortd = array1[j];
+                                    filterVerify = 0;
+                                }
+
+                                if (filterVerify == 1) {
+                                    bckcolor = ColorForVerified;
+                                }
+                                else {
+                                    bckcolor = ColorForIsVerify;
+                                }
+
+                                if (array1[j].trim() == "0.000 ft") {
+                                     array1[j]="Blank";
+                                }
+
+                                myTH = ths[columcnt];
+                               
+                                if (myTH != undefined) {
+                                    // myClass = myTH.className;
+                                    myClass = myTH.className;
+                                   // alert(myClass);
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+                                }
+                                var n = userprofile.includes(myClass1);
+                                if (n == true) {
+
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"   header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;" header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;" title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                }
+                                else if (userprofile.trim() == "") {
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+
+                                }
+                                else {
+                                    var re = /#/gi;
+                                    var str = data["Table1"][i].ID;
+                                    console.log(str);
+                                  //  alert(myClass);
+                                    myHeaderId = myHeaderId.replace(re, " ");
+                                    console.log(myHeaderId);
+                                    console.log(verify);
+                                   // var values1 = data["Table1"][i].ID;
+                                    if (verify.trim() == "Yes") {
+
+                                      
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else if (valuefortd.trim() == "NA") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else if (array1[j].trim().includes("(v)") == true) {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+                                    }
+                                    else {
+
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForYes + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" >' + array1[j] + '</td>';
+                                        }
+                                        else if (valuefortd.trim() == "NA") {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForNo + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" >' + array1[j] + '</td>';
+                                        }
+                                        else if (array1[j].trim().includes("(v)") == true) {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '" >' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForValue + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId.trim() + '">' + array1[j] + '</td>';
+
+                                        }
+
+                                    }
+
+                                }
+                                columcnt++;
+                            }
+
+                            else {
+                                myTH = ths[columcnt];
+                                if (myTH != undefined) {
+
+                                    myClass = myTH.className;
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+                                }
+                                for (var j = 0; j < tdCount; j++) {
+                                    DataTemp += '<td class="' + myClass + '"></td>';
+                                }
+                                columcnt++;
+                            }
+
+                        }
+
+                        DataTemp += '</tr>';
+                        columcnt = 5;
+
+                    }
+                    $("#DataTemp").html(DataTemp);
+
+                    var $table = $('#tblExcel');
+                    $table.floatThead(
+                        {
+                            zIndex: 70,
+                            scrollContainer: function ($table) {
+                                return $table.closest('div.dvTable');
+                            },
+                            floatTableClass: 'flotTClass'
+                        });
+
+
+                    ///for Category Bind in dropdown
+                    var items = [], options = [];
+
+                    $('#tblExcel tbody tr td:nth-child(6)').each(function () {
+                        items.push($(this).text());
+                    });
+                    items.sort();
+                    var items = $.unique(items);
+                    var listcategory = "<option value=''>All</option>";
+                    $.each(items, function (i, item) {
+                        listcategory += '<option value="' + item + '">' + item + '</option>';
+                    })
+                    $('#ddlCategoryName').empty().append(listcategory);
+
+                }
+
+            });
+        }
+
+        function ChangeVerify(id, value) {
+
+            var idnew = id;
+            var name = "";
+            var value = document.getElementById(id).getAttribute("value");
+            //console.log(value);
+
+            var dataTemp = "";
+            name = id.substr(0, id.indexOf('_')); // "72"
+            id = id.substr(id.indexOf('_') + 1);
+
+            dataTemp = " <tr style='font-size:16px;height:30px;width:100px;border:1px solid black'><td align='center'>" + id + "</td><td align='center'>" + rulename + "</td> <td align='center'><input type='checkbox' id=chck_" + idnew + " onchange='SetVerifyChange(this.id)'/></td></tr>";
+            $('#verifyTableBody').empty().append(dataTemp);
+            $("#VerifyWindow").data("kendoWindow").open();
+
+            var checkedItems = $("#" + idnew.trim()).data('textname');
+            if (checkedItems.trim().includes("Yes") || checkedItems.trim().includes("Yes")) {
+                if (checkedItems.trim().includes("(v)")) {
+                    $("#chck_" + idnew).prop("checked", true);
+                    $("#chck_" + idnew).prop("disabled", true);
+                }
+                else {
+                    $("#chck_" + idnew).prop("checked", false);
+                    $("#chck_" + idnew).prop("disabled", false);
+                }
+
+
+            }
+            else if (checkedItems.trim().includes("(v)")) {
+                $("#chck_" + idnew).prop("checked", true);
+                $("#chck_" + idnew).prop("disabled", true);
+            }
+
+
+        }
+
+        function SetVerifyChange(id) {
+
+            var name = id;
+            var excelid;
+          //  alert(id);
+            var res = id.split("_");
+            if (res.length > 0) {
+                excelid = res[1];
+            }
+
+            id = id.substr(id.indexOf('_') + 1);
+
+            var chcked = document.getElementById(name).checked;
+            //console.log(chcked);
+            if (chcked == true) {
+                chcked = 1;
+            } else {
+                chcked = 0;
+            }
+            var html = document.getElementById(id).innerHTML;
+          //  alert(id);
+            if (html.includes("(v)")) {
+                html = html.substr(0, html.indexOf('(v)'));
+            }
+            document.getElementById(id).innerHTML = html + "(v)";
+
+            var $row = $("#" + id).closest('tr');
+            var header = $("#" + id).attr('header');
+
+            var $tds = $row.find("td");
+
+            //console.log(RuleValue);
+            var RuleValue = "";
+            $.each($tds, function () {
+                RuleValue += ($(this).text()) + '~}';
+            });
+            console.log(RuleValue);
+            var truncateAfter = function (RuleValue, RuleSubString) {
+                return RuleValue.slice(RuleValue.indexOf(RuleSubString) + RuleSubString.length);
+            }
+            console.log(RuleValue);
+            var prop = RuleValue.split('~}');
+            var ForegId = prop[0];
+            var revitId = prop[1];
+            var FamilyName = prop[2];
+            var FamilyType = prop[3];
+            var edited = prop[5];
+            var index = RuleValue.indexOf(edited);
+            var RuleSubString = RuleValue.slice(0, index);
+
+            var newRuleValue = FamilyName + '~}' + revitId + '~}' + FamilyType + '~}' + ForegId + '~}' + truncateAfter(RuleValue, RuleSubString);
+            //console.log("-----------------------------------------------------");
+            var value = JSON.stringify({
+                "FileName": TemplateName,
+                "ModelName": ModelName,
+                "VersionNo": versionNo,
+                "RuleName": rulename,
+                "RuleValues": newRuleValue,
+                "ID": excelid,
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("UpdateExcelHistoryData", "Report")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    alert("Excel Value Updated Successfully");
+                },
+                error: function (result) {
+                    alert("Error In Saving Data");
+                }
+            });
+
+
+        }
+
+        function OnCategorySelect() {
+
+            var rex = new RegExp($('#ddlCategoryName').val());
+            if (rex == "/all/") { clearFilter() } else {
+                $('#tblExcel tbody tr').hide();
+                $('#tblExcel tbody tr').filter(function () {
+                    return rex.test($(this).text());
+                }).show();
+            }
+
+            function clearFilter() {
+                $('#ddlCategoryName').val('');
+                $('#tblExcel tbody tr').show();
+            }
+
+        }
+
+        var tdId = "";
+        var ExcelID = ""//global td #a tag to assign edited textbox value
+        function enabletextbox(id) {
+            tdId = id;
+            $('.edittextbox').hide();
+            $("#" + id).hide();
+            var textval = $("#" + id).html();
+            var header = $("#" + id).attr('header');
+            ExcelID = header;
+            id = id.replace("link", "text");
+            $("#" + id).val(textval);
+            $("#" + id).show();
+            $("#" + id).focus();
+        }
+
+        function disabletextbox() {
+            $('.edittextbox').hide();
+            $('.editlink').show();
+        }
+
+        function handleKeyPress(e) {
+
+            var key = e.keyCode || e.which;
+            if (key == 13) {
+
+
+                var id = $(e.target).attr('id');
+                var $row = $("#" + id).closest('tr');
+                var header = $("#" + id).attr('header');
+
+                var $tds = $row.find("td");
+                var textvalue = $(e.target).val();
+
+                if (textvalue == "") {
+                    alert("Please Insert Value");
+                    return;
+                }
+                $("#" + tdId).html(textvalue);
+
+                var RuleValue = "";
+                $.each($tds, function () {
+                    RuleValue += ($(this).text()) + '~}';
+                });
+
+
+                var truncateAfter = function (RuleValue, RuleSubString) {
+                    return RuleValue.slice(RuleValue.indexOf(RuleSubString) + RuleSubString.length);
+                }
+                console.log(RuleValue);
+                var prop = RuleValue.split('~}');
+                var ForegId = prop[0];
+                var revitId = prop[1];
+                var FamilyName = prop[2];
+                var FamilyType = prop[3];
+                var edited = prop[5];
+                var index = RuleValue.indexOf(edited);
+                var RuleSubString = RuleValue.slice(0, index);
+
+                var newRuleValue = FamilyName + '~}' + revitId + '~}' + FamilyType + '~}' + ForegId + '~}' + truncateAfter(RuleValue, RuleSubString);
+                id = id.replace("text", "link");
+
+
+
+                var value = JSON.stringify({
+                    "FileName": TemplateName,
+                    "ModelName": ModelName,
+                    "VersionNo": versionNo,
+                    "RuleName": rulename,
+                    "RuleValues": newRuleValue,
+                    "ID": ExcelID,
+                });
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("UpdateExcelHistoryData", "Report")',
+                    dataType: "json",
+                    data: value,
+                    success: function (result) {
+                        alert("Excel Value Updated Successfully");
+                    },
+                    error: function (result) {
+                        alert("Error In Saving Data");
+                    }
+                });
+
+            }
+            if (key == 27) {
+                alert("enter key");
+                $('.edittextbox').hide();
+                $('.editlink').show();
+            }
+        }
+
+        function UpdateCopyExcelData() {
+
+            var versionNo = "";
+            var Urn = "";
+            var ruleName = "";
+            var modelName = "";
+            var checkrunrule = "";
+            versionNo = VersionNoGlobal;
+            Urn = UrnGlobal;
+            var TemplateName = "";
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            if (selectedItem == null) {
+                alert("Please Select Row To Download Excel");
+                return;
+            }
+
+            checkrunrule = selectedItem["RunRule"];
+            ruleName = selectedItem["RuleName"];
+            TemplateName = selectedItem["Template"];
+
+            if ($("#ddlTemplate").length != '0') {
+                ruleName = $("#ddlTemplate").data("kendoDropDownList").text();
+                TemplateName = $("#ddlTemplate").data("kendoDropDownList").value();
+            }
+
+            modelName = $("#filetype").data("kendoDropDownList").text();
+
+            var sendata = JSON.stringify({
+                'FileNAme':TemplateName,
+                'URN': Urn,
+                'ModelName': modelName,
+                'RuleName': ruleName,
+                'versionNo': versionNo
+            });
+
+            $('.modal').show();
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("UpdateCopyExcelData", "Report")',
+                data: sendata,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.modal').show();
+                },
+                complete: function () {
+                    $('.modal').hide();
+                },
+                success: function (data) {
+
+
+                    var userprofile = "@Session["ProfileId"].ToString()";
+
+                    $("#tblExcel tbody").html(" ");
+
+                    //Create Header Of HTML Table
+                    var HeaderTemp = '<tr><th style="border:1px solid;">Forge Id</th><th style="border:1px solid;">Revit Id</th><th style="border:1px solid;">Family Name</th><th style="border:1px solid;">Family Type</th><th style="border:1px solid;">Category Name</th>';
+
+
+                    for (var i = 0; i < data["Table"].length; i++) {
+                        //HeaderTemp += '<th style="border:1px solid;background-color:' + data["Table"][i].Color + ';" class="' + data["Table"][i].Profile + ' ' + data["Table"][i].Verify + '" id="' + data["Table"][i].PropertyName + '" >' + data["Table"][i].PropertyName + '</th>';
+
+                        HeaderTemp += '<th style="border:1px solid;background-color:' + data["Table"][i].Color + ';" class="' + data["Table"][i].Profile + ' ' + data["Table"][i].Verify + '" id="' + data["Table"][i].PropertyName + '" >' + data["Table"][i].PropertyName + '</th>';
+                    }
+                    HeaderTemp += '/tr>';
+                    $("#HeaderTemp").html(HeaderTemp);
+
+                    var headercount = document.getElementById('tblExcel').rows[0].cells.length
+                    var myTable = document.getElementById("tblExcel");
+                    var ths = myTable.getElementsByTagName("th");
+                    var myTH = "";
+                    var myClass = "";
+                    var columcnt = 5;
+
+                    var tdCount = data["Table"].length;
+
+                    var DataTemp = "";
+
+                    for (var i = 0; i < data["Table1"].length; i++) {
+                        DataTemp += '<tr data-id="1">';
+
+                        var str = data["Table1"][i].RuleValues;
+                        var array = str.split('~}');
+
+                        if (array[3] != undefined) {
+                            // DataTemp += '<td>' + array[3] + '</td>';
+                            DataTemp += '<td>' + '<button id="' + array[3] + '" onclick= window.parent.Forgeid(this.id);>' + array[3] + ' </button>' + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        if (array[1] != undefined) {
+                            DataTemp += '<td>' + array[1] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+                        DataTemp += '<td>' + array[0] + '</td>';
+
+                        if (array[2] != undefined) {
+                            DataTemp += '<td>' + array[2] + '</td>';
+                        }
+                        else {
+                            DataTemp += '<td></td>';
+                        }
+
+
+                        DataTemp += '<td style="display:none">' + data["Table1"][i].Emailid + '</td>';
+                        DataTemp += '<td>' + data["Table1"][i].Category_Name + '</td>';
+
+                        var textbox = "";
+                        var array1 = "";
+                        for (var j = 0; j < tdCount; j++) {
+                            var str = data["Table1"][i].RuleValues;
+                            var pattern = data["Table1"][i].Category_Name + "~}";
+                            //console.log(str);
+                            //console.log(pattern);
+
+                            if (str != "") {
+
+                                var truncateBefore = function (str, pattern) {
+                                    return str.slice(str.indexOf(pattern) + pattern.length);
+                                }
+                                array1 = truncateBefore(str, pattern).split('~}');
+                            }
+
+                            textbox = data["Table1"][i].ID;
+
+
+                            //console.log(array1);
+                            if (array1[j] != undefined) {
+                                var yesVal = array1[j].includes("Blank");
+                                var noVal = array1[j].includes("NA");
+                                var valuefortd = "";
+                                var filterVerify = "";
+                                var bckcolor = "";
+                                if (array1[j].includes("Blank") == true || array1[j].includes("NA") == true) {
+                                    if (array1[j].includes("(v)")) {
+                                        var res = array1[j].split("(v)");
+                                        valuefortd = res[0];
+                                        filterVerify = 1;
+                                    }
+                                    else {
+                                        valuefortd = array1[j];
+                                        filterVerify = 0;
+                                    }
+
+                                }
+                                else if (array1[j].includes("(v)") == true) {
+                                    var res = array1[j].split("(v)");
+                                    valuefortd = res[0];
+                                    filterVerify = 1;
+                                }
+                                else {
+                                    valuefortd = array1[j];
+                                    filterVerify = 0;
+                                }
+
+                                if (filterVerify == 1) {
+                                    bckcolor = ColorForVerified;
+                                }
+                                else {
+                                    bckcolor = ColorForIsVerify;
+                                }
+
+                                if (array1[j].trim() == "0.000 ft") {
+                                    array1[j] = "Blank";
+                                }
+
+                                myTH = ths[columcnt];
+                                if (myTH != undefined) {
+                                    // myClass = myTH.className;
+                                    myClass = myTH.className;
+                                    myHeaderId = myTH.id;
+                                    myHeaderId = myHeaderId.replace(/ /g, "_");
+                                    arr = myClass.split(' ');
+                                    verify = arr[1];
+                                    myClass1 = arr[0];
+                                }
+                                var n = userprofile.includes(myClass1);
+                                if (n == true) {
+
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;" title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                }
+                                else if (userprofile.trim() == "") {
+                                    if (array1[j].trim() == "Blank") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForYes + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+                                    }
+                                    else if (array1[j].trim() == "NA") {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForNo + '" class="' + myClass + '"><a href="javascript:void(0)"  style="color:black !important;text-decoration: underline;"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+                                    else if (array1[j].trim().includes("(v)") == true) {
+                                        DataTemp += '<td align="center" style="background-color:' + bckcolor + '" class="' + myClass + '">' + array1[j] + '</td>';
+
+                                    }
+                                    else {
+                                        DataTemp += '<td align="center" style="background-color:' + ColorForValue + '" class="' + myClass + '"><a href="javascript:void(0)" style="color:black !important;text-decoration: underline;" title="' + data["Table1"][i].Emailid + '"  header="' + data["Table1"][i].ID + '" id="link_' + textbox + "_" + j + '"   onclick="enabletextbox(this.id)" class="editlink">' + array1[j] + '</a><input type="text" style="display:none;width:100%;height:100%;" id="text_' + textbox + "_" + j + '"  class="edittextbox" onkeydown="handleKeyPress(event)" onblur="disabletextbox()"></td>';
+
+                                    }
+
+                                }
+                                else {
+                                    if (verify.trim() == "Yes") {
+
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else if (valuefortd.trim() == "NA") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else if (array1[j].trim().includes("(v)") == true) {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId + '" onclick="ChangeVerify(this.id,this.value)">' + array1[j] + '</td>';
+                                        }
+                                    }
+                                    else {
+
+                                        if (valuefortd.trim() == "Blank") {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForYes + '" class="' + myClass + '"  id="' + data["Table1"][i].ID + "_" + myHeaderId + '" >' + array1[j] + '</td>';
+                                        }
+                                        else if (valuefortd.trim() == "NA") {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForNo + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" >' + array1[j] + '</td>';
+                                        }
+                                        else if (array1[j].trim().includes("(v)") == true) {
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + bckcolor + '" class="' + myClass + '"id="' + data["Table1"][i].ID + "_" + myHeaderId + '" >' + array1[j] + '</td>';
+                                        }
+                                        else {
+
+                                            DataTemp += '<td data-textname="' + array1[j] + '" align="center" value="' + data["Table1"][i].ID + "_" + j + '" style="background-color:' + ColorForValue + '" class="' + myClass + '" id="' + data["Table1"][i].ID + "_" + myHeaderId + '">' + array1[j] + '</td>';
+
+                                        }
+
+                                    }
+
+                                }
+                                columcnt++;
+                            }
+
+                            else {
+
+                                for (var j = 0; j < tdCount; j++) {
+                                    DataTemp += '<td></td>';
+                                }
+                                columcnt++;
+                            }
+
+                        }
+
+                        DataTemp += '</tr>';
+                        columcnt = 5;
+
+                    }
+                    $("#DataTemp").html(DataTemp);
+
+
+                    ///for Category Bind in dropdown
+                    var items = [], options = [];
+
+                    $('#tblExcel tbody tr td:nth-child(6)').each(function () {
+                        items.push($(this).text());
+                    });
+                    items.sort();
+                    var items = $.unique(items);
+                    var listcategory = "<option value=''>All</option>";
+                    $.each(items, function (i, item) {
+                        listcategory += '<option value="' + item + '">' + item + '</option>';
+                    })
+                    $('#ddlCategoryName').empty().append(listcategory);
+
+                }
+
+            });
+        }
+
+
+
+    </script>
+
+    <!-- Script for RunReportWindow -->
+    <script type="text/javascript">
+        var ddlversiondefault = 0;
+        var templatedefault = 0;
+        var Reportprogressuserbar = 'Report' + '@ViewBag.userid';
+        var Reportcountper = 0;
+
+        var UrnGlobal = "";
+        var VersionNoGlobal = "";
+        var Templateglobal = "";
+        var FileNameGlobal = "";
+        var runRuleGlobal = "";
+
+        $("#btnRunReport").click(function () {
+            var datawindow = $('#RunReportWindow').data('kendoWindow');
+            datawindow.center();
+            datawindow.open();
+            $('#' + Reportprogressuserbar).data("kendoProgressBar").value(0);
+            $('#' + Reportprogressuserbar).data("kendoProgressBar").progressStatus.text("0%");
+        });
+
+        function GetVersionListFileUrn(e) {
+            var row = $("#ddlVersionList").closest("tr");
+            var grid = $("#ddlVersionList").closest("[data-role=grid]").data("kendoGrid");
+            var dataItem = grid.dataItem(row);
+            if (dataItem)
+                return { filename: dataItem.FileName }
+            else
+                return { filename: null }
+        }
+
+        function ddlVersionBound() {
+            var SETDesig = $("#ddlVersionList").data("kendoDropDownList");
+            SETDesig.select(function (dataItem) {
+                return dataItem.Id == ddlversiondefault;
+            });
+        }
+
+        function onFileChange(e) {
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            grid.dataSource.read();
+        }
+
+        function ddlTemplateBound() {
+            var SETDesig = $("#ddlTemplate").data("kendoDropDownList");
+            SETDesig.select(function (dataItem) {
+                return dataItem.FileName === templatedefault;
+            });
+        }
+
+        function onRunruleRequestEnd(e) {
+            $('.modal').hide();
+            //console.log(e.type);
+            if (e.type == "update") {
+                alert("Run Rule updated successfully");
+                $("#gridRunrule").data("kendoGrid").dataSource.read();
+                var grid = $("#gridRunrule").data("kendoGrid");
+            }
+        }
+
+        function OnReportUpdate(e) {
+
+            var grid1 = $("#gridRunrule").data("kendoGrid");
+            var dataItem = grid1.dataItem(grid1.select());
+
+            // var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var Dextract = "";
+            var runruleflag = "";
+
+            Dextract = dataItem.Dextract;
+            runruleflag = dataItem.RunRule;
+
+            if (Dextract == "No") {
+
+                alert("Please Dextract File");
+
+                return;
+            }
+
+
+            if (runruleflag == "No")
+            { }
+            else
+            {
+                if (confirm("Run Rule already done,do you want to run again?")) { }
+                else
+                {
+
+                    return;
+                }
+            }
+
+            var versionNo = dataItem["VersionNo"];;
+            var Urn = dataItem["Urn"];
+
+
+
+            var TemplateName = $("#ddlTemplate").data("kendoDropDownList").value();
+            var rulename = $("#ddlTemplate").data("kendoDropDownList").text();
+
+            if (rulename == "Select RuleName") {
+                alert("Please Select Rule Name");
+                return;
+            }
+
+            $('.modal').show();
+            return {
+                URN: Urn,
+                ModelName: dataItem.FileName,
+                Templatefile: TemplateName,
+                versionNo: versionNo,
+                RuleNamee: rulename
+            }
+
+        }
+
+        function onChangeReportGrid() {
+
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            UrnGlobal = selectedItem["Urn"];
+            VersionNoGlobal = selectedItem["VersionNo"];
+            //Templateglobal = selectedItem["Template"];
+            FileNameGlobal = selectedItem["FileName"];
+            runRuleGlobal = selectedItem["RunRule"];
+
+            //console.log(UrnGlobal);
+            //console.log(VersionNoGlobal);
+            //console.log(Templateglobal);
+            //console.log(FileNameGlobal);
+
+
+        }
+
+        $(document).ready(function () {
+
+            console.log(Reportprogressuserbar);
+
+            $('#' + Reportprogressuserbar).kendoProgressBar({
+                min: 0,
+                max: 100,
+                type: "percent",
+                change: onChangeReportProgressBar
+            });
+            GetProfileData();
+            $("#VerifyWindow").data("kendoWindow").close();
+        });
+
+        function onChangeReportProgressBar(e) {
+            this.progressWrapper.css({
+                "background-color": "#00a65a",
+                "border-color": "#00a65a"
+            });
+            this.progressStatus.text(Reportcountper + "%");
+            //console.log(Reportcountper + "%");
+            $("#lblpercentReport").text(Reportcountper + "%");
+
+
+
+        }
+        function progressReport() {
+            var progressNotifier = $.connection.progressHub;
+            progressNotifier.client.sendMessage = function (message, count) {
+            };
+
+            // client-side sendMessage function that will be called from the server-side
+            progressNotifier.client.getreportProgressLoop = function (message, count, userid) {
+
+                var userdataID = $(Reportprogressuserbar).prop('id');
+                //userdataID = ReportprogressBarprogressBar20;
+                userdataID = Reportprogressuserbar;
+
+                //console.log(count);
+                //console.log(userdataID + ' = ' + userid);
+                //console.log(Reportprogressuserbar);
+                if (userdataID == userid) {
+                    //console.log(userdataID + ' = ' + userid);
+                    $('#' + Reportprogressuserbar).data("kendoProgressBar").value(count);
+                }
+                Reportcountper = count;
+                //console.log("message");
+                //console.log(message);
+            };
+
+            // establish the connection to the server and start server-side operation
+            $.connection.hub.start().done(function () {
+                // call the method CallLongOperation defined in the Hub
+                progressNotifier.server.getCountAndMessage();
+            });
+        }
+
+        function onsaveRuleReport(e) {
+            //$('#'+Reportprogressuserbar).data("kendoProgressBar").value(1);
+            ////console.log("start progress");
+            //Reportcountper = 1 ;
+            //$('#'+Reportprogressuserbar).data("kendoProgressBar").progressStatus.text("1%");
+            //progressReport();
+        }
+
+        function editRunrule(e) {
+            $("#gridRunrule").data("kendoGrid").select(".k-grid-edit-row");
+            var grid = $("#gridRunrule").data("kendoGrid");
+
+            var selectedRow = grid.select();
+            var index = selectedRow.index();
+
+            //if (e.model.isNew() == false) {
+            $("#RunRule").attr("readonly", true);
+            $("#RunRule").css({ "background": "#3c8dbc", "border-color": "#3c8dbc" });
+
+            $("#Dextract").attr("readonly", true);
+            $("#Dextract").css({ "background": "#3c8dbc", "border-color": "#3c8dbc" });
+            $("#ModifiedDate").attr("readonly", true);
+            $("#ModifiedDate").css({ "background": "#3c8dbc", "border-color": "#3c8dbc" });
+            $("#Urn").attr("readonly", true);
+            $("#Urn").css({ "background": "#3c8dbc", "border-color": "#3c8dbc" });
+            //$("#RunRule").css("border-color","#3c8dbc");
+            //}
+        }
+
+
+        function ActiveTab2() {
+            $("#ReportTab2").addClass("active");
+
+            $("#ReportOption2").show();
+
+            $("#ReportTab1").removeClass("active");
+
+            $("#ReportOption1").hide();
+        }
+
+        function ActiveTab1() {
+
+            $("#ReportTab2").removeClass("active");
+
+            $("#ReportOption2").hide();
+
+            $("#ReportTab1").addClass("active");
+
+            $("#ReportOption1").show();
+        }
+
+
+        function onddlTempleChange() {
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            var FileName = selectedItem["FileName"];
+            var VersionNo = selectedItem["VersionNo"];
+            var RuleNamee = $("#ddlTemplate").data("kendoDropDownList").text();
+
+            var value = JSON.stringify({
+                'ModelName': FileName,
+                'versionNo': VersionNo,
+                'rulename': RuleNamee
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetFiledetails", "Report")',
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result.RunRule);
+                    var dataItem = grid.dataItem(grid.select());
+                     dataItem.set('RunRule', result.RunRule);
+
+                },
+            });
+
+        }
+
+        function excelexportdata() {
+
+            //  e.preventDefault();
+            var versionNo = "";
+            var Urn = "";
+            var ruleName = "";
+            var modelName = "";
+            var checkrunrule = "";
+            versionNo = VersionNoGlobal;
+            Urn = UrnGlobal;
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            if (selectedItem == null)
+            {
+                alert("Please select Row to download excel...!!!!");
+                return;
+            }
+
+            checkrunrule = selectedItem["RunRule"];
+            ruleName = selectedItem["RuleName"];
+
+            if ($("#ddlTemplate").length != '0')
+            {
+                ruleName = $("#ddlTemplate").data("kendoDropDownList").text();
+            }
+
+            modelName = $("#filetype").data("kendoDropDownList").text();
+
+            if (Urn == "" || Urn == undefined || Urn == null || versionNo == "" || versionNo == undefined || versionNo == null ) {
+                alert("Please Select Row To Download Excel");
+                return;
+            }
+
+            if (ruleName == "")
+            {
+                alert("Please Edit To Select Rule Name");
+                return;
+            }
+
+
+            if (ruleName == "Select RuleName" || ruleName == undefined || ruleName == null)
+            {
+                alert("Please Select Rule Name");
+                return;
+            }
+
+            if (checkrunrule.trim() == "No") {
+                alert("Please Run Rule Before Download Excel");
+                return;
+            }
+
+
+            var sendata = JSON.stringify({
+
+                'URN': Urn,
+                'ModelName': modelName,
+                'RuleName': ruleName,
+                'versionNo': versionNo
+            });
+
+            $('.modal').show();
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCategoryHistoryData", "Report")',
+                data: sendata,
+                dataType: "json",
+                success: function (result) {
+                    $('.modal').hide();
+                    window.location.href = "@Url.RouteUrl(new
+                    { Controller = "Home", Action = "DownloadFile" })/?Filename=" + result.fname;
+                },
+                error: function (result) {
+                    $('.modal').hide();
+                }
+            });
+        }
+
+        function excelexportcopydata(e) {
+
+            var versionNo = "";
+            var Urn = "";
+            var ruleName = "";
+            var ModelName = "";
+            var checkrunrule = "";
+            versionNo = VersionNoGlobal;
+            Urn = UrnGlobal;
+
+            var grid = $("#gridRunrule").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            if (selectedItem == null) {
+                alert("Please Select Row To Download Excel");
+                return;
+            }
+
+            checkrunrule = selectedItem["RunRule"];
+            ruleName = selectedItem["RuleName"];
+
+            if ($("#ddlTemplate").length != '0')
+            { ruleName = $("#ddlTemplate").data("kendoDropDownList").text(); }
+
+            ModelName = $("#filetype").data("kendoDropDownList").text();
+
+            if (Urn == "" || Urn == undefined || Urn == null || versionNo == "" || versionNo == undefined || versionNo == null) {
+                alert("Please Select Row To Download Excel");
+                return;
+            }
+
+            if (ruleName == "") {
+                alert("Please Edit To Select Rule Name");
+                return;
+            }
+
+
+            if (ruleName == "Select RuleName" || ruleName == undefined || ruleName == null) {
+                alert("Please Select Rule Name");
+                return;
+            }
+
+            if (checkrunrule.trim() == "No") {
+                alert("Please Run Rule Before Download Excel");
+                return;
+            }
+
+
+            var sendata = JSON.stringify({
+
+                'URN': Urn,
+                'ModelName': ModelName,
+                'RuleName': ruleName,
+                'versionNo': versionNo
+            });
+
+
+            $('.modal').show();
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCategoryHistoryDataCopy", "Report")',
+                data: sendata,
+                dataType: "json",
+                success: function (result) {
+                    $('.modal').hide();
+                    window.location.href = "@Url.RouteUrl(new
+                    { Controller = "Home", Action = "DownloadFile" })/?Filename=" + result.fname;
+                },
+                error: function (result) {
+                    $('.modal').hide();
+                }
+            });
+        }
+
+        function GetFileName() {
+            return {
+
+                NodeName: $("#filetype").data("kendoDropDownList").text()
+            }
+        }
+
+    </script>
+
+</body>
+</html>

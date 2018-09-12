@@ -1,0 +1,22 @@
+﻿@(
+       Html.Kendo().DropDownList()
+
+                   .Name("ddlTagName")  //is this Name important?
+                   .DataTextField("TagName")
+                   .DataValueField("Id")
+                     .DataSource(source =>
+                     {
+                         source.Read(read => { read.Action("GetTagName", "GlueDocSync"); });
+                     })
+                     .Events(e =>
+                     {
+                         // e.Change("onCompanyChange");
+                         // e.DataBound("ddlCompanyBound");
+                     })
+                  // .BindTo((System.Collections.IEnumerable)ViewBag.Country)
+                  .OptionLabel("Select Tag")
+
+
+
+)
+

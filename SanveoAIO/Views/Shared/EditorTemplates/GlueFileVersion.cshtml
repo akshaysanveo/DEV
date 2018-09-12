@@ -1,0 +1,20 @@
+﻿@(
+       Html.Kendo().DropDownList()
+       .Name("ddlGlueVerList")
+                             .OptionLabel("Select version")
+                              .DataTextField("text")
+                              .DataValueField("value")
+                              //  .Events(e => { e.Change("onddlVersionChange"); })
+                              //.DataSource(source =>
+                              //{
+                              //    source.Read(read =>
+                              //    {
+                              //        read.Action("GetGlueVersion", "GlueDocSync").Data("GetGlueVersionList");
+                              //    });
+                              //})
+                              // .Events(e => e.DataBound("ddlVersionBound"))
+                              // .SelectedIndex(1)
+                              .HtmlAttributes(new { style = "width: 100%" })
+)
+
+

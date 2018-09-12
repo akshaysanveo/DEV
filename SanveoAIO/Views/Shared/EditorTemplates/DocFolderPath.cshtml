@@ -1,0 +1,38 @@
+﻿<div style="height:250px;overflow:scroll">
+    @* 360 tree *@
+    <div id="tree360" style="">
+    </div>
+</div>
+<script>
+    $(document).ready(function () {      
+                var url = window.location.href;                             
+                url = url.replace("GlueDocSync/GlueDocSync", "GlueDocSync/Nodes");
+                $('#tree360').tree({
+                    dataUrl: url,
+                    closedIcon: $('<i class="fa fa-caret-down" aria-hidden="true" style="margin-right:5px;font-size: 150%;"> </i>'),
+                    openedIcon: $('<i class="fa fa-caret-right" aria-hidden="true" style="margin-right:5px;font-size: 150%;"> </i>'),
+                    dragAndDrop: false,
+                    selectable: true
+                });
+
+                // bind 'tree.click' event
+                $('#tree360').bind(
+                    'tree.click',
+                    function (event) {                       
+                        var node = event.node;                      
+                    }
+                );
+
+                $('#tree360').bind(
+                   'tree.select',
+                   function (event) {
+                       // The selected node is 'event.node'
+                       var node = event.node;
+                       DocFolderid = node.id;
+                       DocFoldername = node.name;
+                   }
+               );                
+    });
+
+   
+</script>

@@ -1,0 +1,22 @@
+﻿@(
+       Html.Kendo().DropDownList()
+
+                   .Name("CompanyForGrid")  //is this Name important?
+                   .DataTextField("CompName")
+                   .DataValueField("CompID")
+                     .DataSource(source =>
+                     {
+                         source.Read(read => { read.Action("GetCompanyID", "Inspire"); });
+                     })
+                     .Events(e =>
+                     {
+                        // e.Change("onCompanyChange");
+                         e.DataBound("ddlCompanyBound");
+                     })
+                    // .BindTo((System.Collections.IEnumerable)ViewBag.Country)
+                  .OptionLabel("Select Company")
+
+
+
+)
+

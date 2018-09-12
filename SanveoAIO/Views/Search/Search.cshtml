@@ -1,0 +1,700 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Sanveo Inspire</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <!-- Autodesk Forge Viewer files -->
+    <script src="https://ase-cdn.autodesk.com/adp/v1.0.3/js/adp-web-analytics-sdk.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
+
+</head>
+
+<body>
+    <div class="k-content">
+
+        <ul class="nav nav-tabs" id="SearchTabStrip">
+            <li class="active" id="SearchTab1"><a data-toggle="tab" href="#SearchOption1">Option 1</a></li>
+            <li id="SearchTab2"><a data-toggle="tab" href="#SearchOption2">Option 2</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="SearchOption1" class="tab-pane fade in active " style="height:50%;overflow-x:auto;margin-top:5px;">
+                <div class="col-xs-12">
+                    <div class="col-xs-3">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("searchfiletype1")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onSearchFileChange1"); })
+                        )
+                    </div>
+
+                    <div class="col-xs-2">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("searchversiontype1")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("DDLSearchFileData1");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onSearchVersionChange1"); })
+                        )
+                    </div>
+
+                    <div class="col-xs-3">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("categorys1")
+                                        .DataTextField("Category_Name")
+                                        .DataValueField("Id")
+                                        .OptionLabel("Select Category")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCategoryName", "Home").Data("searchCategoryData1");
+                                            });
+                                        })
+
+                        )
+                    </div>
+
+                    <div class="col-xs-3">
+                        @(Html.Kendo().AutoComplete()
+                                              .Name("products1")
+                                              .DataTextField("Property_Value")
+                                              .Filter("contains")
+                                              .MinLength(2)
+                                              .HtmlAttributes(new { style = "width:100%;border-color:gray;", placeholder = "Property value" })
+                                              .DataSource(source =>
+                                              {
+                                                  source.Read(read =>
+                                                  {
+                                                      read.Action("GetAutoTextDataOption1", "Search").Data("onAdditionalDataOption1");
+                                                  });
+                                              })
+                                              .Events(e =>
+                                              {
+                                                  e.Change("onChangeskendoOption1");
+                                              })
+                        )
+                    </div>
+
+                    <div class="col-xs-1">
+                        <input class="k-button" type="button" id="btn_Search1" onclick="OnsearchProperty1();" style="text-transform:capitalize;" value="Search" />
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <br />
+                    <div id="tblPropertyFilterOption1">
+                    </div>
+                </div>
+            </div>
+
+            <div id="SearchOption2" class="tab-pane fade in" style="height:50%;overflow-x:auto;margin-top:5px;">
+                <div class="col-xs-12">
+                    <div class="col-xs-3">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("searchfiletype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onSearchFileChange"); })
+                        )
+                    </div>
+
+                    <div class="col-xs-2">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("searchversiontype")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("DDLSearchFileData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onSearchVersionChange"); })
+                        )
+                    </div>
+
+                    <div class="col-xs-2">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("categorys")
+                                        .DataTextField("Category_Name")
+                                        .DataValueField("Id")
+                                        .OptionLabel("Select Category")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCategoryName", "Home").Data("searchCategoryData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onSearchCategorysChange"); })
+                        )
+                    </div>
+
+                    <div class="col-xs-3">
+                        @(Html.Kendo().DropDownList()
+                                .Name("PropertyList")
+                                .OptionLabel("Select Property")
+                                .HtmlAttributes(new { style = "width:100%" })
+                                .DataTextField("Property_Name")
+                                .DataValueField("Id")
+                                .Template("<label for='' class='chkprop' ><input type='checkbox' id='Property_Name#:data.Id#' class='propchk check-item' name='propName' value='#:data.Property_Name#' onclick='checkpropvalues(this);'  /> #:data.Property_Name#</label>")
+                                .Events(e => { e.Close("onClosePropName"); })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("GetPropertyName", "Home").Data("filterTemplateCSSTemplate2");
+                                    })
+                                    .ServerFiltering(true);
+                                })
+                        )
+                    </div>
+
+                    <div class="col-xs-1">
+                        <input class="k-button" type="button" id="btn_Search" onclick="OnsearchProperty();" style="text-transform:capitalize;padding:10px;width:120px" value="Search" />
+                    </div>
+
+                    @*<div class="col-xs-1">
+                            <input class="k-button" type="button" id="btn_Refresh" onclick="SearchrefreshGrid();" style="text-transform:capitalize;width:120px" value="Refresh" />
+                        </div>*@
+                </div>
+
+                <div class="col-xs-12">
+                    <br />
+                    <div class="col-xs-5">
+                        <span style="font-size:13px;color:red;">Note : </span><span style="font-size:13px;color:#3c8dbc;">Click on Property value for editing. Press Enter for saving or ESC for cancel.</span>
+                    </div>
+                    <div class="col-xs-3">
+                        @(Html.Kendo().AutoComplete()
+                                              .Name("products")
+                                              .DataTextField("Family_Name")
+                                              .Filter("contains")
+                                              .MinLength(2)
+                                              .HtmlAttributes(new { style = "width:60%;border-color:gray;", placeholder = "Property value" })
+                                              .DataSource(source =>
+                                              {
+                                                  source.Read(read =>
+                                                  {
+                                                      read.Action("GetAutoTextData", "Search").Data("onAdditionalData");
+                                                  });
+                                              })
+                                              .Events(e =>
+                                              {
+                                                  e.Change("onChangeskendo");
+                                              })
+                        )
+                        <input class="k-button" type="button" id="btn_Auto" onclick="GetSearchGrid1();" style="text-transform:capitalize;padding-left:10px;width:100px" value="Filter" />
+                    </div>
+
+                    <div class="col-xs-2">
+                        <input type="button" id="exportSearchGrid" value="Export to Excel" style="text-transform:capitalize;" class="k-button" onclick="downloadSearchGrid();" />
+                    </div>
+
+                    <div class="col-xs-1">
+                        <input type="button" id="exportEditedText" value="Export to revit" style="text-transform:capitalize;" class="k-button" onclick="downloadEditedText();" />
+                    </div>
+
+                </div>
+
+                <div class="col-xs-12">
+                    <br />
+                    <div id="tblPropertyFilter">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for SearchWindow -->
+    <script type="text/javascript">
+
+        var IsItemChecked = false;
+
+       function onSearchFileChange() {
+            $("#searchversiontype").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onSearchFileChange1() {
+            $("#searchversiontype1").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onSearchVersionChange() {
+            $("#categorys").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onSearchVersionChange1() {
+            $("#categorys1").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onSearchCategorysChange(){
+            $("#PropertyList").data("kendoDropDownList").dataSource.read();
+        }
+
+        function DDLSearchFileData() {
+            return {
+                filename: $("#searchfiletype").data("kendoDropDownList").text()
+            };
+        }
+
+        function DDLSearchFileData1() {
+            return {
+                filename: $("#searchfiletype1").data("kendoDropDownList").text()
+            };
+        }
+        function searchCategoryData() {
+            return {
+                urn: $("#searchversiontype").data("kendoDropDownList").value()
+            };
+        }
+
+        function searchCategoryData1() {
+            return {
+                urn: $("#searchversiontype1").data("kendoDropDownList").value()
+            };
+        }
+
+         function onClosePropName(e) {
+            if (IsItemChecked) {
+                IsItemChecked = false;
+                e.preventDefault();
+            }
+            UpdatepropIds();
+        }
+
+        function UpdatepropIds() {
+            var prop_ids = [];
+            propIds = "";
+            $('input[name="propName"]:checked').each(function () {
+                prop_ids.push("[" + this.value + "]");
+            });
+            propIds = prop_ids.toString();
+
+        }
+
+        function OnsearchProperty1()
+        {
+            var filtervalue = $("#products1").val();
+            var id = $("#categorys1").data("kendoDropDownList").text();
+            var value = JSON.stringify({
+                'Id': $("#searchversiontype1").data("kendoDropDownList").value(),
+                'CategoryName': id,
+                'filtervalue':filtervalue
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetSearchGridModelDataOption1", "Search")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    $("#tblPropertyFilterOption1").html('');
+                    $("#tblPropertyFilterOption1").html(result);
+
+                    $('#TblGrid11').kendoGrid({
+                        height: 380,
+                        sortable: true,
+                        resizable: true,
+                        pageable: true,
+                        filterable: true,
+                        pageable: {
+                            pageSize: 20,
+                            pageSizes: [20, 50, 100, 200],
+                            buttonCount: 5,
+                        },
+                    });
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+        function OnsearchProperty()
+        {
+            var id = $("#categorys").data("kendoDropDownList").text();
+            var value = JSON.stringify({
+                'Id': $("#searchversiontype").data("kendoDropDownList").value(),
+                'CategoryName': id,
+                'CheckValue': propIds,
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetSearchGridModelData1", "Search")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    $("#tblPropertyFilter").html('');
+                    $("#tblPropertyFilter").html(result.tabledata);
+                    $("#tblPropertyFilter").append(result.Exceltabledata);
+                    $('#TblGrid1').kendoGrid({
+                        height: 380,
+                        sortable: true,
+                        resizable: true,
+                        pageable: true,
+                        filterable: true,
+                        pageable: {
+                            pageSize: 20,
+                            pageSizes: [20, 50, 100, 200],
+                            buttonCount: 5,
+                        },
+                    });
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+        function checkpropvalues(obj) {
+            var $cb = $(obj).find("input:checkbox");
+            if (!$cb.prop("checked")) {
+                $cb.prop("checked", true);
+            } else {
+                $cb.prop("checked", false);
+            }
+            var id = $(obj).attr('id');
+            var name = $(obj).attr('name');
+            //  //console.log(name);
+            var value = parseInt($(obj).attr('value'));
+            var IsChecked = $(obj).is(':checked');
+            var hf = $("#hf_" + name).get(0);
+
+            if (value != 0) {
+                var totalchk = $('input[id*="chk_' + name + '"]').not("#chk_" + name + "_0").length;
+                var checkedchk = $('input[id*="chk_' + name + '"]:checked').not("#chk_" + name + "_0").length;
+                if (totalchk == checkedchk) {
+                    $("#chk_" + name + "_0").prop("checked", true);
+                }
+                else {
+                    $("#chk_" + name + "_0").prop("checked", false);
+
+                }
+            }
+            else {
+                $('input[id*="chk_' + name + '"]').each(function () {
+                    //console.log($(this).val());
+                    if (parseInt($(this).val()) != 0) {
+                        if (IsChecked == true) {
+                            $(this).prop("checked", true);
+                        }
+                        else {
+                            $(this).prop("checked", false);
+                        }
+                    }
+                });
+            }
+            IsItemChecked = true;
+        }
+
+
+        function filterTemplateCSSTemplate2() {
+
+            var id = $("#categorys").data("kendoDropDownList").text();
+
+            return {
+                urn: $("#searchversiontype").data("kendoDropDownList").value(),
+                category: id
+            };
+        }
+
+        function onAdditionalData() {
+            var id = $("#categorys").data("kendoDropDownList").text();
+            var prop_idss = [];
+            propIdss = "";
+            $('input[name="propName"]:checked').each(function () {
+                prop_idss.push(this.value);
+            });
+            propIdss = prop_idss.toString();
+            return {
+                AutoText: $("#products").val(),
+                Id: $("#searchversiontype").data("kendoDropDownList").value(),
+                CategoryName: id,
+                CheckValue: propIdss,
+            };
+        }
+
+        function onAdditionalDataOption1() {
+            var id = $("#categorys1").data("kendoDropDownList").text();
+            return {
+                AutoText: $("#products1").val(),
+                Id: $("#searchversiontype1").data("kendoDropDownList").value(),
+                CategoryName: id,
+
+            };
+
+        }
+
+
+        function onChangeskendo() {
+            $("#products").data("kendoAutoComplete").dataSource.read();
+        }
+
+        function onChangeskendoOption1() {
+            $("#products1").data("kendoAutoComplete").dataSource.read();
+        }
+
+
+
+        function GetSearchGrid1() {
+            finalST = "";
+            finalST = $("#products").val();
+
+            var id = $("#categorys").data("kendoDropDownList").text();
+
+            var value = JSON.stringify({
+                'AutoText': finalST,
+                'Id': $("#searchversiontype").data("kendoDropDownList").value(),
+                'CategoryName': id,
+                'CheckValue': propIds,
+            });
+            $("#tblPropertyFilter").html('Loading.. Please Wait !!');
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetAutoGridData", "Search")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    $("#tblPropertyFilter").html('');
+                    $("#tblPropertyFilter").html(result.tabledata);
+                    $("#tblPropertyFilter").append(result.Exceltabledata);
+                    $('#TblGrid1').kendoGrid({
+                        height: 380,
+                        sortable: true,
+                        resizable: true,
+                        pageable: true,
+                        filterable: true,
+                        pageable: {
+                            pageSize: 20,
+                            pageSizes: [20, 50, 100, 200],
+                            buttonCount: 5,
+                        },
+                    });
+                },
+                error: function (result) {
+                    alert("Error in saving Data");
+                }
+            });
+        }
+
+        function SearchrefreshGrid() {
+            finalST = "";
+
+            var id = $("#categorys").data("kendoDropDownList").text();
+            var value = JSON.stringify({
+                'Id': $("#searchversiontype").data("kendoDropDownList").value(),
+                'CategoryName': id,
+                'CheckValue': propIds,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetSearchGridModelData1", "Search")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    $("#tblPropertyFilter").html('');
+                    $("#tblPropertyFilter").html(result.tabledata);
+                    $("#tblPropertyFilter").append(result.Exceltabledata);
+                    $('#TblGrid1').kendoGrid({
+                        height: 380,
+                        sortable: true,
+                        resizable: true,
+                        pageable: true,
+                        filterable: true,
+                        pageable: {
+                            pageSize: 20,
+                            pageSizes: [20, 50, 100, 200],
+                            buttonCount: 5,
+                        },
+                    });
+                },
+                error: function (result) {
+                    alert("Error in saving Data");
+                }
+            });
+        }
+
+        function enabletextbox(id) {
+            $('.edittextbox').hide();
+            $("#" + id).hide();
+            var textval = $("#" + id).html();
+            var header = $("#" + id).attr('header');
+            id = id.replace("link", "text");
+            $("#" + id).val(textval);
+            $("#" + id).show();
+            $("#" + id).focus();
+        }
+
+        function disabletextbox() {
+            $('.edittextbox').hide();
+            $('.editlink').show();
+        }
+
+        function handleKeyPress(e) {
+            var key = e.keyCode || e.which;
+            if (key == 13) {
+                var id = $(e.target).attr('id');
+                var textvalue = $(e.target).val();
+                id = id.replace("text", "link");
+                var forgeid = id.split('_');
+                var header = $("#" + id).attr('header');
+                var value = JSON.stringify({
+                    "Forgeid": forgeid[1],
+                    "Header": header,
+                    "TextValue": textvalue,
+                    "URN": $("#searchversiontype").data("kendoDropDownList").value(),
+                });
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("UpdateProperyData", "Search")',
+                    dataType: "json",
+                    data: value,
+                    success: function (result) {
+                        alert("Property value updated successfully!!");
+                        GetSearchGrid1();
+                    },
+                    error: function (result) {
+                        alert("Error in saving Data");
+                    }
+                });
+            }
+            if (key == 27) {
+                $('.edittextbox').hide();
+                $('.editlink').show();
+            }
+        }
+
+        //function Forgeid(id) {
+        //    //alert("hii");
+        //    var id1 = parseInt(id);
+        //    //viewer.clearSelection();
+        //    //viewer.isolate(id1);
+        //    //viewer.select(id1);
+
+        //    viewer.showAll();
+        //    viewer.impl.selector.setSelection(id1, viewer.model);
+        //    viewer.fitToView(id1);
+        //    viewer.isolateById(id1);
+
+        //    viewer.impl.selector.setSelection(id1, viewer.model);
+        //    viewer.fitToView(id1);
+        //    viewer.isolateById(id1);
+
+        //}
+
+        function downloadSearchGrid() {
+            $("#TblGrid1Excel thead th").css("background-color","skyblue");
+            $("#TblGrid1Excel thead th ").css("border","1px groove #686256");
+            $("#TblGrid1Excel tbody tr td").css("border","1px groove #686256");
+
+            $("#TblGrid1Excel").table2excel({
+                name: "SearchDetails",
+                filename: "SearchDetails",
+                fileext: ".xls"
+            });
+            $("#TblGrid1Excel thead th").css("background-color","");
+            $("#TblGrid1Excel thead th ").css("border","1px solid #dddddd");
+            $("#TblGrid1Excel tbody tr td").css("border","none");
+        }
+
+        function downloadEditedText() {
+            var value = JSON.stringify({
+                "URN": $("#searchversiontype").data("kendoDropDownList").value(),
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetEditedValues", "Search")',
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    window.location.href = "@Url.RouteUrl(new
+                    { Controller = "Home", Action = "DownloadFile" })/?Filename=RevitExport.txt";
+                },
+            });
+        }
+    </script>
+</body>
+
+</html>

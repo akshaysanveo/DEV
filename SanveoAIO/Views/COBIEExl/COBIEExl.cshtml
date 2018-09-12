@@ -1,0 +1,682 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Sanveo Inspire</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+
+
+    <!-- Latest compiled JavaScript -->
+    @*draggable ul li*@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+
+
+    <style>
+        fieldset.scheduler-border {
+            border: 1px groove #ddd !important;
+            padding: 0 1.4em 1.4em 1.4em !important;
+            margin: 0 0 1.5em 0 !important;
+            -webkit-box-shadow: 0px 0px 0px 0px #000;
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+
+        legend.scheduler-border {
+            font-size: 1.2em !important;
+            font-weight: bold !important;
+            text-align: left !important;
+            width: auto;
+            padding: 0 10px;
+            border-bottom: none;
+        }
+    </style>
+
+    <style>
+        #PropertyList ul li:nth-child(2) #btnUp {
+            display: none;
+        }
+
+        #PropertyList ul li:last-child #btnDown {
+            display: none;
+        }
+
+        #tblCatPropExl tr:last-child {
+            font-weight: bold;
+        }
+
+        .loading-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+        }
+
+        .loader {
+            display: none;
+            width: 200px;
+            height: 200px;
+            position: fixed;
+            top: 40%;
+            left: 40%;
+            text-align: center;
+            margin-left: -50px;
+            margin-top: -100px;
+            z-index: 1;
+            /*opacity:0.6;
+        background-color:black;
+        filter:alpha(opacity=60);*/
+        }
+
+        .selected {
+            background-color: lightgray;
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+    <div class="k-content">
+        <div class="k-content col-xs-12">
+
+            <div class="col-xs-4">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChange"); })
+                )
+            </div>
+            <div class="col-xs-4">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("versiontype")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Base Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("GridSearchModelData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onVersionChange"); })
+                )
+
+
+            </div>
+           
+            <div class="col-xs-4">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("tradetype")
+                                        .DataTextField("Name")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select FileType")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetTradeTypes", "COBIEExl");
+                                            });
+                                        })
+                 .Events(e => { e.Change("ShowFieldSet"); })
+                )
+                <br /><br /><br />
+            </div>
+
+            
+        </div>
+
+        <div class="k-content col-xs-12">
+            <div class="col-xs-2">
+
+                <input type="button" class="k-button pull-left" style="text-transform:capitalize;width:100%;" value="Get Data" onclick="onTradeChange();" />
+            </div>
+            <div class="col-xs-2">
+                <input type="button" class="k-button pull-right" style="text-transform:capitalize;width:100%;" value="Save Changes" onclick="SaveCOBIEExlData();" />
+
+            </div>
+            <div class="col-xs-2">
+                <input type="button" class="k-button" style="text-transform:capitalize;width:100%;" value="Download Excel" onclick="GetSelectedCategory();" />
+
+
+                <br /><br />
+            </div>
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-4" style="height:50%;">
+
+                <fieldset id="fieldSet" class="scheduler-border" style="display:none">
+                    <legend class="scheduler-border" style="font-size:small;">Download Arch File:</legend>
+                    <div>
+                        <input type="file" id="fileUpload" class="k-button pull-right" style="width:100%;height:37px;" />
+                    </div>
+                </fieldset>
+
+               
+            </div>
+
+        </div>
+        <div id="dvCSV">
+
+        </div>
+    </div>
+
+    <div class="k-content col-xs-12">
+        <div class="col-xs-4">
+            <div id="CategoryList" style="border:1px solid black;width:100%;height:300px; overflow-y:scroll;">
+                <span style="font-weight:bold;font-size:medium; padding-left:20px;">Category</span><br />
+                <br />
+                <ul style="list-style-type:none;"></ul>
+            </div>
+
+        </div>
+        <div class="col-xs-4">
+            <div id="PropertyList" style="border:1px solid black;width:100%;height:300px; overflow-y:scroll;">
+                <span style="font-weight:bold;font-size:medium; padding-left:20px;">Property</span><br />
+                <br />
+                <ul class="list1" id="PropDragul" style="list-style-type:none;"></ul>
+            </div>
+
+
+        </div>
+        <div class="col-xs-4" style="border:1px solid black;height:300px; overflow-y:scroll;">
+
+            <div id="ReorderPropList">
+                <span style="font-weight:bold;font-size:medium; padding-left:20px;">Selected Property</span><br />
+                <br />
+                <ul class="list2" id="sortable" style="list-style-type:none;"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="tblPropertyFilter" class="k-content col-xs-12" style="display:none;">
+
+    </div>
+
+    <div class="loader">
+        <center>
+            <img class="loading-image" src="~/Content/loading256.gif" height="75" width="75" alt="loading..">
+        </center>
+    </div>
+
+
+
+    <script>
+          $( function() {
+            $( "#sortable" ).sortable();
+            $( "#sortable" ).disableSelection();
+          } );
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+              $("#fileUpload").change(function () {
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+                 var ext = $("#fileUpload").val().toLowerCase().match(/\.(.+)$/)[1];
+                if (ext=='csv') {
+                    if (typeof (FileReader) != "undefined") {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var table = $("<table border='2' id='table1' style='display:none' />");
+                            var rows = e.target.result.split("\n");
+                            for (var i = 0; i < rows.length; i++) {
+                                var row = $("<tr />");
+                                var cells = rows[i].split(",");
+                                for (var j = 0; j < cells.length; j++) {
+                                    var cell = $("<td/>"); //style='border:1px solid;'
+                                    cell.html(cells[j]);
+                                    row.append(cell);
+                                }
+                                table.append(row);
+                            }
+                            $("#dvCSV").html('');
+                            $("#dvCSV").append(table);
+                            $("#table1").table2excel({
+                                name: "ExcelReport",
+                                filename: "ExcelReport",
+                                fileext: ".xls"
+                            });
+                        }
+                        reader.readAsText($("#fileUpload")[0].files[0]);
+                    } else {
+                        alert("This browser does not support HTML5.");
+                    }
+                } else {
+                    alert("Please upload a valid CSV file.");
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        function downloadExcel() {
+
+
+            console.log("Download");
+            $("#tblCatPropExl").table2excel({
+                name: "ExcelReportDetails",
+                filename: "ExcelReportDetails",
+                fileext: ".xls"
+            });
+        }
+
+        function ShowFieldSet() {
+            //var TradeType = $("#tradetype").data("kendoDropDownList").text().toLowerCase();           
+            
+            //if (TradeType=="arch"){
+            //        $("#fieldSet").css('display', 'block');
+            //    } else {
+            //        $("#fieldSet").css('display', 'none');
+            //    }
+        }
+
+        function onTradeChange() {
+            var ddl = $("#tradetype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+            var fileType = $("#filetype").val();
+            var versionType = $("#versiontype").val();
+            var tradeType = $("#tradetype").val();
+
+
+            if (fileType == undefined || fileType.trim() == "") {
+                alert("Please select the file");
+                return;
+            }
+            if (versionType == undefined || versionType.trim() == "") {
+                alert("Please select the version");
+                return;
+            }
+            if (tradeType == undefined || tradeType.trim() == "") {
+                alert("Please select the TradeType");
+                return;
+            }
+
+            GetCategory();
+            //GetProperty();
+            //BindSelectedProperty();
+        }
+
+        function onFileChange() {
+            var ddl = $("#versiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+            //var GetFileName = $("#filetype").data("kendoDropDownList").text().toLowerCase();
+            ////alert(GetFileName);
+            //if (GetFileName.indexOf('arch') > -1) {
+            //    $("#fieldSet").css('display', 'block');
+            //} else {
+
+            //    $("#fieldSet").css('display', 'none');
+            //}
+
+        }
+
+        function GridSearchModelData(e) {
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName
+            }
+        }
+
+
+        function onVersionChange() {
+
+        }
+
+        function GetCategory() {
+
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            $("#CategoryList ul").html('<li style="text-align: center;">Loading...</li>');
+            var value = JSON.stringify({
+                'urn': urn,
+                'version': v,
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCategory", "Quantity")',                
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    $("#CategoryList ul").html('');
+                    check_boxes = "";
+
+                    $.each(result, function (index, item) {
+                        check_boxes += '<li style="margin-left:-20px;"><label><input type="checkbox" style="margin-right:5px;"  name="Category[]" value="' + item.Category_Name + '"  id="' + item.Category_Name + '"/>' + item.Category_Name + '</label></li>';
+                    });
+                    $("#CategoryList ul").append(check_boxes);
+                    AutoCheckedCategory();                    
+                },
+                error: function (result) {
+                  alert("error in retrieving data")
+                }
+            });
+        }
+
+
+
+
+
+        function AutoCheckedCategory()
+        {
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            var value = JSON.stringify({
+
+                "Urn": $("#versiontype").data("kendoDropDownList").value(),
+                "VersionNo": v,
+                "TradeId": $("#tradetype").data("kendoDropDownList").value(),
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCheckCOBIEExlCategory", "COBIEExl")',
+                dataType: "json",               
+                data: value,
+                success: function (result) {
+                    //console.log(result);
+                    for (var i = 0; i < result["Table"].length; i++)
+                    {
+                        //console.log(result["Table"][i].Category);
+                        var id = result["Table"][i].Category;
+
+
+                        $.each($("input[name='Category[]']"), function () {
+
+                            if($(this).val()==id)
+                            {
+                                $(this).prop('checked', true);
+                            }
+
+                        });
+                    }
+                    GetProperty();
+                },
+                error: function (result) {
+                    alert("Error in retrieving Data");
+                }
+            });
+        }
+
+        function BindSelectedProperty()
+        {
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            var value = JSON.stringify({
+
+                "Urn": $("#versiontype").data("kendoDropDownList").value(),
+                "VersionNo": v,
+                "TradeId": $("#tradetype").data("kendoDropDownList").value(),
+            });
+
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCheckCOBIEExlProperty", "COBIEExl")',                
+                data: value,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.loader').show();
+                },
+                complete: function () {
+                    $('.loader').hide();
+                },
+                success: function (result) {
+                    $("#ReorderPropList ul").html('');
+                    check_boxes = "";
+                    //console.log("selected property"+ result);
+
+                    $.each(result, function (index, item) {
+
+                        check_boxes += '<li style="margin-left:-20px;"><label><input type="checkbox" style="margin-right:5px;" onclick="SaveProperty(this);" checked="checked"  name="Property[]" value="' + item.Property + '" id="' + item.Property + '"/>' + item.Property + '</label></li>';
+                    });
+
+                    $("#ReorderPropList ul").append(check_boxes);
+
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+
+
+
+        function SaveCOBIEExlData() {
+            var CategoryArray = new Array();
+            $.each($("input[name='Category[]']:checked"), function () {
+                CategoryArray.push($(this).val());
+            });
+            if (CategoryArray.length == 0) {
+                alert("Please select atleast 1 category");
+                return;
+            }
+            var CategoryArray = CategoryArray.join(',');
+
+
+            var PropReorderArray = new Array();
+            $.each($('#sortable li label'), function () {
+                PropReorderArray.push($(this).text().trim());
+            });
+            if (PropReorderArray.length == 0) {
+                alert("Please select atleast 1 Property");
+                return;
+            }
+            var PropReorderArray = PropReorderArray.join(',');
+
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            var value = JSON.stringify({
+
+                "Urn": $("#versiontype").data("kendoDropDownList").value(),
+                "VersionNo": v,
+                "Property": PropReorderArray,
+                "Category":CategoryArray,
+                "TradeId": $("#tradetype").data("kendoDropDownList").value(),
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("SaveCOBIEExlData", "COBIEExl")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    alert("Changes saved successfully!!");
+                },
+                error: function (result) {
+                    alert("Error in saving Data");
+                }
+            });
+
+        }
+
+
+        function GetSelectedCategory() {
+
+            var CatArray = new Array();
+
+            $.each($("input[name='Category[]']:checked"), function () {
+                CatArray.push($(this).val());
+                flag = 1;
+
+            });
+
+
+            if (CatArray.length == 0)
+            {
+                alert("Please select atleast 1 category");
+                return;
+            }
+            var CatArray = CatArray.join(',');
+
+            var PropArray = new Array();
+            var lenArray = new Array();
+
+
+            $.each($('#sortable li label'), function () {
+                PropArray.push('[' + $(this).text().trim() + ']');
+            });
+
+            if (PropArray.length == 0) {
+                alert("Please select atleast 1 Property");
+                return;
+            }
+            var Property = PropArray.join(',');
+
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            var value = JSON.stringify({
+                "Category": CatArray,
+                "FileName": $("#versiontype").data("kendoDropDownList").value(),
+                "Property": Property,
+                "Version": v,
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCheckCategoryPropertyForexcel", "COBIEExl")',
+                data: value,
+                dataType: "json",
+                beforeSend: function () {
+                    $('.loader').show();
+                },
+                complete: function () {
+                    $('.loader').hide();
+                },
+                success: function (data) {
+                    console.log(data);
+                    $("#tblPropertyFilter").html('');
+                    $("#tblPropertyFilter").html(data);
+
+                    downloadExcel();
+
+                },
+                error:function(data)
+                {
+                    console.log(data.tabledata);
+                }
+
+            });
+
+        }
+
+        function GetProperty() {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+           
+            v = v.split('-')[0].trim();
+
+            $("#PropertyList ul").html('<li style="text-align: center;">Loading...</li>');
+
+            var value = JSON.stringify({
+                'urn': urn,
+                'version': v,
+                'TradeId': $("#tradetype").data("kendoDropDownList").value(),
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetProperty", "COBIEExl")',               
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    $("#PropertyList ul").html('');
+                    check_boxes = "";
+
+                    $.each(result, function (index, item) {
+
+                        if ((item.Property_Name).indexOf('"') > -1)
+                        {
+                            (item.Property_Name).replace('"','/"');
+                        }
+                        if ((item.Property_Name).indexOf('#') > -1) {
+                            (item.Property_Name).replace('#', '/#');
+                        }
+
+                        check_boxes += '<li style="margin-left:-20px;"><label><input type="checkbox" style="margin-right:5px;" onclick="SaveProperty(this);" name="Property[]" value="' + item.Property_Name + '" id="' + item.Property_Name + '"/>' + item.Property_Name + '</label></li>';
+                    });
+
+                    $("#PropertyList ul").append(check_boxes);
+                    BindSelectedProperty();
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+
+
+        function SaveProperty(e)
+        {
+
+            var class1 = ($(e).parent('label').parent('li').parent('ul').attr('class'));
+
+                if (class1 == "list1")
+                {
+                    flag = 1;
+                    $(e).closest('li').toggleClass('selected');
+                    $('.list2').append($('.list1 .selected').removeClass('selected'));
+
+                }
+                else if (class1 == "list2 ui-sortable")
+                {
+                    flag = 0;
+                    $(e).closest('li').toggleClass('selected');
+                    $('.list1').append($('.list2 .selected').removeClass('selected'));
+                }
+
+        }
+
+    </script>
+
+</body>
+</html>

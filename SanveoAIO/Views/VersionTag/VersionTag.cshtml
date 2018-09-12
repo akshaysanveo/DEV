@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VersionTaggingPopUp</title>
+    <meta name="viewport" content="width=device-width" />
+    <title>VersionTagging</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <!-- Autodesk Forge Viewer files -->
+    <script src="https://ase-cdn.autodesk.com/adp/v1.0.3/js/adp-web-analytics-sdk.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+</head>
+<body>
+    <div class="col-xs-11">
+        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChange"); })
+        )
+    </div>
+
+    <div id="VersionTableDiv">
+        <div id="Ver1Div" class="col-xs-11" style="display:none">
+            <br /><br />
+            <div class="col-xs-3" style="padding-top:5px">
+                <span style="vertical-align:central">#1 Version</span>
+            </div>
+            <div class="col-xs-9">
+                <input type="text" class="k-textbox" id="txtVer1" style="width:105%" />
+                <br /><br />
+            </div>
+        </div>
+
+        <div id="Ver2Div" class="col-xs-11" style="display:none">
+            <div class="col-xs-3" style="padding-top:5px">
+                <span>#2 Version</span>
+            </div>
+            <div class="col-xs-9">
+                <input type="text" id="txtVer2" class="k-textbox" style="width:105%"/>
+                <br /><br />
+            </div>
+        </div>
+
+        <div id="Ver3Div" class="col-xs-11" style="display:none">
+            <div class="col-xs-3" style="padding-top:5px"><span>#3 Version</span></div>
+            <div class="col-xs-9">
+                <input type="text" id="txtVer3" class="k-textbox" style="width:105%"/>
+                <br /><br />
+            </div>
+        </div>
+            
+        <div id="Ver4Div" class="col-xs-11" style="display:none">
+            <div class="col-xs-3" style="padding-top:5px"><span>#4 Version</span></div>
+            <div class="col-xs-9">
+                <input type="text" id="txtVer4" class="k-textbox" style="width:105%"/>
+                <br /><br />
+            </div>
+        </div>
+        @*<div class="col-xs-11">*@        
+            <br />  
+            <div class="col-xs-3 pull-left" style="margin-left: 177px;"><input type="submit" id="btnSaveVerType" class="k-button" value="Save Version Type" style="text-transform:capitalize;display:none" /></div>
+            <div class="col-xs-1"></div>
+                      
+        @*</div>*@
+    </div>
+    <script type="text/javascript">
+
+        function onFileChange() {
+            $('#Ver1Div').hide();
+            $('#Ver2Div').hide();
+            $('#Ver3Div').hide();
+            $('#Ver4Div').hide();
+            $('#btnSaveVerType').hide();
+            GetVersionType();
+        }
+
+        function GetVersionType () {
+            $('#txtVer1').val('');
+            $('#txtVer2').val('');
+            $('#txtVer3').val('');
+            $('#txtVer4').val('');
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var value=JSON.stringify({
+                'FileName':FileName,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetVersionTagging", "VersionTag")',
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    if (result.length != 0) {
+                        for (var i = 0 ; i < result.length ; i++) {
+                            if (result[i].VersionNo == "1") {
+                                $('#Ver1Div').show();
+                                $('#txtVer1').val(result[i].VersionTag);
+                            }
+                            if (result[i].VersionNo == "2") {
+                                $('#Ver2Div').show();
+                                $('#txtVer2').val(result[i].VersionTag);
+                            }
+                            if (result[i].VersionNo == "3") {
+                                $('#Ver3Div').show();
+                                $('#txtVer3').val(result[i].VersionTag);
+                            }
+                            if (result[i].VersionNo == "4") {
+                                $('#Ver4Div').show();
+                                $('#txtVer4').val(result[i].VersionTag);
+                            }
+                        }
+                        $('#btnSaveVerType').show();
+                    }
+                    else
+                        alert("File is not Dexracted !!")
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+        $("#btnSaveVerType").click(function (e) {
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            if (FileName == "Select File") {
+                alert("Select File");
+                return false;
+            }
+            for (var i = 1; i <= 4; i++) {
+                var verText = $("#txtVer" + i).val();
+                if ($("#txtVer" + i).val().length > 50) {
+                    alert("VersionTag Cannot Be More Than 50 Characters");
+                    e.preventDefault();
+                    return;
+                }
+
+                var value = JSON.stringify({
+                    'FileName': FileName,
+                    'Urn': "",
+                    'versionNo': i,
+                    'verText': verText
+                });
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("SaveVersionType", "VersionTag")',
+                    data: value,
+                    dataType: "json",
+                    success: function (result) {
+                        $('#btnSaveVerType').hide();
+                    },
+                    error: function (result) {
+                        alert("Error");
+                    }
+                });
+            }
+            alert("Data Saved Successfully ");
+        });
+
+    </script>
+</body>
+</html>

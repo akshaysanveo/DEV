@@ -1,0 +1,18 @@
+﻿
+
+@(
+    Html.Kendo().DropDownList()
+        .Name("categorys")
+        .DataTextField("Category_Name")
+        .DataValueField("Id")
+        .OptionLabel("Select Category")
+        .HtmlAttributes(new {style = "width:100%"})
+        .DataSource(source =>
+        {
+            source.Read(read =>
+            {
+                read.Action("GetCategoryName", "Home").Data("searchCategoryData");
+            });
+        })
+        .Events(e => { e.Change("onSearchCategorysChange").DataBound("ddlCategoryBound"); })
+      )

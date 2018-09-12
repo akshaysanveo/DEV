@@ -1,0 +1,513 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Sanveo Inspire</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <!-- Autodesk Forge Viewer files -->
+    <script src="https://ase-cdn.autodesk.com/adp/v1.0.3/js/adp-web-analytics-sdk.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/viewer3D.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <style>
+        #Grid .k-grid-header th.k-header > .k-link, #gridfile .k-grid-header th.k-header > .k-link {
+            font-weight: normal;
+        }
+
+        .k-button {
+            text-transform: initial;
+        }
+
+        .k-selected-color {
+            width: 100% !important;
+        }
+
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="k-content">
+        <div class="k-content col-xs-12">
+
+            <div class="col-xs-3">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChange"); })
+                )
+            </div>
+            <div class="col-xs-2">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("versiontype")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("GridSearchModelData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onVersionChange"); })
+                )
+                <br /><br />
+
+            </div>
+
+            <div class="col-xs-3">
+                @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("PropertyName")
+                                        .DataTextField("Property_Name")
+                                        .DataValueField("ID")
+                                        .OptionLabel("Select Property Name")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetPropertyNameForVisibility", "NewDoc").Data("additionalData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onPropertyChange"); })
+                )
+                <br /><br />
+
+            </div>
+            <div class="col-xs-1">
+                <input id="btnSave" type="button" class="k-button" style="text-transform:capitalize;width:100%;" value="Save" onclick="SaveCatPropVisisbility();" />
+            </div>
+
+            <div class="col-xs-1">
+                <input id="btnApply" type="button" class="k-button" style="text-transform:capitalize;width:120%;font-size:15px" value="Apply " onclick="TurnOff();" />
+            </div>
+            <div class="col-xs-1"><input id="btnReset" type="button" class="k-button" style="text-transform:capitalize;width:160%;font-size:15px;" value="Show All" onclick="TurnOn();" /></div>
+        </div>
+        <div class="col-xs-12" style="padding-left:3%">
+            <span style="font-size:14px;color:red;">Note : </span><span style="font-size:13px;color:#3c8dbc;">Show All (For Multiple Apply Please Click On "Show All" button).</span>
+        </div>
+        <div class="k-content col-xs-12">
+            <div class="col-xs-12">
+
+                @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetCategoryNew_Result>()
+                    .Name("Grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(e => e.Visible_ID).Visible(false);
+
+
+                        columns.Bound(e => e.Category_Name).Title("Category Name");
+                        columns.Bound(e => e.Property_Name).Title("Property Name").Visible(true);
+                        columns.Bound(e => e.Property_Value).Title("Property Value");
+
+
+                        columns.Template(e => e.Visibility).Title("Visibility").ClientTemplate("<center><input type='checkbox'  id='Visibility_#=Visible_ID#' #= Visibility ? checked='checked':'' # class='chkactive' onclick='SaveCheckedItems(this.id)'/>")
+
+                                     .HeaderTemplate("<label style='font-weight:normal'  onclick='CurrentRowChckChangeAdmin(this.id,this.value);' >Visibile</label>").Width(100);
+                        columns.Command(command => { command.Edit(); }).Width(180); // command.Destroy();
+                    })
+                    .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                    .Editable(editable => editable.Mode(GridEditMode.InLine))
+                    .Pageable(pageable => pageable
+                    .Refresh(true)
+                    .PageSizes(new int[] { 100, 150, 250 })
+                    .ButtonCount(5))
+                    .HtmlAttributes(new { style = "height:395px;width:100%;border-radius:3px;" })
+                    .Resizable(resize => resize.Columns(true))
+                    .Reorderable(reorder => reorder.Columns(true))
+                    .Sortable()
+                    .Scrollable()
+                    .Filterable()
+                    .Events(m => m.Change("onChangeUserGrid").Save("onUpdateUsers").Edit("onEditUserGrid").DataBound("OnDataBound"))
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(100)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.Visible_ID);
+                            model.Field(p => p.Category_Name).Editable(false);
+                            model.Field(p => p.Property_Name).Editable(false);
+                            model.Field(p => p.Property_Value).Editable(true);
+                            model.Field(p => p.Visibility).Editable(true);
+                        })
+                          .Events(events =>
+                          {
+                              events.RequestEnd("onUserRequestEnd").Error("onError");
+                          })
+                        .Read(read => read.Action("GetCategoryNew", "NewDoc").Data("additionalGridata"))
+                        .Create(update => update.Action("UpdateVisibility", "NewDoc"))
+                        .Update(update => update.Action("UpdateVisibility", "NewDoc"))
+                    )
+                )
+                <br /><br />
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <script type="text/javascript">
+        var category = "";
+        function SaveCheckedItems(id) {
+            var res = id.split("_");
+            var boovalue = $('#' + id).prop('checked')
+            id = res[1].trim();
+
+
+
+            var dataItem = $("#Grid").data("kendoGrid").dataSource.get(id);
+
+            console.log(dataItem);
+            console.log(dataItem.Category_Name);
+
+            var value = JSON.stringify({
+                Visible_ID: dataItem.Visible_ID,
+                Category_Name: dataItem.Category_Name,
+                Property_Name: dataItem.Property_Name,
+                Property_Value: dataItem.Property_Value,
+                Visibility: boovalue,
+            });
+
+            console.log(value);
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("UpdateVisibility", "NewDoc")',
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    alert("Data Updated Successfully");
+                    $("#Grid").data("kendoGrid").dataSource.read();
+                    //console.log(result);
+
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+        function TurnOff() {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            var PropName = $("#PropertyName").data("kendoDropDownList").text();
+
+            var ArraydbIds = new Array();
+
+            var value = JSON.stringify({
+                'urn': urn,
+                'version': v,
+                'PropertyName': PropName,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetAllForgeIdByCategory", "NewDoc")',
+                async: false,
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    for (var i = 0; i < result["Table"].length; i++) {
+                        {
+                            ArraydbIds.push(result["Table"][i].Forgeid);
+                        }
+                    }
+                   ////console.log(ArraydbIds);
+                   window.parent.DisableElements(ArraydbIds);
+                },
+                error: function (result) {
+                    alert("error in retrieving data")
+                }
+            });
+        }
+
+        function TurnOn() {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            var PropName = $("#PropertyName").data("kendoDropDownList").text();
+
+            var ArraydbIds = new Array();
+
+            var value = JSON.stringify({
+                'urn': urn,
+                'version': v,
+            });
+
+            @*$.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetAllForgeId", "NewDoc")',
+                async: false,
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    for (var i = 0; i < result["Table"].length; i++) {
+                        {
+                            ArraydbIds.push(result["Table"][i].Forgeid);
+                        }
+                    }
+                    window.parent.EnableElements(ArraydbIds);
+                },
+                error: function (result) {
+                    alert("error in retrieving data")
+                }
+            });*@
+
+            window.parent.EnableElements(urn);
+        }
+
+
+        function OnDataBound(e)
+        {
+            var grid = $('#Grid').data('kendoGrid');
+
+            if (grid == null) {
+                $('#btnSave').css('display', 'none');
+              //  alert("Records to display");
+            }
+        }
+
+        function CurrentRowChckChangeAdmin(id, val) {
+            var boolvalue = document.getElementById(id).checked;
+            globalactivechkUSER = document.getElementById(id).checked;
+
+        }
+
+        function onUserRequestEnd(e) {
+            ////console.log(e.type);
+            if (e.type == "update") {
+                alert("Property Value updated successfully");
+                $("#Grid").data("kendoGrid").dataSource.read();
+            }
+
+        }
+
+        function onEditUserGrid(e) {
+            var Id = e.model.get("Visible_ID");
+            $("#Grid").data("kendoGrid").select(".k-grid-edit-row");
+            var includedid = e.model.get("Visibility");
+            var checkboxitemn = "Visibility_" + Id;
+            $("#" + checkboxitemn).prop("disabled", "");
+
+
+
+        }
+
+
+        $(function () {
+            $('#Grid').on('click', '.chkactive', function () {
+
+                var checked = $(this).is(':checked');
+                var grid = $('#Grid').data().kendoGrid;
+                var dataItem = grid.dataItem($(this).closest('tr'));
+                dataItem.set('Visibility', checked);
+            })
+        })
+
+        function onError(e, status) {
+            ////console.log()
+            if (e.status == "update") {
+                alert(e.errors);
+                ////console.log(e.errors);
+            }
+            else {
+                var msg = e.errors;
+                ////console.log(e.errors);
+                ////console.log(msg);
+                if (msg == undefined || msg == null || msg == "") {
+                }
+                else {
+                    alert(e.errors);
+                }
+
+            }
+        }
+
+        function onUpdateUsers(e)
+        {
+            var PropValue = $("#Property_Value").val();
+
+            //if (PropValue == "") {
+            //    alert("Enter Property Value" );
+            //    return;
+            //}
+            e.model.set("Property_Value", PropValue);
+
+        }
+
+
+        function onChangeUserGrid() {
+
+            var grid = $("#Grid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            ////console.log(selectedItem);
+            category = selectedItem["Category_Name"];
+            ////console.log(category);
+            var active = selectedItem["Visibility"];
+            var selectedItem1 = grid.select();
+            var selectedRowIndex = selectedItem1.index();
+            var selectedItem = grid.dataItem(grid.select());
+
+        }
+
+        function onFileChange() {
+            var ddl = $("#versiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+        }
+        function additionalData()
+        {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            return {
+                Urn: urn,
+                Version: v,
+            }
+        }
+
+
+        function additionalGridata()
+        {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            var PropName = $("#PropertyName").data("kendoDropDownList").text();
+
+            return {
+                Urn: urn,
+                Version: v,
+                PropertyName: PropName,
+            }
+        }
+
+        function GridSearchModelData(e) {
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName
+            }
+        }
+
+        function onVersionChange() {
+
+            var ddl = $("#PropertyName").data("kendoDropDownList");
+            ddl.dataSource.read();
+        }
+
+        function onPropertyChange()
+        {
+             var grid = $("#Grid").data("kendoGrid");
+             grid.dataSource.read();
+        }
+
+
+        function SaveCatPropVisisbility()
+        {
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            var PropName = $("#PropertyName").data("kendoDropDownList").text();
+
+            var fileType = $("#filetype").val();
+            var versionType = $("#versiontype").val();
+            var tradeType = $("#tradetype").val();
+
+
+            if (fileType == undefined || fileType.trim() == "") {
+                alert("Please select the file");
+                return;
+            }
+            if (versionType == undefined || versionType.trim() == "") {
+                alert("Please select the version");
+                return;
+            }
+            if (PropertyName == undefined || PropertyName == "") {
+                alert("Please select the Property");
+                return;
+            }
+
+
+
+            var value = JSON.stringify({
+
+                "Urn": $("#versiontype").data("kendoDropDownList").value(),
+                "Version": v,
+                "PropName": PropName,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("SaveCatPropVisisbility", "NewDoc")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    alert(result);
+                     var grid = $("#Grid").data("kendoGrid");
+                    grid.dataSource.read();
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

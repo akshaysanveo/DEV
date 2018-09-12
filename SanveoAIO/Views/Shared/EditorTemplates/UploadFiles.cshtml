@@ -1,0 +1,7 @@
+﻿@(Html.Kendo().Upload()
+                      .Name("attachments")
+                      .Async(a => a.Save("UploadLogo", "Inspire")
+                      )
+                      .Multiple(false).HtmlAttributes(new { style = "width: 80%;" })
+                      .Events(e => e.Success("onFileUpload1").Upload("onImageUpload").Select("onSelectLogo"))
+)

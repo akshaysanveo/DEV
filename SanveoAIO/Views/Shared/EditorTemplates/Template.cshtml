@@ -1,0 +1,17 @@
+﻿@(
+                                        Html.Kendo().DropDownList()
+                                        .Name("ddlTemplate")
+                                        .DataTextField("RuleName")
+                                        .DataValueField("FileName")
+                                        .OptionLabel("Select RuleName")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                         .Events(e => { e.Change("onddlTempleChange"); })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetTemplateName", "Report");
+                                            });
+                                        })
+                                        .Events(e => e.DataBound("ddlTemplateBound"))
+)

@@ -1,0 +1,24 @@
+﻿ @(Html.Kendo().DropDownList()
+                        .Name("CompanyType")
+                        .OptionLabel("Select Type")
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .BindTo(new List<SelectListItem>()
+                        {
+                            new SelectListItem()
+                            {
+                                Text = "Enterprise 360 Account",
+                                Value = "1"
+                            },
+                            new SelectListItem()
+                            {
+                                Text = "Personal Account",
+                                Value = "2"
+                            },
+                             new SelectListItem()
+                            {
+                                Text = "All",
+                                Value = "3"
+                            }
+                        })
+)   

@@ -1,0 +1,24 @@
+﻿
+@(Html.Kendo().DropDownList()
+
+              .Name("AdminForGrid")
+             .OptionLabel("Select Admin...")
+              .DataTextField("AdminName")
+              .DataValueField("AdminID")
+
+            .DataSource(source =>
+            {
+                source.Read(read =>
+                {
+                    read.Action("GetAdmin", "Inspire")
+                        .Data("filterAdminforgrid");
+                })
+
+                .ServerFiltering(true);
+
+            })
+                      .Events(e => e.DataBound("ddlAdminBound"))
+
+.CascadeFrom("CompanyForGrid")
+)
+

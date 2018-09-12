@@ -1,0 +1,1405 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SanveoAIO</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script src="~/Content/jqTree-master/tree.jquery.js"></script>
+    <style>
+        .loading-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+        }
+
+        .loader {
+            display: none;
+            width: 200px;
+            height: 200px;
+            position: fixed;
+            top: 40%;
+            left: 40%;
+            text-align: center;
+            margin-left: -50px;
+            margin-top: -100px;
+            z-index: 2;
+        }
+        div.k-grid-header {
+            padding-right: 18px !important;
+        } 
+
+        .ffff {
+            background: url('~/Content/plus.png') no-repeat;
+        }
+
+        ul.leaf {
+            list-style-image: url('~/Content/plus.png');
+        }
+
+        #gridfile .k-grid-header th.k-header > .k-link, #gridfile .k-grid-header th.k-header > .k-link {
+            font-size: 11px;
+        }
+
+        .k-reset k-tabstrip-items {
+            margin-left: 0px;
+        }
+
+        .k-button {
+            text-transform: initial;
+        }
+
+        #tabstrip > ul {
+            margin-left: 0px !important;
+            margin-right: 0px !important;
+        }
+
+       #CompanyGrid  .k-grid-toolbar {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="myTab">
+        @(Html.Kendo().TabStrip()
+                .Name("tabstrip")
+                .Events(e => e.Select("OnSelectTabs")
+                .Activate("ActiveFOlder"))
+                .Animation(animation =>
+                    animation.Open(effect =>
+                        effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+
+                tabstrip.Add().Text("Company")
+                         .Selected(true)
+                         .Content(@<text>
+
+                            @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetCompany_Result>()
+                        .Name("CompanyGrid")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(e => e.CompID).Visible(false).Width(30).HtmlAttributes(new { style = "text-align:center;" });
+                            columns.Bound(c => c.CompName).Title("Company Name");
+                            columns.Bound(e => e.Type).Title("Type").EditorTemplateName("CompanyType").Width(180).ClientTemplate("#: Type #");
+                            //  columns.Bound(c => c.Profile).Title("Profile").Width(200).EditorTemplateName("DDL_Profile");
+                            columns.Template(e => e.Active).ClientTemplate("<input type='checkbox' id='CompActive_#=CompID#' #= Active ? checked='checked':'' # class='chkactive' disabled='disabled'/>")
+                            .HeaderTemplate("<label style='font-weight:normal'   onclick='CurrentRowChckChangeUser1(this,this.id,this.value);' >Active</label>");
+                            columns.Bound(c => c.UploadedFile).Title("Logo").EditorTemplateName("UploadFiles").Width(180).ClientTemplate("#: UploadedFile #");
+                            columns.Bound(c => c.CreatedAt).Title("Created Date");
+                            columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+                        })
+                        .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                        .Editable(editable =>
+                        {
+                            editable.Mode(GridEditMode.InLine);
+                            editable.DisplayDeleteConfirmation("All Data Related TO This Company Will Be Deleted, Do You Want To Proceed ?");
+                        })
+                        .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(new int[] { 5, 10, 20 })
+                        .ButtonCount(5))
+                        .HtmlAttributes(new { style = "width:100%;border-radius:3px;" })
+                        .Resizable(resize => resize.Columns(true))
+                        .Reorderable(reorder => reorder.Columns(true))
+                        .Sortable()
+                        .Scrollable(scr => scr.Height(320))
+                        .Filterable()
+                        .Events(m => m
+                        .Change("onChangeCompany")
+                        .Save("onUpdateCompany")
+                        .Edit("onEditCompanyGrid")
+                        )
+                        .ToolBar(toolbar => toolbar.Create())
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .PageSize(20)
+                            .Model(model =>
+                            {
+                                model.Id(p => p.CompID);
+                                model.Field(p => p.CompName).Editable(true);
+                                model.Field(p => p.Active).Editable(true);
+                                model.Field(p => p.CreatedAt).Editable(false);
+                            })
+                             .Events(events =>
+                             {
+                                 events.RequestEnd("onCompanyRequestEnd").Error("onError");
+                             })
+                            .Create(update => update.Action("SaveCompany", "Inspire"))
+                           .Read(read => read.Action("GetCompany", "Inspire"))
+                           .Update(update => update.Action("SaveCompany", "Inspire"))
+                           .Destroy(update => update.Action("DeleteCompany", "Inspire"))
+                    ))
+
+
+                            <script type="text/javascript">
+
+    var lastsel = "";
+    var globalcompanytype = "";
+    var CompGlobalId = 0;
+    var FileNameLogo = "";
+    var uploadFileName = "";
+
+
+    function GetUploadedFileName() {
+
+        return { Logoname: FileNameLogo }
+
+    }
+
+    function onImageUpload(e) {
+        e.data = { uploadID: CompGlobalId };
+    }
+
+    function onFileUpload1(e) {
+        //  alert("File Uploaded Successfully.");
+        var text = e.XMLHttpRequest.responseText;
+        //var response = e.response.data();
+        var json = JSON.parse(text);
+        var logo = json.data;
+        var msg = json.Message;
+        //console.log(text);
+        //console.log(logo);
+        //console.log(msg);
+        if (msg != "") {
+            alert(msg);
+        }
+        else {
+            // alert("File Uploaded Successfully.");
+        }
+
+        FileNameLogo = logo;
+
+
+    }
+
+    function onSelectLogo(e) {
+        var files = e.files
+        var acceptedFiles = [".jpg", ".jpeg", ".png", ".gif"]
+        var isAcceptedImageFormat = ($.inArray(files[0].extension, acceptedFiles)) != -1
+
+        if (!isAcceptedImageFormat) {
+            e.preventDefault();
+            alert("Image Must Be jpeg, png or gif");
+        }
+
+    }
+
+
+    function onUpdateCompany(e) {
+        var CompName = $('#CompName').val();
+        if (CompName.length == 0) {
+            alert("Enter company Name");
+            e.preventDefault();
+            return;
+
+
+        }
+        else {
+            if (/^[0-9]+$/.test(CompName.trim())) {
+                alert("Only Numbers not Allowed");
+                e.preventDefault();
+                return;
+            }
+            if ($("#CompName").val().length > 50) {
+                alert("Company Name Cannot Be More Than 50 Characters");
+                e.preventDefault();
+                return;
+            }
+            var companytype = $("#CompanyType").data().kendoDropDownList.text();
+            //var companyprofile = $("#ProfileList").data().kendoDropDownList.text();
+            if (companytype == "Select Type") {
+                alert("Select Type Of Company")
+                e.preventDefault();
+                return;
+            }
+            else {
+                // alert(FileNameLogo);
+                if (FileNameLogo == "") {
+                    FileNameLogo = uploadFileName;
+                }
+                e.model.set("Type", companytype);
+                e.model.set("UploadedFile", FileNameLogo);
+            }
+
+            //if (companyprofile = "") {
+            //    alert("Select and Click")
+            //    e.preventDefault();
+            //}
+            //else {
+            //    var profileval = [];
+            //    $('input[name="Profile"]:checked').each(function () {
+            //        profileval.push(this.value);
+            //    });
+            //    profileval = profileval.toString();
+            //    e.model.set("Profile", profileval);
+            //}
+        }
+    }
+
+
+    $(function () {
+        $('#CompanyGrid').on('click', '.chkactive', function () {
+            var checked = $(this).is(':checked');
+            var grid = $('#CompanyGrid').data().kendoGrid;
+            var dataItem = grid.dataItem($(this).closest('tr'));
+            dataItem.set('Active', checked);
+        })
+    })
+
+    $("#CompanyGrid").on("click", ".k-grid-add", function (e) {
+        var row = $(e.target).closest("tr");
+        var grid = $("#CompanyGrid").data("kendoGrid");
+        var dataItem = grid.dataItem(row);
+    });
+
+    function onEditCompanyGrid(e) {
+        var Id = e.model.get("CompID");
+         uploadFileName = e.model.get("UploadedFile");
+     //   alert(uploadFileName);
+        var includedid = e.model.get("Active");
+        var checkboxitemn = "CompActive_" + Id;
+        $("#" + checkboxitemn).prop("disabled", "");
+        $("#CompanyGrid").data("kendoGrid").select(".k-grid-edit-row");
+    }
+
+    var CompanyType = "";
+    function onChangeCompany() {
+        var grid = $("#UserGrid").data("kendoGrid");
+        grid.dataSource.read();
+        var grid = $("#CompanyGrid").data("kendoGrid");
+        var selectedItem1 = grid.select();
+        var selectedRowIndex = selectedItem1.index();
+        var selectedItem = grid.dataItem(grid.select());
+        window.globalactivechkCompany = selectedItem["Active"];
+        globalcompanytype = selectedItem["Type"];
+        globalprofile = selectedItem["Profile"];
+        var dropdowngroup = $("#CompanyType").data("kendoDropDownList");
+        if (dropdowngroup != undefined) {
+            if (globalcompanytype == "Enterprise 360 Account")
+                dropdowngroup.select(1);
+            else if (globalcompanytype == "Personal Account")
+                dropdowngroup.select(2);
+            else if (globalcompanytype == "All")
+                dropdowngroup.select(3);
+        }
+        //var dropdownprofile = $("#ProfileList").data("kendoDropDownList");
+        //if (dropdownprofile != undefined) {
+        //    if (globalprofile != "") {
+        //        var profileval = globalprofile.split(',');
+        //        for (var i = 0; i < profileval.length; i++) {
+        //            $('input[name="Profile"]').each(function () {
+        //                if (this.value == profileval[i]) {
+        //                    $(this).prop('checked', true);
+        //                }
+        //            });
+        //        }
+        //    }
+        //}
+        if (lastsel != selectedRowIndex) {
+            grid.cancelRow();
+            lastsel = selectedRowIndex;
+        }
+    }
+
+    function CurrentRowChckChangeUser1(e, id, val) {
+        var boolvalue = document.getElementById(id).checked;
+        globalactivechkCompany = boolvalue;
+    }
+
+    function resizeGrid() {
+        var grid = $("#ClassGrid").data("kendoGrid");
+        var gridheight = $("#ClassGrid").height();
+        var actualheight = $(window).height();
+        if (actualheight == "900") {
+            var viewportHeight = ($(window).height() - ($(window).height() / 2.8));
+            $("#ClassGrid").css('height', viewportHeight);
+            //console.log(viewportHeight);
+        }
+        else {
+            var viewportHeight = ($(window).height() - ($(window).height() / 2.2));
+            $("#ClassGrid").css('height', viewportHeight);
+            //console.log(viewportHeight);
+        }
+    }
+
+    $(document).ready(function () {
+        $("#CompanyGrid .k-grid-toolbar").show();
+        resizeGrid();
+    });
+
+
+    function onCompanyRequestEnd(e) {
+        //console.log(e.type);
+        if (e.type == "update") {
+            //alert("Data updated successfully");
+            $("#CompanyGrid").data("kendoGrid").dataSource.read();
+        }
+        if (e.type == "create") {
+            //alert("Data added successfully");
+            $("#CompanyGrid").data("kendoGrid").dataSource.read();
+        }
+        if (e.type == "destroy") {
+            //alert("Data added successfully");
+            $("#CompanyGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onClosePropName(e) {
+        e.preventDefault();
+    }
+
+
+                            </script>
+
+                        </text>);
+
+tabstrip.Add().Text("Users")
+.Content(@<text>
+                @(Html.Kendo().Grid<SanveoAIO.Domain.Models.Sp_GetUsers_Result>()
+                    .Name("UserGrid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(e => e.U_ID).Visible(false);
+                        columns.Bound(e => e.FirstName).Title("First Name").Width(120);
+                        columns.Bound(e => e.LastName).Title("Last Name").Width(120);
+                        columns.Bound(e => e.Username).Title("User Name").Width(120).Visible(false);
+                        columns.Bound(e => e.Emailid).Title("User Name").Width(120);
+                        columns.Bound(e => e.Password).Title("Password").ClientTemplate("<span>#: Array(data.Password.length).join('*') #</span>").EditorTemplateName("password").Width(120);
+                        columns.Bound(e => e.MobileNo).Title("Mobile No").Width(120);
+                        columns.Bound(e => e.Group_Name).Title("Group").EditorTemplateName("_UserGroup").ClientTemplate("#: Group_Name #").Width(120);
+                        //  columns.Bound(e => e.Profile).Title("Profile").EditorTemplateName("_AdminUserProfile").ClientTemplate("#: Profile #").Width(120);
+                        columns.Bound(e => e.CompName).Title("Company").EditorTemplateName("_Company").ClientTemplate("#: CompName #").Width(120);
+                        columns.Bound(e => e.ExpiredDate).Title("Expiry Date").Format("{0:dd-MM-yyyy}").EditorTemplateName("_DatePicker").Width(120);
+                        columns.Template(e => e.Active).ClientTemplate("<input type='checkbox' id='UserActive_#=U_ID#' #= Active ? checked='checked':'' # class='chkactive' disabled='disabled'/>")
+                        .HeaderTemplate("<label style='font-weight:normal'  id='UserActive_#=U_ID#' onclick='CurrentRowChckChangeUser(this.id,this.value);' >Active</label>").Width(80);
+                        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+                    })
+                    .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                    .Editable(editable => editable.Mode(GridEditMode.InLine))
+                    .Pageable(pageable => pageable
+                    .Refresh(true)
+                    .PageSizes(new int[] { 20, 50, 100 })
+                    .ButtonCount(5))
+                    .HtmlAttributes(new { style = "width:100%;border-radius:3px;" })
+                    .Resizable(resize => resize.Columns(true))
+                    .Reorderable(reorder => reorder.Columns(true))
+                    .ToolBar(toolbar => toolbar.Create())
+                    .Sortable()
+                    .Scrollable(scr => scr.Height(320))
+                    .Filterable()
+                     .Events(m => m.Change("onChangeUserGrid").Save("onUpdateUsers").Edit("onEditUserGrid"))
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(20)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.U_ID);
+                            model.Field(p => p.Active).Editable(true);
+                        })
+                        .Events(events =>
+                        {
+                            events.RequestEnd("onUserRequestEnd").Error("onError");
+                        })
+                        .Create(update => update.Action("SaveUser", "Inspire"))
+                        .Read(read => read.Action("GetUsers", "Inspire").Data("GridCompanyData"))
+                        .Update(update => update.Action("SaveUser", "Inspire"))
+                        .Destroy(update => update.Action("DeleteUser", "Inspire"))
+                    )
+                )
+
+                <script type="text/javascript">
+
+        var UserGroupGlobal = "";
+        var CompanyGlobal = "";
+        var AdminGlobal = "";
+        var UserProfileGlobal = "";
+        function onUpdateUsers(e) {
+            var C = $("#CompanyForGrid").data().kendoDropDownList.text();
+            var G = $("#GroupForGrid").data().kendoDropDownList.text();
+           // var P = $("#ProfileForGrid").data().kendoDropDownList.text();
+            var Fname = $("#FirstName").val();
+            var Lname = $("#LastName").val();
+            var Username = $("#Username").val();
+            var Password = $("#Password").val();
+            var MobileNo = $("#MobileNo").val();
+
+            if (Fname == "") {
+                alert("Enter First Name");
+                return;
+            }
+            if (Fname.length > 25) {
+                alert("First Name Cannot Be More Than 25 Characters");
+                return;
+            }
+
+            if (Lname == "") {
+                alert("Enter Last Name");
+                return;
+            }
+
+            if (Lname.length > 25) {
+                alert("Last Name CannotBe More Than 25 Characters");
+                return;
+            }
+
+            if (Username == "") {
+                alert("Enter Username");
+                return;
+            }
+
+            if (Fname != Fname.match(/^[a-zA-Z]+$/)) {
+                alert("Invalid First Name Data In Field");
+                return;
+            }
+
+             if (Lname != Lname.match(/^[a-zA-Z ]+$/)) {
+                 alert("Invalid Last Name Data In Field");
+                return;
+            }
+
+            if (Password == "") {
+                alert("Enter Password");
+                return;
+            }
+
+            if (Password.length < 8) {
+                alert("Password Should Be Atleast 8 Characters");
+                return;
+            }
+            else if (!Password.match(/[A-z]/)) {
+                alert("Password Should Be Atleast 1 Small Letter");
+                return;
+            }
+            else if (!Password.match(/[A-Z]/)) {
+                alert("Password Should Be Atleast 1 Capital Letter");
+                return;
+            }
+            else if (!Password.match(/\d/)) {
+                alert("Password Should Be Atleast 1 Number");
+                return;
+            }
+
+            var isEmail_re = /^\s*[\w\-\+_]+(\.[\w\-\+_]+)*\@@[\w\-\+_]+\.[\w\-\+_]+(\.[\w\-\+_]+)*\s*$/;
+            var Emailid = $('#Emailid').val();
+
+            if (isEmail_re.test(Emailid) != true) {
+                alert("(Username) Email ID Invalid");
+                return;
+            }
+
+            if (MobileNo != "") {
+                var regex = /^\d+$/;
+                if (!regex.test(MobileNo)) {
+                    alert("Mobile No. Should Contain Only Numbers");
+                    return;
+                }
+                else {
+                    if (MobileNo.length != 10) {
+                        alert("Mobile No. Should be 10 Digit");
+                        return;
+                    }
+                }
+            }
+
+            if (G == "Select Group") {
+                alert("Select Group");
+                return;
+            }
+
+  
+            if (C == "Select Company") {
+                alert("Select Company");
+                return;
+            }
+
+            var re = /\b\d{1,2}[\/-]\d{1,2}[\/-]\d{4}\b/;
+            if ($("#ExpiredDate").val() == "") {
+                alert("Select Expiry Date");
+                return;
+            }
+
+            var dt = $("#ExpiredDate").val();
+            if (!re.test(dt)) {
+                alert("Invalid Date in Expiry Date");
+                return;
+            }
+
+            var Group_Name = $("#GroupForGrid").data().kendoDropDownList.value();
+            e.model.set("Group_Name", Group_Name);
+          //  var Profile = $("#ProfileForGrid").data().kendoDropDownList.text();
+          //  e.model.set("Profile", Profile);
+            var CompName = $("#CompanyForGrid").data().kendoDropDownList.value();
+            e.model.set("CompName", CompName);
+        }
+
+        $("#UserGrid").on("click", ".k-grid-add", function (e) {
+            var row = $(e.target).closest("tr");
+            var grid = $("#UserGrid").data("kendoGrid");
+            var dataItem = grid.dataItem(row);
+        });
+
+        function onEditUserGrid(e) {
+            var Id = e.model.get("U_ID");
+            var includedid = e.model.get("Active");
+            var checkboxitemn = "UserActive_" + Id;
+            $("#" + checkboxitemn).prop("disabled", "");
+
+            $("#UserGrid").data("kendoGrid").select(".k-grid-edit-row");
+        }
+
+        $(function () {
+            $('#UserGrid').on('click', '.chkactive', function () {
+                var checked = $(this).is(':checked');
+                var grid = $('#UserGrid').data().kendoGrid;
+                var dataItem = grid.dataItem($(this).closest('tr'));
+                dataItem.set('Active', checked);
+            })
+        })
+
+        function onUserRequestEnd(e) {
+            //console.log(e.type);
+            if (e.type == "update") {
+
+                $("#UserGrid").data("kendoGrid").dataSource.read();
+            }
+            if (e.type == "create") {
+
+                $("#UserGrid").data("kendoGrid").dataSource.read();
+            }
+            if (e.type == "destroy") {
+
+                $("#UserGrid").data("kendoGrid").dataSource.read();
+            }
+        }
+        function onError(e, status) {
+            //console.log()
+            if (e.status == "update") {
+                alert(e.errors);
+                //console.log(e.errors);
+            }
+            else {
+                var msg = e.errors;
+                //console.log(e.errors);
+                //console.log(msg);
+                if (msg == undefined || msg == null || msg == "") {
+                }
+                else {
+                    alert(e.errors);
+                }
+
+            }
+        }
+
+        function CurrentRowChckChangeUser(id, val) {
+            var boolvalue = document.getElementById(id).checked;
+            globalactivechkUSER = document.getElementById(id).checked;
+               //console.log(globalactivechkUSER);
+        }
+
+        function onChangeUserGrid() {
+            var grid = $("#UserGrid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            UserGroupGlobal = selectedItem["Group_Name"];
+            UserProfileGlobal = selectedItem["Profile"];
+            CompanyGlobal = selectedItem["CompName"];
+            window.globalactivechkUSER = selectedItem["Active"];
+            var selectedItem1 = grid.select();
+            var selectedRowIndex = selectedItem1.index();
+   
+        }
+
+
+        function ddlCompanyBound() {
+            //console.log(CompanyGlobal);
+            var dropdowncompany = $("#CompanyForGrid").data("kendoDropDownList");
+            dropdowncompany.select(function (dataItem) {
+                return dataItem.CompName === CompanyGlobal;
+            });
+        }
+
+        function ddlUserGroupBound() {
+            //console.log(UserGroupGlobal);
+            var dropdowngroup = $("#GroupForGrid").data("kendoDropDownList");
+            dropdowngroup.select(function (dataItem) {
+                return dataItem.Group_Name === UserGroupGlobal;
+            });
+        }
+
+        //function ddlUserProfileBound() {
+        //    var dropdowngroup = $("#ProfileForGrid").data("kendoDropDownList");
+        //    dropdowngroup.select(function (dataItem) {
+        //        return dataItem.Profile === UserProfileGlobal;
+        //    });
+
+        //}
+        function filterAdminforgrid() {
+            return {
+                CompID: $("#CompanyForGrid").val()
+            };
+        }
+
+        function GridCompanyData(e) {
+            var grid = $("#CompanyGrid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            var compId;
+            if (selectedItem != null) {
+                 compId = selectedItem["CompID"];
+            }
+            else {
+                 compId = "";
+            }
+            return {
+                compId: compId
+            }
+        }
+                </script>
+
+
+</text>);
+
+tabstrip.Add().Text("Set Enterprise Project")
+.Content(@<text>
+                <div style="height:430px">
+                    <div class="col-xs-11" style="padding-left:0px;">
+                        <div class="col-xs-4" style="padding-left:0px;">
+                            @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("AllCompany")
+                                         .OptionLabel("Select Company")
+                                        .DataTextField("CompName")
+                                        .DataValueField("CompID")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCompanyID", "Inspire");
+                                            });
+                                        })
+                              .Events(e => { e.Change("onAllCompanyChange"); })
+                            )
+                        </div>
+                    </div>
+
+                    <div class="col-xs-11" style="padding-left:0px;">
+                        <br />
+                        <div class="col-xs-6" style="padding-left:0px;">
+                            <input id="Hubid" type="text" class="k-textbox" style="width:100%" placeholder="Enter Hub ID" />
+                        </div>
+                        <div class="col-xs-2">
+                            <input type="submit" id="btnHubid" value="Save ID" class="k-button" style="width:80%">
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-11" style="padding-left:0px;">
+                        <br />
+                        <div class="col-xs-6" style="padding-left:0px;">
+                            @(
+                       Html.Kendo().DropDownList()
+                                   .Name("ProjectName")
+                                   .DataTextField("text")
+                                   .DataValueField("value")
+                                   .HtmlAttributes(new { style = "width:100%" })
+
+                            )
+
+                        </div>
+                        <div class="col-xs-2">
+                            <input type="submit" id="btnGetProjects" value="Get Projects" class="k-button" style="width:80%">
+                        </div>
+                        <div class="col-xs-2">
+                            <input type="submit" id="btnNodeFolder" value="Set Active Project" class="k-button">
+                        </div>
+
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+
+                            window.foldid = [];
+                            window.projname = [];
+                            window.compid = "";
+
+                            $('#btnHubid').click(function (e) {
+
+                                var hubID = document.getElementById("Hubid").value;
+
+                                if (hubID == "") {
+                                    alert("Please Enter Doc HubId");
+                                    return;
+                                }
+
+                                if (compid == "") {
+                                    alert("Please Select Company");
+                                    return;
+                                }
+
+                                var sendata = JSON.stringify({
+                                    'Hubid': hubID,
+                                    'compid': compid
+
+                                });
+
+
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("SaveHub", "Inspire")',
+                                    data: sendata,
+                                    dataType: 'json',
+
+                                    success: function (data) {
+                                        alert('Id Details Saved.');
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                });
+
+
+                            });
+
+                            $('#btnGetProjects').click(function (e) {
+                                GetProjects();
+                            });
+
+
+                            function GetProjects() {
+
+                                if (compid == "") {
+                                    alert("Please Select Company");
+                                    return;
+                                }
+
+                                var sendata = JSON.stringify({
+                                    'compid': compid
+
+                                });
+
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("GetddlProjects", "Inspire")',
+                                    //type: 'get',
+                                    data: sendata,
+                                    dataType: 'json',
+
+                                    success: function (data) {
+                                        //console.log(data);
+
+                                        if (data != "") {
+                                            var Data = data.split('|');
+                                            if (Data.length > 0) {
+                                                for (var i = 0; i < Data.length - 1; i++) {
+                                                    var rt = Data[i].split('~');
+                                                    var projID = rt[0];
+                                                    projname[i] = rt[1];
+                                                    foldid[i] = rt[2];
+                                                    var foldname = rt[3];
+
+                                                    $("#ProjectName").data("kendoDropDownList").dataSource.add({ text: rt[1], value: rt[0] });
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            $("#ProjectName").data("kendoDropDownList").dataSource.data([])
+                                        }
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                });
+                            }
+
+                            $('#btnNodeFolder').click(function (e) {
+                                var cat = $("#ProjectName").data("kendoDropDownList");
+                                var projectname = cat.text();
+                                var projectID = cat.value();
+
+                                //console.log(projname.length);
+                                var fid = "";
+                                for (var i = 0; i < projname.length; i++) {
+                                    if (projname[i] == projectname) {
+                                        fid = foldid[i];
+                                    }
+
+                                }
+
+                                if (compid == "") {
+                                    alert("Please Select Company");
+                                    return;
+                                }
+
+                                //console.log(fid);
+                                var sendata = JSON.stringify({
+                                    'projectid': projectID,
+                                    'projectname': projectname,
+                                    'folderid': fid,
+                                    'compid': compid
+                                });
+
+
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("SaveNode", "Inspire")',
+                                    //type: 'get',
+                                    data: sendata,
+                                    dataType: 'json',
+
+                                    success: function (data) {
+                                        alert('Project Details Saved');
+
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                });
+
+                            });
+
+                            function GetprojectDetails() {
+                                var sendata = JSON.stringify({
+                                    'compid': compid
+                                });
+
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("GetNodes", "Inspire")',
+                                    data: sendata,
+                                    dataType: 'json',
+
+                                    success: function (data) {
+                                        //console.log(data.Data[0]);
+                                        if (data.Data[0] != undefined) {
+                                            //console.log(data);
+                                            //console.log(data.Data[0].HubId);
+                                            //console.log(data.Data[0].ProjectId);
+
+                                            var hubid = data.Data[0].HubId;
+                                            var projid = data.Data[0].ProjectId;
+
+                                            //console.log(projid);
+                                            document.getElementById("Hubid").value = hubid;
+                                        }
+                                        else { document.getElementById("Hubid").value = ""; }
+
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                });
+                            }
+
+                </script>
+
+
+</text>);
+                    tabstrip.Add().Text("Set Personal Project")
+                        .Content(@<text>
+        <div style="height:430px">
+            <div class="col-xs-11" style="padding-left:0px;">
+                <div class="col-xs-4" style="padding-left:0px;">
+                    @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("AllCompanyPersonal")
+                                         .OptionLabel("Select Company")
+                                        .DataTextField("CompName")
+                                        .DataValueField("CompID")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCompanyID", "Inspire");
+                                            });
+                                        })
+                            .Events(e => { e.Change("onAllCompanyPersonalChange"); })
+                    )
+                    <br /><br />
+                </div>
+                </div>
+            <div class="col-xs-11" style="padding-left:0px;">
+                <div class="col-xs-4" style="padding-left:0px;">
+                   
+                    <input id="TxtBucket" type="text" class="k-textbox" style="width:100%" placeholder="Enter Bucket" />
+                </div>
+                <div class="col-xs-2">
+                    <input type="submit" id="btnCreateBucket" onclick="CreateBucket();" value="Create Project" class="k-button" style="width:80%">
+                    <br /><br />
+                </div>
+                @*<div class="col-xs-2" style="padding-left:216px">
+                <input type="submit" id="btnDeleteproject" onclick="DeletePersonalProjectName();" value="Delete Project" class="k-button" style="width:80%">
+            </div>*@
+            </div>
+            <div class="col-xs-11" style="padding-left:0px;" >
+                <div class="col-xs-4" style="padding-left:0px;" >
+                   
+                    @(
+                             Html.Kendo().DropDownList()
+                            .Name("PersonalBucket")
+                            .OptionLabel("Select Project")
+                            .DataTextField("projectName")
+                            .DataValueField("projectId")
+                            .HtmlAttributes(new { style = "width:100%" })
+                             .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetAllBucket", "Inspire").Data("GetCompanyID");
+                                            });
+                                        })
+                    )
+                </div>
+                <div class="col-xs-2">
+                    <input type="submit" id="btnSetproject" onclick="AddPersonalProjectName();" value="Set Active Project" class="k-button" style="width:80%">
+                </div>
+            </div>
+        </div>
+
+        <script>
+               $("document").ready(function (e) {
+                   @*$.ajax({
+                       type: "POST",
+                       contentType: 'application/json',
+                       url: '@Url.Action("GetAllBucket", "Inspire")',
+                       dataType: 'json',
+                       success: function (data) {
+                           if (data != "") {
+                               var Data = data.split('|');
+                               if (Data.length > 0) {
+                                   for (var i = 0; i < Data.length - 1; i++) {
+                                       var rt = Data[i].split(',');
+                                       $("#PersonalBucket").data("kendoDropDownList").dataSource.add({ text: rt[1], value: rt[0] });
+                                   }
+                               }
+                           }
+                           else {
+                               $("#PersonalBucket").data("kendoDropDownList").dataSource.data([])
+                           }
+                       },
+                       error: function () {
+                           alert('error');
+                       }
+                   });*@
+               });
+            function onAllCompanyPersonalChange() {
+                $("#PersonalBucket").data("kendoDropDownList").dataSource.read();
+            }
+            function GetCompanyID() {
+                return {
+                    compid: $("#AllCompanyPersonal").data("kendoDropDownList").value(),
+                    compname : $("#AllCompanyPersonal").data("kendoDropDownList").text()
+                }
+            }
+            function CreateBucket()
+            {
+                var bucketname = $('#TxtBucket').val();
+                var compid = $("#AllCompanyPersonal").data("kendoDropDownList").value();
+                var compname = $("#AllCompanyPersonal").data("kendoDropDownList").text();
+
+                if (bucketname == "") {
+                    alert("Please Enter Project Name");
+                    return;
+                }
+
+                if (compid == "") {
+                    alert("Please Select Company");
+                    return;
+                }
+
+                var sendata = JSON.stringify({
+                    'ProjectName': compname+'_'+bucketname,
+                    'CompId': compid
+                });
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("SaveProject", "Inspire")',
+                    data: sendata,
+                    dataType: 'json',
+
+                    success: function (data) {
+                        alert(data);
+                        $("#PersonalBucket").data("kendoDropDownList").dataSource.read();
+                    },
+                    error: function () {
+                        alert('error');
+                    }
+                });
+            }
+            function DeletePersonalProjectName() {
+
+                            var compid = $("#AllCompanyPersonal").data("kendoDropDownList").value();
+                            var projectid = $("#AllProjectPersonal").data("kendoDropDownList").value();
+
+                            if (compid == null || compid == undefined || compid == "")
+                            {
+
+                                alert("please select company");
+                                return;
+                            }
+
+                            if (projectid == null || projectid == undefined || projectid == "")
+                            {
+                                alert("Please Select Project");
+                                return;
+                            }
+
+                                var sendata = JSON.stringify({'Compid': compid,'Projectid': projectid});
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("DeleteProject", "Inspire")',
+                                    data: sendata,
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        alert("ProjectName Deleted Sucessfully");
+                                    var PersonalProject = $("#AllProjectPersonal").data("kendoDropDownList");
+                                    PersonalProject.dataSource.read();
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                });
+                        }
+
+
+                            function AddPersonalProjectName(e)
+                               {
+                                var projectid = $('#PersonalBucket').data("kendoDropDownList").value();
+                                var compid = $("#AllCompanyPersonal").data("kendoDropDownList").value();
+
+                                if (projectid == "") {
+                                    alert("Please Select Project Name");
+                                    return;
+                                }
+
+                                if (compid == "") {
+                                    alert("Please Select Company");
+                                    return;
+                                }
+                                 var sendata = JSON.stringify({
+                                     'ProjectId': projectid,
+                                     'CompId': compid
+                                });
+                                $.ajax({
+                                    type: "POST",
+                                    contentType: 'application/json',
+                                    url: '@Url.Action("SetActiveProject", "Inspire")',
+                                    data: sendata,
+                                    dataType: 'json',
+
+                                    success: function (data) {
+                                        alert(data);                                       
+                                    },
+                                    error: function () {
+                                        alert('error');
+                                    }
+                                 });
+                            }
+
+        </script>
+
+</text>);
+
+tabstrip.Add().Text("Groups")
+
+.Content(@<text>
+                <div>
+                    @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetGroup_Result>()
+                        .Name("GroupGrid")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(e => e.Group_Id).Visible(false).Width(30).HtmlAttributes(new { style = "text-align:center;" });
+                            columns.Bound(c => c.Group_Name).Title("Group Name");
+                        })
+                        .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                        .Editable(editable => editable.Mode(GridEditMode.InLine))
+                        .Pageable(pageable => pageable
+                        //.Refresh(true)
+                        .PageSizes(new int[] { 5, 10, 20 })
+                        .ButtonCount(5))
+                        .HtmlAttributes(new { style = "border-radius:3px;" })
+                        .Resizable(resize => resize.Columns(true))
+                        .Reorderable(reorder => reorder.Columns(true))
+                        .Sortable()
+                        .Scrollable(scr => scr.Height(320))
+                        .Filterable()
+                        .Events(m => m.Change("onChangeGroup"))
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .PageSize(20)
+                            .Model(model =>
+                            {
+                                model.Id(p => p.Group_Id);
+                                model.Field(e => e.Group_Name).Editable(true);
+                            })
+                           .Read(read => read.Action("GetGroup", "Inspire"))//.Data("additionalData"))
+
+                    )
+                    )
+                </div>
+
+
+                <script>
+                            var lastsel = "";
+                            Refreshbutton(0);
+
+                            $("#GroupGrid").kendoTooltip({
+                                filter: "th",
+                                position: "top",
+                                content: function (e) {
+                                    var cell = $(e.target);
+                                    var content = cell.text();
+                                    return content;
+                                }
+                            }).data("kendoTooltip");
+
+                            function Refreshbutton(id) {
+
+                                if (id == 0) {
+
+                                    $('#btnGroupSave').addClass('k-button k-state-disabled');
+                                    $('#btnGroupAdd').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                    $('#btnGroupEdit').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                    $('#btnGroupDelete').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                }
+                                if (id == 1) {
+                                    $('#btnGroupSave').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                }
+                                if (id == 2) {
+
+                                    $('#btnGroupSave').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                    $('#btnGroupAdd').addClass('k-button k-state-disabled');
+                                    $('#btnGroupDelete').addClass('k-button k-state-disabled');
+                                }
+                                if (id == 3) {
+
+                                    $('#btnGroupSave').removeClass('k-button k-state-disabled').addClass('k-button k-state');
+                                    $('#btnGroupEdit').addClass('k-button k-state-disabled');
+                                    $('#btnGroupDelete').addClass('k-button k-state-disabled');
+                                    $('#btnGroupAdd').addClass('k-button k-state-disabled');
+                                }
+                                if (id == 4) {
+
+                                    $('#btnGroupSave').addClass('k-button k-state-disabled');
+                                    $('#btnGroupEdit').addClass('k-button k-state-disabled');
+                                    $('#btnGroupAdd').addClass('k-button k-state-disabled');
+                                }
+                            }
+
+                            function onChangeGroup() {
+
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                var selectedItem1 = grid.select();
+                                var selectedRowIndex = selectedItem1.index();
+                                var selectedItem = grid.dataItem(grid.select());
+
+                                if (lastsel != selectedRowIndex) {
+                                    Refreshbutton(0);
+                                    grid.cancelRow();
+                                    lastsel = selectedRowIndex;
+                                }
+                                else {
+
+                                }
+                            }
+
+
+                            $("#btnGroupAdd").click(function (e) {
+                                Refreshbutton(3);
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                grid.addRow();
+                                grid.select('tr:eq(0)');
+                            });
+
+                            $("#btnGroupCancel").click(function (e) {
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                grid.cancelChanges();
+                            });
+
+                            $("#btnGroupRefresh").click(function (e) { RefreshGrid(); Refreshbutton(0); });
+
+                            function RefreshGrid() {
+                                $("#GroupGrid").data("kendoGrid").dataSource.read();
+                            }
+
+                            $("#btnGroupEdit").click(function (e) {
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                var selectedItem = grid.select();
+                                var selectedRowIndex = selectedItem.index();
+                                selectedRowIndex = selectedRowIndex + 1;
+                                if (selectedRowIndex == 0) {
+                                    alert("Please select the row");
+                                }
+                                else {
+                                    Refreshbutton(3);
+                                    grid.editRow($("#GroupGrid tr:eq(" + selectedRowIndex + ")"));
+                                }
+                            });
+
+                            $("#btnGroupSave").click(function (e) {
+
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                var selectedItem = grid.dataItem(grid.select());
+                                //console.log(selectedItem);
+                                var Group_Id = selectedItem["Group_Id"];
+                                var Group_Name = selectedItem["Group_Name"];
+
+                                if (Group_Name.trim() == "") {
+
+                                    alert("Please Insert Some Value");
+                                }
+                                else {
+                                    var value = JSON.stringify({
+
+                                        'Group_Id': Group_Id,
+                                        'Group_Name': Group_Name
+                                    });
+
+                                    $.ajax({
+                                        type: "POST",
+                                        contentType: 'application/json',
+                                        url: '@Url.Action("SaveGroup", "Inspire")',
+                                        data: value,
+                                        dataType: "json",
+                                        success: function (result) {
+                                            alert("Saved Successfully");
+                                            Refreshbutton(0);
+                                            RefreshGrid();
+                                        },
+                                        error: function (result) {
+                                            alert("Error");
+                                        }
+                                    });
+                                }
+                            });
+
+
+                            $("#btnGroupDelete").click(function (e) {
+                                var grid = $("#GroupGrid").data("kendoGrid");
+                                var selectedItem = grid.dataItem(grid.select());
+                                if (selectedItem == null) {
+                                    alert("Please select the row");
+                                }
+                                else {
+                                    if (confirm('Are you sure you want to delete ?')) {
+                                        var Group_Id = selectedItem["Group_Id"];
+                                        var value = JSON.stringify({
+                                            'Group_Id': Group_Id,
+                                        });
+
+                                        $.ajax({
+                                            type: "POST",
+                                            contentType: 'application/json',
+                                            url: '@Url.Action("DeleteGroup", "Inspire")',
+                                            data: value,
+                                            dataType: "json",
+                                            success: function (result) {
+                                                alert("Delete Successfully");
+                                                RefreshGrid();
+                                            },
+                                            error: function (result) {
+                                                alert("Error");
+                                            }
+                                        });
+                                    }
+                                    else { }
+                                }
+                            });
+
+                            function resizeGrid() {
+                                var grid = $("#ClassGrid").data("kendoGrid");
+                                var gridheight = $("#ClassGrid").height();
+                                var actualheight = $(window).height();
+                                if (actualheight == "900") {
+                                    var viewportHeight = ($(window).height() - ($(window).height() / 2.8));
+                                    $("#ClassGrid").css('height', viewportHeight);
+                                    //console.log(viewportHeight);
+                                }
+                                else {
+                                    var viewportHeight = ($(window).height() - ($(window).height() / 2.2));
+                                    $("#ClassGrid").css('height', viewportHeight);
+                                    //console.log(viewportHeight);
+                                }
+                            }
+
+
+                            $(document).ready(function () {
+                                resizeGrid();
+                            });
+
+
+                </script>
+</text>);
+
+
+
+                })
+        )
+
+    </div>
+
+
+    <script>
+
+    function OnSelectTabs() {
+        Refreshbutton(0);
+        RefreshGrid();
+    }
+
+    function ActiveFOlder(e) {
+
+        var currenttab = $(e.item).find("> .k-link").text();
+        if (currenttab == "Set Enterprise Project") {
+            GetprojectDetails();
+        }
+    }
+
+    if ('@ViewBag.group' == "1") {
+
+        function onAllCompanyChange() {
+
+            var v = $("#AllCompany").data("kendoDropDownList").value();
+            compid = v;
+            GetprojectDetails();
+            GetProjects();
+
+        }
+    }
+
+    function CheckUserID() {
+        if ('@ViewBag.group' == "1") {
+            var v = $("#AllCompany").data("kendoDropDownList").value();
+            return { compid: v }
+        }
+        else {
+            return { compid: "" }
+        }
+
+    }
+
+    </script>
+
+</body>
+</html>

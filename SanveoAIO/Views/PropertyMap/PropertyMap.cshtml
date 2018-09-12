@@ -1,0 +1,507 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PropertMap</title>
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
+
+    @* Files to Export Model to excel *@
+    <script src="~/Scripts/libraries/notify.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js?v=2.13"></script>
+    <script src="~/Scripts/ForgeViewer.js"></script>
+    <script src="~/Scripts/libraries/Blob.js"></script>
+    <script src="~/Scripts/libraries/FileSaver.min.js"></script>
+    <script src="~/Scripts/libraries/xlsx.core.min.js"></script>
+    <script src="~/Scripts/ForgeXLS1.js"></script>
+    
+    <style>
+       .k-grid-add {
+           color: #fff;
+           background-color: #3f51b5 !important;
+           border-color: #3c52ce;
+           -webkit-box-shadow: none;
+           box-shadow: none;
+        }
+
+       .modal {
+           position: fixed;
+           z-index: 999;
+           height: 100%;
+           width: 100%;
+           top: 0;
+           background-color: Black;
+           filter: alpha(opacity=60);
+           opacity: 0.6;
+           /*-moz-opacity: 0.8;*/
+       }
+
+       .center {
+           z-index: 1000;
+           margin: 300px auto;
+           /*padding: 20px;*/
+           width: 120px;
+           background-color: #000000;
+           border-radius: 10px;
+           filter: alpha(opacity=100);
+           opacity: 1;
+           transform: none;
+           /*-moz-opacity: 1;*/
+       }
+
+       .center img {
+           height: 30px;
+           width: 30px;
+       }
+    </style>
+</head>
+<body>
+    <div class="k-content">
+
+        <ul class="nav nav-tabs" id="PropertyTabStrip">
+            <li class="active" id="PropertyValueTab1"><a data-toggle="tab" href="#PropertyOption1">Option 1</a></li>
+            @*<li id="PropertyValueTab2"><a data-toggle="tab" href="#PropertyOption2">Option 2</a></li>*@
+        </ul>
+
+        <div class="tab-content">
+        <div id="PropertyOption1" class="tab-pane fade in active " style="margin-top:5px;">
+            <div class="col-xs-12" style="padding-left: 0px;">
+
+                <div class="col-xs-3" style="padding-left: 0px;">
+                            @(
+            Html.Kendo().DropDownList()
+                .Name("searchfiletype")
+                .DataTextField("NodeName")
+                .DataValueField("id")
+                .OptionLabel("Select File")
+                .HtmlAttributes(new { style = "width:100%" })
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetFiles", "Home");
+                    });
+                })
+                .Events(e => { e.Change("onSearchFileChange"); })
+                                  )
+                </div>
+
+                <div class="col-xs-2">
+                                @(
+                Html.Kendo().DropDownList()
+                    .Name("searchversiontype")
+                    .DataTextField("version")
+                    .DataValueField("Urn")
+                    .OptionLabel("Select Version")
+                    .HtmlAttributes(new { style = "width:100%" })
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("GetVersion", "Home").Data("DDLSearchFileData");
+                        });
+                    })
+                    .Events(e => { e.Change("onSearchVersionChange"); })
+                                      )
+                </div>
+            </div>
+
+            <div class="col-xs-12" style="padding-left:0px;margin-top: -10px;" >
+                <br/>
+                @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetPropertyMapDetails_Result>()
+                      .Name("GridPropertyMap")
+                      .Columns(columns =>
+                      {
+                          columns.Bound(e => e.Id).Visible(false);
+                          columns.Bound(e => e.CategoryName).Title("Category Name").EditorTemplateName("ddlCategoryMap").ClientTemplate("#: CategoryName #").Width(180);
+                          columns.Bound(e => e.CopyFrom).Title("Copy From").EditorTemplateName("ddlCFPropertyMap").ClientTemplate("#: CopyFrom #").Width(120);
+                          columns.Bound(e => e.CopyTo).Title("Copy To").EditorTemplateName("ddlCTPropertyMap").ClientTemplate("#: CopyTo #").Width(120);
+                          columns.Command(command =>
+                          {
+                              command.Edit();
+                              command.Destroy();
+                          }).Width(200);
+                      })
+                      .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                      .Editable(editable => editable.Mode(GridEditMode.InLine))
+                      .Pageable(pageable => pageable
+                          .Refresh(true)
+                          .PageSizes(new int[] {20, 50, 100})
+                          .ButtonCount(5))
+                      .HtmlAttributes(new {style = "width:101%;border-radius:3px;"})
+                      .Resizable(resize => resize.Columns(true))
+                      .Reorderable(reorder => reorder.Columns(true))
+                      .ToolBar(toolbar => toolbar.Create())
+                      .Sortable()
+                      .Scrollable(scr => scr.Height(200))
+                      .Filterable()
+                      .Events(m => m.Change("onChangePropertyMap").Save("onUpdatePropertyMap").Edit("onEditPropertyMap"))
+                      .DataSource(dataSource => dataSource
+                          .Ajax()
+                          .PageSize(20)
+                          .Model(model =>
+                          {
+                              model.Id(p => p.Id);
+                          })
+                          .Events(events =>
+                          {
+                              events.RequestEnd("onUserRequestEnd").Error("onError");
+                          })
+                          .Create(update => update.Action("SavePropertyMap", "PropertyMap"))
+                          .Read(read => read.Action("GetPropertyMap", "PropertyMap").Data("GridReadData"))
+                          .Update(update => update.Action("SavePropertyMap", "PropertyMap"))
+                          .Destroy(update => update.Action("DeletePropertyMap", "PropertyMap"))
+                      )
+                      )
+            </div>
+
+            <div class="col-xs-12" style="padding-left:0px;">
+                <br/>
+                <input type="button" id="BtnUpdatePropertyVAlue" value="Update Property" style="text-transform:capitalize;" class="k-button" onclick="UpdatePropertyvalue();" />
+            </div>
+            <div class="modal">
+                <div class="center">
+                    <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+<script>
+    var CategoryGlobal = "";
+    var PropertyFormGlobal = "";
+    var PropertyToGlobal = "";
+
+    function GridReadData() {
+  
+        return {
+            Urn: $("#searchversiontype").data("kendoDropDownList").value(),
+        }
+    }
+
+    function onUserRequestEnd(e) {
+        //console.log(e.type);
+        if (e.type == "update") {
+
+            $("#GridPropertyMap").data("kendoGrid").dataSource.read();
+        }
+        if (e.type == "create") {
+
+            $("#GridPropertyMap").data("kendoGrid").dataSource.read();
+        }
+        if (e.type == "destroy") {
+
+            $("#GridPropertyMap").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onError(e, status) {
+        //console.log()
+        if (e.status == "update") {
+            alert(e.errors);
+            //console.log(e.errors);
+        } else {
+            var msg = e.errors;
+            //console.log(e.errors);
+            //console.log(msg);
+            if (msg == undefined || msg == null || msg == "") {
+            } else {
+                alert(e.errors);
+            }
+
+        }
+    }
+
+    function onChangePropertyMap(e) {
+        var grid = $("#GridPropertyMap").data("kendoGrid");
+        var selectedItem = grid.dataItem(grid.select());
+        CategoryGlobal = selectedItem["CategoryName"];
+        PropertyFormGlobal = selectedItem["CopyFrom"];
+        PropertyToGlobal = selectedItem["CopyTo"];
+
+    }
+
+    function onUpdatePropertyMap(e) {
+        var urn = $("#searchversiontype").data("kendoDropDownList").value();
+        var categoryname = $("#categorys").data().kendoDropDownList.text();
+        var propertyForm = $("#PropertyList").data().kendoDropDownList.text();
+        var propertyTo = $("#PropertyList1").data().kendoDropDownList.text();
+
+        if (urn == '') {
+            alert("Please Select File");
+            return;
+        }
+        if (categoryname == 'Select Category') {
+            alert("Please Select Category Name");
+            return;
+        }
+        if (propertyForm == 'Select Property') {
+            alert("Please Select Property  Name");
+            return;
+        }
+        if (propertyTo == 'Select Property') {
+            alert("Please Enter Property Name");
+            return;
+        }
+
+        e.model.set("CategoryName", categoryname);
+        e.model.set("PropertyFrom", propertyForm);
+        e.model.set("PropertyTo", propertyTo);
+        e.model.set("Urn", urn);
+    }
+
+    window.catname ="";
+    var CFProp = "";
+    var CtProp = "";
+
+    function onEditPropertyMap(e) {
+
+        $("#GridPropertyMap").data("kendoGrid").select(".k-grid-edit-row");
+         catname = e.model.get("CategoryName");
+         CFProp = e.model.get("CopyFrom");
+         CtProp = e.model.get("CopyTo");
+         console.log(catname);
+    }
+
+    function UpdateTextPropertyvalue() {
+
+        var urn = $("#searchversiontypeTab2").data("kendoDropDownList").value();
+        var categoryname = $("#categorysTab2").data("kendoDropDownList").text();
+        var propertyname = $("#PropertyListTab2").data("kendoDropDownList").text();
+        var propertyvalue = $("#PropertyValueText").val();
+
+        if (urn == '') {
+            alert("Please Select File");
+            return;
+        }
+
+        if (categoryname == 'Select Category') {
+            alert("Please Select Category Name");
+            return;
+        }
+        if (propertyname == 'Select Property') {
+            alert("Please Select Property Name");
+            return;
+        }
+        if (propertyvalue == '') {
+            alert("Please Enter Property Value");
+            return;
+        }
+        var value = JSON.stringify({
+            "URN": urn,
+            "CategoryName": categoryname,
+            "PropertyName": propertyname,
+            "PropertyValue": propertyvalue
+        });
+        $.ajax({
+            type: "POST",
+            contentType: 'application/json',
+            url: '@Url.Action("UpdateTextPropertyValue", "PropertyMap")',
+            data: value,
+            dataType: "json",
+            success: function(result) {
+                alert("Value Updated Successfully");
+            },
+        });
+
+    }
+
+
+    function UpdatePropertyvalue() {
+
+        var urn = $("#searchversiontype").data("kendoDropDownList").value();
+        if (urn == '') {
+            alert("Please Select File");
+            return;
+        }
+
+        var value = JSON.stringify({
+            "URN": urn,
+        
+        });
+        $('.modal').show();
+        $.ajax({
+            type: "POST",
+            contentType: 'application/json',
+            url: '@Url.Action("UpdatePropertyValue", "PropertyMap")',
+            data: value,
+            dataType: "json",
+            success: function (result) {
+                $('.modal').hide();
+                alert("Value Updated Successfully");
+            },
+        });
+    }
+
+    function onSearchFileChange() {
+        $("#searchversiontype").data("kendoDropDownList").dataSource.read();
+    }
+
+    function onSearchFileChange1() {
+        $("#searchversiontypeTab2").data("kendoDropDownList").dataSource.read();
+    }
+
+    function DDLSearchFileData() {
+        return {
+            filename: $("#searchfiletype").data("kendoDropDownList").text()
+        };
+    }
+
+    function DDLSearchFileData1() {
+        return {
+            filename: $("#searchfiletypeTab2").data("kendoDropDownList").text()
+        };
+    }
+
+    function onSearchVersionChange() {
+
+        $("#GridPropertyMap").data("kendoGrid").dataSource.read();
+      
+    }
+
+    function onSearchVersionChangeTab2() {
+        $("#categorysTab2").data("kendoDropDownList").dataSource.read();
+    }
+
+    function searchCategoryData() {
+        return {
+            urn: $("#searchversiontype").data("kendoDropDownList").value()
+        };
+    }
+
+    function searchCategoryDataTab2() {
+        return {
+            urn: $("#searchversiontypeTab2").data("kendoDropDownList").value()
+        };
+    }
+
+    function onSearchCategorysChange() {
+        $("#PropertyList").data("kendoDropDownList").dataSource.read();
+        $("#PropertyList1").data("kendoDropDownList").dataSource.read();
+
+    }
+
+    function ddlCategoryBound() {
+        console.log(CategoryGlobal);
+        var dropdowngroup = $("#categorys").data("kendoDropDownList");
+        dropdowngroup.select(function (dataItem) {
+            return dataItem.Category_Name === CategoryGlobal;
+        });
+
+        $("#PropertyList").data("kendoDropDownList").dataSource.read();
+        $("#PropertyList1").data("kendoDropDownList").dataSource.read();
+    }
+
+    function ddlPropertyFromBound() {
+        console.log(PropertyFormGlobal);
+        var dropdowngroup = $("#PropertyList").data("kendoDropDownList");
+        dropdowngroup.select(function (dataItem) {
+            return dataItem.Property_Name === PropertyFormGlobal;
+        });
+    }
+
+    function ddlPropertyToBound() {
+        console.log(PropertyToGlobal);
+        var dropdowngroup = $("#PropertyList1").data("kendoDropDownList");
+        dropdowngroup.select(function (dataItem) {
+            return dataItem.Property_Name === PropertyToGlobal;
+        });
+    }
+
+    function onSearchCategorysChange1() {
+        
+        $("#PropertyList1").data("kendoDropDownList").dataSource.read();
+    }
+    function onSearchCategorysChangeTab2() {
+
+        $("#PropertyListTab2").data("kendoDropDownList").dataSource.read();
+    }
+    function onPropertyListChange() {
+        $("#PropertyValues").data("kendoDropDownList").dataSource.read();
+    }
+
+    function filterTemplateCSSTemplate1() {
+
+        var cat1 = $("#categorys").data("kendoDropDownList").text();
+       var catvalue = $("#categorys").data("kendoDropDownList").value();
+  
+       if (catvalue == "") {
+            cat1 = CategoryGlobal;
+        }
+    
+        return {
+            urn: $("#searchversiontype").data("kendoDropDownList").value(),
+            category: cat1
+        };
+    }
+
+    function filterPropertyValues() {
+        var id = $("#categorys").data("kendoDropDownList").text();
+        var propname = $("#PropertyList").data("kendoDropDownList").text();
+        return {
+            urn: $("#searchversiontype").data("kendoDropDownList").value(),
+            category: id,
+            PropertyName: propname
+        };
+    }
+
+    function filterTemplateCSSTemplate2() {
+
+        var id = $("#categorys").data("kendoDropDownList").text();
+        if (id == '') {
+            id = CategoryGlobal;
+        }
+        return {
+            urn: $("#searchversiontype").data("kendoDropDownList").value(),
+            category: id
+        };
+    }
+
+    function filterTemplateCSSTemplateTab2() {
+
+        var id = $("#categorysTab2").data("kendoDropDownList").text();
+
+        return {
+            urn: $("#searchversiontypeTab2").data("kendoDropDownList").value(),
+            category: id
+        };
+    }
+</script>
+</body>
+</html>

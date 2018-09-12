@@ -1,0 +1,1374 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ADAClearance</title>
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
+
+    @* Files to Export Model to excel *@
+    <script src="~/Scripts/libraries/notify.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js?v=2.13"></script>
+    <script src="~/Scripts/ForgeViewer.js"></script>
+    <script src="~/Scripts/libraries/Blob.js"></script>
+    <script src="~/Scripts/libraries/FileSaver.min.js"></script>
+    <script src="~/Scripts/libraries/xlsx.core.min.js"></script>
+    <script src="~/Scripts/ForgeXLS1.js"></script>
+
+
+    <script src="~/Scripts/tableExport/xlsx.core.min.js"></script>
+    <script src="~/Scripts/tableExport/FileSaver.min.js"></script>
+    <script src="~/Scripts/tableExport/html2canvas.min.js"></script>
+
+    <script src="~/Scripts/tableExport/tableExport.js"></script>
+    <script src="~/Scripts/tableHeadFixer.js"></script>
+
+    <style>
+        #progressBar {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+             visibility:hidden;
+        }
+
+        .highlighted {
+            background: red;
+        }
+
+        .nonhighlighted {
+            background: white;
+        }
+    </style>
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            /*-moz-opacity: 0.8;*/
+        }
+
+        .center {
+            z-index: 1000;
+            margin: 300px auto;
+            /*padding: 20px;*/
+            width: 120px;
+            background-color: #000000;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            transform: none;
+            /*-moz-opacity: 1;*/
+        }
+
+            .center img {
+                height: 30px;
+                width: 30px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="k-content">
+
+        <ul class="nav nav-tabs" id="QuantityMainTabStrip">
+            <li class="active" id=""><a data-toggle="tab" href="#ADAParameter" onclick="">Parameter Wise</a></li>
+            <li id=""><a data-toggle="tab" href="#ADAGeometry" onclick="">Geometry Wise</a></li>
+            <li id=""><a data-toggle="tab" href="#ADASlopeCheck" onclick="">Slope Wise</a></li>
+        </ul>
+
+
+        <div class="tab-content col-xs-12">
+            <div id="ADAParameter" class="tab-pane fade in active" style="">
+                <br />
+                <div class="col-xs-12">
+                    <div class="col-xs-3" style="margin-left:7px;margin-top:4px">
+                        <label style="font-size:16px">Check Value :  </label>
+                    </div>
+
+                    <div class="col-xs-3" style="margin-left:-18px">
+                        <select class="form-control" style="width:100px" id="SearchOptionAda">
+                            <option value="" style="font-size:large"></option>
+                            <option value="<="><=</option>
+                            <option value=">=">>=</option>
+                            <option value="=">=</option>
+                        </select>
+
+                    </div>
+                    <div class="col-xs-5" style="margin-left:-54px">
+                        <input type="text" class="form-control " id="txtSearchPropValueADa" placeholder="Property Value" style="width:155px">
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <br />
+                    <div class="col-xs-5">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetypepara")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChangepara"); })
+                        )
+
+                    </div>
+
+                    <div class="col-xs-5">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("versiontypepara")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Base Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("GridSearchModelDatapara");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onVersionChangepara"); })
+                        )
+
+                    </div>
+
+                </div>
+                <div class="col-xs-12">
+                    <br />
+                    <div class="col-xs-5">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("ddlcategory")
+                                        .DataTextField("Category_Name")
+                                        .DataValueField("Id")
+                                        .OptionLabel("Select Category")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetADACategory", "ADAClearance").Data("GetADAModelData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onADACategoryChange"); })
+                        )
+
+
+                    </div>
+                    <div class="col-xs-5">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("ddlcatProperty")
+                                        .DataTextField("Property_Name")
+                                        .DataValueField("Id")
+                                        .OptionLabel("Select Parameter")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetADAProperty", "ADAClearance").Data("GetADACatData");
+                                            });
+                                        })
+
+                        )
+
+                    </div>
+                    <div>
+                        <input type="button" class="btn-primary form-control input-sm mb-2 mr-sm-2 mb-sm-0" value="Search" id="BtnAdasearchPara" style="width:101px;height:36px" />
+                    </div>
+                </div>
+                <br />
+                <div class="k-content col-xs-12" style="height:15px">
+
+                </div>
+
+                <center><div id="loadingGroupPara" style="display:none;align-content:center">Loading..... Please Wait</div></center>
+                <div class="k-content col-xs-12" style="height:315px;overflow-x:auto;">
+                    <table id="ADAdatatablePara" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:700px;">
+
+                        <thead>
+                            <tr>
+
+                                <th>Category Name</th>
+                                <th>Family Type</th>
+                                <th>Revitid</th>
+                                <th>Forgeid</th>
+                                <th>Level</th>
+                                <th>RoomName</th>
+                                <th>Parameter</th>
+                            </tr>
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <div id="ADAGeometry" class="tab-pane fade" style="">
+                <br />
+
+
+                <div class="col-xs-12">
+                    <div>
+                        <input type="button" id="btnsavebounding" value="Save Geometry" style="text-transform: capitalize;margin-left:17px" class="k-button" />
+                    </div>
+
+                </div>
+
+                <div class="col-xs-12">
+                    <br />
+                    <div class="modal" id="Modelloader">
+                        <div class="center">
+                            <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetype")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChange"); })
+                        )
+
+                    </div>
+
+                    <div class="col-xs-3">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("versiontype")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("GridSearchModelData");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onVersionChange"); })
+                        )
+
+                    </div>
+
+                    <div class="col-xs-3">
+                        <select class="form-control" style="width:152px" id="CategoryOptionAda">
+                            <option value="">Select Category</option>
+                            <option value="<=">Floors</option>
+                            <option value=">=">Ramps</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <input type="button" class="btn-primary form-control input-sm mb-2 mr-sm-2 mb-sm-0" value="Search" id="BtnAdasearch" style="width:101px;height:36px" />
+                    </div>
+
+                </div>
+
+                <br /><br /><br />
+                <div class="k-content col-xs-12" style="height:15px">
+
+                </div>
+
+                <center><div id="loadingGroup" style="display:none;align-content:center">Loading..... Please Wait</div></center>
+                <div class="k-content col-xs-12" style="height:350px;overflow-x:auto;">
+                    <table id="ADAdatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:700px;">
+
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Family Type</th>
+                                <th>Revitid</th>
+                                <th>Forgeid</th>
+                                <th>Level</th>
+                                <th>RoomName</th>
+                                <th>Parameter</th>
+                            </tr>
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+            <div id="ADASlopeCheck" class="tab-pane fade" style="">
+                <br />
+
+
+                @*<div class="col-xs-12">
+                    @*<div>
+                        <input type="button" id="btnsavebounding" value="Save Geometry" style="text-transform: capitalize;margin-left:17px" class="k-button" />
+                    </div>*@
+
+                @*</div>*@
+
+                <div class="col-xs-12">
+                    <br />
+                    @*<div class="modal" id="Modelloader">
+                            <div class="center">
+                                <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                            </div>
+                        </div>*@
+                    <div class="col-xs-3" style="margin-left:-42px;">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("filetypeForSlope")
+                                        .DataTextField("NodeName")
+                                        .DataValueField("id")
+                                        .OptionLabel("Select File")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetFiles", "Home");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onFileChangeForSlope"); })
+                        )
+
+                    </div>
+
+                    <div class="col-xs-2" style="margin-left:-6px;">
+                        @(
+                                        Html.Kendo().DropDownList()
+                                        .Name("versiontypeForSlope")
+                                        .DataTextField("version")
+                                        .DataValueField("Urn")
+                                        .OptionLabel("Select Version")
+                                        .HtmlAttributes(new { style = "width:100%" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetVersion", "Home").Data("GridSearchModelDataForSlope");
+                                            });
+                                        })
+                                        .Events(e => { e.Change("onVersionChangeForSlope"); })
+                        )
+
+                    </div>
+
+                    <div class="col-xs-2" style="margin-left:-6px;">
+                        <select class="form-control" style="width:152px" id="CategoryOptionAdaForSlope">
+                            <option value="">Select Category</option>
+                            <option value="<=">Floors</option>
+                            <option value=">=">Ramps</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1" style="margin-left:-32px;">
+                        <input type="button" class="btn-primary form-control input-sm mb-2 mr-sm-2 mb-sm-0" value="Process" id="btnSlopeCheck" style="width:101px;height:36px" />
+                    </div>
+                    <div class="col-xs-1" style="">
+                        <input type="button" class="btn-primary form-control input-sm mb-2 mr-sm-2 mb-sm-0" value="ClearAll" id="btnClearAll" style="width:101px;height:36px" onclick="window.parent.SlopeClearAll(); ClearAllButton();" />
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="col-xs-1" style="width: 126PX;MARGIN-TOP: 8PX;">
+                            Enter Slope:
+                        </div>
+                        <div class="col-xs-1">
+
+                            <input type="text" class="form-control " id="txtCheckSlope" placeholder="Enter Slope" style="width:126px;margin-left: -51px;">
+                        </div>
+                    </div>
+                    <div class="col-xs-1" style="margin-left:20px;">
+                        <a id="exportFeederDetailsGrid" onclick="downloadSlopeADATables();" href="javascript:void(0);" title="Export to Excel" style="font-size:21px;"><span class="fa fa-file-excel-o"></span></a>
+                    </div>
+
+                </div>
+
+
+                <div class="k-content col-xs-12" style="margin-left: -25px;margin-top: 7px;">
+                    <div class="demo-section k-content">
+
+                        @(Html.Kendo().ProgressBar()
+              .Name("progressBar")
+              .Min(0)
+              .Max(100)
+              // .HtmlAttributes(new { @style = "background-color:green" })
+              .Type(ProgressBarType.Percent)
+                        //.Events(e =>
+                        //{
+                        //    e.Change("onChange");
+                        //    e.Complete("onComplete");
+                        //})
+                        )
+
+                    </div>
+
+                </div>
+
+                <center><div id="loadingGroupForSlope" style="display:none;align-content:center"><img src="~/Content/loading256.gif" height="100" /></div></center>
+
+                <div id="TblDIV" class="k-content col-xs-12">
+                    @*prk*@
+
+                    <div class="k-content col-xs-6" style="height:350px;overflow-x:auto; margin-left:-56px;width: 668px">
+                        <table id="ADAdatatableForSlopeComplaint" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:639px;">
+
+                            <thead>
+                                <tr>
+                                    <th colspan="6" style="text-align:left;background-color: #b4ff77;">
+                                        Compliant Floors
+                                    </th>
+                                </tr>
+                                <tr>
+
+                                    <th>Element Id</th>
+                                    @*<th>ForgeId</th>*@
+                                    <th>Surface Id</th>
+                                    @*<th>Category Name</th>*@
+                                    <th>Base Level</th>
+                                    <th>Slope</th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="k-content col-xs-6" style="height:350px;overflow-x:auto; margin-left:-6px;width: 720px;">
+                        <table id="ADAdatatableForSlopeNonComplaint" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:659px;">
+
+                            <thead>
+                                <tr>
+                                    <th colspan="7" style="text-align:left;background-color: #f96767">
+                                        Non-Compliant Floors
+                                        @*<a id="exportGridNonCompliant" onclick="downloadSlopeADATablesNonCompliant();" href="javascript:void(0);" title="Export to Excel" style="font-size:21px;color:white;margin-left: 30px;"><span class="fa fa-file-excel-o"></span></a>*@
+                                    </th>
+                                </tr>
+                                <tr>
+
+                                    <th>Element Id</th>
+                                    @*<th>ForgeId</th>*@
+                                    <th>Surface Id</th>
+                                    <th>TwoPointSlope</th>
+                                    @*<th>Category Name</th>*@
+                                    <th>Base Level</th>
+                                    <th>Slope</th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="k-content col-xs-6" style="display:none">
+                        <table id="ADAdatatableForSlopeComplaint1" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:650px;">
+
+                            <thead>
+                                <tr><th colspan="4" style="text-align:center;background-color: #00FF00;"> Non-Compliant Floors</th></tr>
+                                <tr>
+
+                                    <th>Element Id</th>
+                                    @*<th>ForgeId</th>*@
+                                    <th>Surface Id</th>
+                                    @*<th>Category Name</th>*@
+                                    <th>Base Level</th>
+                                    <th>Slope</th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="k-content col-xs-6" style="display:none">
+                        <table id="ADAdatatableForSlopeNonComplaint1" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:15px;width:650px;">
+
+                            <thead>
+                                <tr><th colspan="4" style="text-align:center;background-color: #FF0000;color:white">[Category-Floor] Non Compliant</th></tr>
+                                <tr>
+
+                                    <th>Element Id</th>
+                                    @*<th>ForgeId</th>*@
+                                    <th>Surface Id</th>
+                                    @*<th>Category Name</th>*@
+                                    <th>Base Level</th>
+                                    <th>Slope</th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    @*SlopeCheck Tab*@
+
+
+    <script>
+
+        var checkslope = '';
+
+        function ClearAllButton() {
+
+            $(".ForgeidCom" + localStorage.getItem("ForgeidCom")).css('background-color', '');
+
+
+            $(".ForgeidNonCom" + localStorage.getItem("ForgeidNonCom")).css('background-color', '');
+
+
+            $(".surfaceee" + localStorage.getItem("SurfaceLocalID")).css('background-color', '');
+
+            $(".Twopointslope" + localStorage.getItem("Twopointslope")).css('background-color', '');
+        }
+
+
+        function onFileChangeForSlope() {
+
+            var ddl = $("#versiontypeForSlope").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+
+        }
+
+        var Category_Data = '';
+        function GridSearchModelDataForSlope(e) {
+            var VersionNo = $("#versiontypeForSlope").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetypeForSlope").data("kendoDropDownList").text();
+            var urn = $("#versiontypeForSlope").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName,
+                categoryname: Category_Data
+            }
+        }
+
+
+        function onVersionChangeForSlope() {
+            //var ddl = $("#ddlcategory").data("kendoDropDownList");
+            // ddl.dataSource.read();
+        }
+
+        var pb = "";
+        $('#btnSlopeCheck').click(function (e) {
+
+            //if ($('#SearchOptionAda option:selected').text() == "") {
+            //    alert("Please Select Operator")
+            //    return;
+            //}
+            //else {
+            //    if ($('#txtSearchPropValueADa').val() == "") {
+            //        alert("Please Enter Property Value")
+            //        return;
+            //    }
+
+            //}
+            pb = $("#progressBar").data("kendoProgressBar");
+
+            var FileName = $("#filetypeForSlope").data("kendoDropDownList").text();
+            if (FileName == "Select File") {
+                alert("Please Select File");
+                return false;
+            }
+
+
+            var urn = $("#versiontypeForSlope").data("kendoDropDownList").value();
+            if (urn == "") {
+                alert("Please Select Version");
+                return false;
+            }
+
+            if ($('#CategoryOptionAdaForSlope option:selected').text() == "Select Category") {
+                alert("Please Select Category")
+                return;
+            }
+
+
+
+
+
+                checkslope = $("#txtCheckSlope").val();
+
+            if (checkslope == "" || checkslope == null || checkslope == undefined) {
+                alert("Slope cannot be blank");
+                return;
+            }
+
+            //if (checkslope.length != 4) {
+            //    alert("slope value should be 4 characters only.");
+            //    return;
+            //}
+            if ((checkslope.indexOf("/")) != 1) {
+                alert("Second Character should be /");
+                return;
+            }
+            pb.value(10);
+
+            // pb.value(1);
+
+
+                $("#img").show();
+                var s = $("#txtCheckSlope").val();
+
+
+                if (s.indexOf("=") != -1) {
+                    var array = s.split('/');
+                    var newarray = array[1].split("=");
+                    var decVal = parseFloat(array[0] / newarray[0]).toFixed(4);
+
+                    document.getElementById("txtCheckSlope").value = array[0] + '/' + newarray[0] + '=' + decVal;
+                    var slopestring = checkslope.split('/');
+                    checkslope = parseInt(slopestring[0]) / parseInt(slopestring[1]);
+                }
+                else {
+
+                    var array = s.split('/');
+                    array[1] = parseFloat(array[1]).toFixed(4);
+                    var decVal = parseFloat(array[0] / array[1]).toFixed(4);
+                    document.getElementById("txtCheckSlope").value = $("#txtCheckSlope").val() + '=' + decVal;
+                    var slopestring = checkslope.split('/');
+                    checkslope = parseInt(slopestring[0]) / parseInt(slopestring[1]);
+                }
+
+
+
+                var SlopeData = document.getElementById("txtCheckSlope").value;
+
+                localStorage.setItem("Slope", SlopeData);
+
+                $("#loadingGroupForSlope").show();
+                var value = JSON.stringify({
+                    "Urn": urn,
+                    "Categoryname": $('#CategoryOptionAdaForSlope option:selected').text(),
+
+                });
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: value,
+                    url: '@Url.Action("GetForgeIds", "ADAClearance")',
+                    dataType: "json",
+                    success: function (result) {
+
+                        var RevitID = [];
+                        var BaseLevel = [];
+                        var ForgeIds = [];
+                        for (var i = 0; i < result.detailsTable.length; i++) {
+                            //  alert(result.detailsTable[i].Forgeid);
+                            ForgeIds.push(result.detailsTable[i].Forgeid);
+                            RevitID.push(result.detailsTable[i].Revitid);
+                            BaseLevel.push(result.detailsTable[i].BaseLevel);
+                        }
+                        pb.value(25);
+                        console.log(ForgeIds);
+                        var ret = window.parent.RunShader(ForgeIds, checkslope, RevitID, BaseLevel);
+                        pb.value(50);
+                        BindAdvaSearchForSlope(ret);
+                        if (ret == false || ret == 'False') {
+                            //   $("#loadingGroupForSlope").hide();
+                            return;
+                        }
+                        //  window.parent.RunShader(ForgeIds, checkslope);
+                        pb.value(75);
+                        GetForgeIdSlopeData();
+                        pb.value(100);
+
+                        //BindAdvaSearchForSlope(result);
+                        $("#loadingGroupForSlope").hide();
+                    },
+                    error: function (result) {
+                        //$("#loadingGroupForSlope").hide();
+                    }
+                });
+
+
+        });
+
+        function GetForgeIdSlopeData()
+        {
+
+            var urn = $("#versiontypeForSlope").data("kendoDropDownList").value();
+
+
+            $("#loadingGroupForSlope").show();
+            var value = JSON.stringify({
+                "Urn": urn,
+                "Categoryname": $('#CategoryOptionAdaForSlope option:selected').text(),
+
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                data: value,
+                url: '@Url.Action("GetADAClearanceSlopeSearch", "ADAClearance")',
+                dataType: "json",
+                success: function (result) {
+
+                 //   BindAdvaSearchForSlope(Bulkdata);
+                  //  $("#loadingGroupForSlope").hide();
+                },
+                error: function (result) {
+                 //   $("#loadingGroupForSlope").hide();
+                   // pb.value(100);
+                }
+            });
+        }
+
+        function BindAdvaSearchForSlope(Bulkdata) {
+
+
+            $("#ADAdatatableForSlopeNonComplaint tbody").html('');
+            $("#ADAdatatableForSlopeComplaint tbody").html('');
+
+            $("#ADAdatatableForSlopeNonComplaint1 tbody").html('');
+            $("#ADAdatatableForSlopeComplaint1 tbody").html('');
+            var Bulkdatasplit = [];
+            var BulkdataStore = "";
+            var Points = '';
+            // pb.value(25);
+            var ASCompliant = '';
+            var ASCompliant1 = '';
+            var ASNCompliant = '';
+            var ASNCompliant1 = '';
+
+
+
+
+            for (var i = 0; i < Bulkdata.length; i++) {
+                var Comp = 100 * i / Bulkdata.length;
+
+                //  sendFile1(Comp);
+
+                //if (Comp = 5){
+                //    pb.value(parseInt(Comp));
+                //}
+
+                //if (Comp = 15) {
+                //    pb.value(parseInt(Comp));
+                //}
+
+                //if (Comp = 25) {
+                //    pb.value(parseInt(Comp));
+                //}
+
+                //if (Comp = 50 ) {
+                //    pb.value(parseInt(Comp));
+                //}
+
+                Bulkdatasplit = Bulkdata[i].split("|");
+                //console.log('Bulkdatasplit' + " / " + Bulkdatasplit);
+
+
+                var Revitid = Bulkdatasplit[0];
+                var Forgeid = Bulkdatasplit[1];
+                var SurfaceId = Bulkdatasplit[2];
+                var Slope = Bulkdatasplit[3];
+                var BaseLevel = Bulkdatasplit[4];
+                Points = Bulkdatasplit[5];
+                var suraceNew = SurfaceId + "/" + Points;
+
+                //console.log(Bulkdatasplit);
+                //var Slope2 = result.detailsTable[i].Slope2;
+
+                if (Slope < checkslope) {
+                    ASCompliant += '<tr><td style="width:4%"><input type ="button" value = ' + Revitid + '  id =' + Forgeid + ' class = "ForgeidCom' + Forgeid + '" onclick="window.parent.ADAHighlightbox1(this.id); ForgeidColorButtonCom(this.id);"/></td><td style="width:4%"> <input type ="button" value =' + SurfaceId + ' id =' + suraceNew + ' class = "surfaceee' + SurfaceId + '" onclick="GetPointCoordinates(this.id)"/></td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td> <td class="nr" style="display:none">' + Points + '</td></tr>';
+
+                    //$("#ADAdatatableForSlopeComplaint tbody").append('<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%"><input type ="button" value = ' + Forgeid + '  id =' + Forgeid + ' class = "ForgeidCom' + Forgeid + '" onclick="window.parent.ADAHighlightbox1(this.id); ForgeidColorButtonCom(this.id);"/></td><td style="width:4%"> <input type ="button" value =' + SurfaceId + ' id =' + SurfaceId + ' class = "surfaceee' + SurfaceId + '" onclick="GetPointCoordinates(this.id,' + Forgeid + ')"/></td><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td></tr>');
+
+                    ASCompliant1 += '<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%">' + SurfaceId + ' </td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td><td class="nr" style="display:none">' + Points + '</td></tr>';
+                    //$("#ADAdatatableForSlopeComplaint1 tbody").append('<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%">' + Forgeid + '</td><td style="width:4%">' + SurfaceId + ' </td><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td></tr>');
+
+                }
+                else {
+
+                    ASNCompliant += '<tr><td style="width:4%"> <input type ="button" value = ' + Revitid + '  id =' + Forgeid + '  class = "ForgeidNonCom' + Forgeid + '" onclick="window.parent.ADAHighlightbox1(this.id);ForgeidColorButtonNonCom(this.id);"/></td><td style="width:4%"> <input type ="button" value = ' + SurfaceId + '  id =' + suraceNew + '  class = "surfaceee' + SurfaceId + '" onclick="GetPointCoordinates(this.id)"/></td><td style="width:4%"> <input type ="button" value = ' + SurfaceId + '  id =' + suraceNew + ' class = "Twopointslope' + SurfaceId + '" onclick="GetPointCoordinates2(this.id)"/></td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td><td class="nr" style="display:none">' + Points + '</td></tr>';
+
+                    //$("#ADAdatatableForSlopeNonComplaint tbody").append('<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%"> <input type ="button" value = ' + Forgeid + '  id =' + Forgeid + '  class = "ForgeidNonCom' + Forgeid + '" onclick="window.parent.ADAHighlightbox1(this.id);ForgeidColorButtonNonCom(this.id);"/></td><td style="width:4%"> <input type ="button" value = ' + SurfaceId + '  id =' + SurfaceId + '  class = "surfaceee' + SurfaceId + '" onclick="GetPointCoordinates(this.id,' + Forgeid + ')"/></td><td style="width:4%"> <input type ="button" value = ' + SurfaceId + '  id =' + SurfaceId + ' class = "Twopointslope' + SurfaceId + '" onclick="GetPointCoordinates2(this.id)"/></td><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td></tr>');
+
+                    ASNCompliant1 += '<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%">' + SurfaceId + ' </td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td><td class="nr" style="display:none">' + Points + '</td></tr>';
+
+                    //$("#ADAdatatableForSlopeNonComplaint1 tbody").append('<tr><td style="width:4%">' + Revitid + '</td><td style="width:4%">' + Forgeid + '</td><td style="width:4%">' + SurfaceId + ' </td><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + BaseLevel + '</td><td style="width:4%">' + Slope + '</td></tr>');
+                }
+            }
+            $("#ADAdatatableForSlopeComplaint tbody").append(ASCompliant);
+            $("#ADAdatatableForSlopeComplaint1 tbody").append(ASCompliant1);
+            $("#ADAdatatableForSlopeNonComplaint tbody").append(ASNCompliant);
+            $("#ADAdatatableForSlopeNonComplaint1 tbody").append(ASNCompliant1);
+            //pb.value(100);
+
+
+            $("#ADAdatatableForSlopeComplaint").show();
+
+            $("#ADAdatatableForSlopeNonComplaint").show();
+
+            $("#ADAdatatableForSlopeComplaint").tableHeadFixer({});
+            $("#ADAdatatableForSlopeNonComplaint").tableHeadFixer({});
+
+
+
+
+
+
+            pb.value(100);
+        }
+
+        //XLS Download
+
+        function ForgeidColorButtonNonCom(Forgeid) {
+            if ($(".ForgeidNonCom" + Forgeid).css("background-color") == "rgb(221, 221, 221)") {
+                $(".ForgeidCom" + localStorage.getItem("ForgeidCom")).css('background-color', '');
+                $(".ForgeidNonCom" + localStorage.getItem("ForgeidNonCom")).css('background-color', '');
+                $(".surfaceee" + localStorage.getItem("SurfaceLocalID")).css('background-color', '');
+                $(".Twopointslope" + localStorage.getItem("Twopointslope")).css('background-color', '');
+                $(".ForgeidNonCom" + Forgeid).css('background-color', '#4eb1ea');
+                localStorage.setItem("ForgeidNonCom", Forgeid);
+            }
+            else {
+                $(".ForgeidNonCom" + Forgeid).css('background-color', '#DDDDDD');
+            }
+        }
+        function ForgeidColorButtonCom(Forgeid) {
+            if ($(".ForgeidNonCom" + Forgeid).css("background-color") == "rgb(221, 221, 221)") {
+                $(".ForgeidCom" + localStorage.getItem("ForgeidCom")).css('background-color', '');
+                $(".ForgeidNonCom" + localStorage.getItem("ForgeidNonCom")).css('background-color', '');
+                $(".surfaceee" + localStorage.getItem("SurfaceLocalID")).css('background-color', '');
+                $(".Twopointslope" + localStorage.getItem("Twopointslope")).css('background-color', '');
+                $(".ForgeidCom" + Forgeid).css('background-color', '#4eb1ea');
+                localStorage.setItem("ForgeidCom", Forgeid);
+            }
+            else {
+                $(".ForgeidNonCom" + Forgeid).css('background-color', '#DDDDDD');
+
+            }
+        }
+
+        function GetPointCoordinates(SurfaceId) {
+
+            $("#ADAdatatableForSlopeCompliant tbody tr td:first-child").each(function (){
+
+                $(this).find("input").css('background-color','#DDDDDD');
+
+            });
+
+            $("#ADAdatatableForSlopeNonCompliant tbody tr td:first-child").each(function (){
+
+                $(this).find("input").css('background-color','#DDDDDD');
+
+            });
+
+
+
+            var SurfaceIdsplit = SurfaceId.split('/');
+            var SurfaceIdsplit1 = SurfaceIdsplit[0];
+
+            $(".ForgeidCom" + localStorage.getItem("ForgeidCom")).css('background-color', '');
+            $(".ForgeidNonCom" + localStorage.getItem("ForgeidNonCom")).css('background-color', '');
+            $(".surfaceee" + localStorage.getItem("SurfaceLocalID")).css('background-color', '');
+            $(".Twopointslope" + localStorage.getItem("Twopointslope")).css('background-color', '');
+            $(".surfaceee" + SurfaceIdsplit1).css('background-color', '#4eb1ea');
+            localStorage.setItem("SurfaceLocalID", SurfaceIdsplit1);
+            window.parent.DrawTriangle(SurfaceIdsplit[1]);
+        }
+
+        function GetPointCoordinates2(SurfaceId) {
+
+           $("#ADAdatatableForSlopeCompliant tbody tr td:first-child").each(function (){
+
+                $(this).find("input").css('background-color','#DDDDDD');
+
+
+
+            });
+
+            $("#ADAdatatableForSlopeNonCompliant tbody tr td:first-child").each(function (){
+
+                $(this).find("input").css('background-color','#DDDDDD');
+
+            });
+
+
+
+            var SurfaceIdsplit = SurfaceId.split('/');
+            var SurfaceIdsplit1 = SurfaceIdsplit[0];
+            window.parent.DrawTriangle2(SurfaceIdsplit[1]);
+
+
+
+            var SurfaceId = SurfaceId.split('/');
+            $(".ForgeidCom" + localStorage.getItem("ForgeidCom")).css('background-color', '');
+            $(".ForgeidNonCom" + localStorage.getItem("ForgeidNonCom")).css('background-color', '');
+            $(".surfaceee" + localStorage.getItem("SurfaceLocalID")).css('background-color', '');
+            $(".Twopointslope" + localStorage.getItem("Twopointslope")).css('background-color', '');
+            $(".surfaceee" + SurfaceIdsplit1).css('background-color', '#4eb1ea');
+            localStorage.setItem("SurfaceLocalID", SurfaceIdsplit1);
+
+        }
+
+        function downloadSlopeADATables() {
+
+
+            $('#ADAdatatableForSlopeComplaint1 tbody tr td:last-child').each(function () {   //remove last td
+                $(this).remove();
+            });
+
+            $('#ADAdatatableForSlopeComplaint1 tbody tr td').each(function () {  // set border to all td
+                $(this).css('border', 'thin solid black');
+            });
+
+
+            $('#ADAdatatableForSlopeNonComplaint1 tbody tr td:last-child').each(function () {   //remove last td
+                $(this).remove();
+            });
+
+            $('#ADAdatatableForSlopeNonComplaint1 tbody tr td').each(function () {  // set border to all td
+                $(this).css('border', 'thin solid black');
+            });
+
+
+            $("#ADAdatatableForSlopeComplaint1").table2excel({
+                name: "Complaint",
+                filename: "Complaint",
+                fileext: ".xls"
+            });
+            $("#ADAdatatableForSlopeNonComplaint1").table2excel({
+                name: "NonComplaint",
+                filename: "NonComplaint",
+                fileext: ".xls"
+            });
+
+        }
+
+        $("#ADAdatatableForSlopeComplaint tr").click(function () {
+
+            var selected = $(this).hasClass("highlight");
+            $("#data tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+        });
+
+        $("#ADAdatatableForSlopeNonComplaint1 tr").click(function () {
+
+            var selected = $(this).hasClass("highlight");
+            $("#data tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+        });
+
+    </script>
+
+
+    @*Geometry Tab*@
+
+    <script>
+
+        $(document).ready(function () {
+            //  var ddl = $("#ddlcategory").data("kendoDropDownList");
+            //  ddl.dataSource.read();
+            // document.getElementById("result").innerHTML = localStorage.getItem("Slope");
+
+            if (localStorage.getItem("Slope")!=null)
+               $("#txtCheckSlope").val(localStorage.getItem("Slope"));
+
+
+        });
+
+        function GetADAModelData() {
+
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+
+            return {
+                Urn: urn,
+                VersionNo: v
+
+            }
+
+        }
+
+        function onADACategoryChange() {
+
+            var ddl = $("#ddlcatProperty").data("kendoDropDownList");
+            ddl.dataSource.read();
+        }
+
+
+        $('#BtnAdasearch').click(function (e) {
+
+            //if ($('#SearchOptionAda option:selected').text() == "") {
+            //    alert("Please Select Operator")
+            //    return;
+            //}
+            //else {
+            //    if ($('#txtSearchPropValueADa').val() == "") {
+            //        alert("Please Enter Property Value")
+            //        return;
+            //    }
+
+            //}
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            if (FileName == "Select File") {
+                alert("Please Select File");
+                return false;
+            }
+
+
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            if (urn == "") {
+                alert("Please Select Version");
+                return false;
+            }
+
+            if ($('#CategoryOptionAda option:selected').text() == "Select Category") {
+                alert("Please Select Category")
+                return;
+            }
+
+            //var para = $("#ddlcatProperty").data("kendoDropDownList").text();
+            //if (para == "Select Parameter") {
+            //    alert("Please Select Parameter");
+            //    return false;
+            //}
+
+            $("#loadingGroup").show();
+            var value = JSON.stringify({
+                "Urn": urn,
+                "Categoryname": $('#CategoryOptionAda option:selected').text(),
+
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                data: value,
+                url: '@Url.Action("GetADAClearanceGeometrySearch", "ADAClearance")',
+                dataType: "json",
+                success: function (result) {
+
+                    BindAdvaSearch(result);
+                    $("#loadingGroup").hide();
+                },
+                error: function (result) {
+                    $("#loadingGroup").hide();
+                }
+            });
+
+        });
+
+        function BindAdvaSearch(result) {
+            console.log("--values--");
+            console.log(result);
+            console.log(result.length);
+            console.log(result.detailsTable.length);
+
+            $("#ADAdatatable tbody").html('');
+
+            for (var i = 0; i < result.detailsTable.length; i++) {
+
+                var Category_Name = result.detailsTable[i].Category_Name;
+                var Family_Type = result.detailsTable[i].Family_Type;
+                var Revitid = result.detailsTable[i].Revitid;
+                var Forgeid = result.detailsTable[i].Forgeid;
+                var Level = result.detailsTable[i].Level;
+                var RoomName = result.detailsTable[i].RoomName;
+                var Property_Value = result.detailsTable[i].Property_Value;
+
+
+
+                $("#ADAdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + Family_Type + '</td><td style="width:4%">' + Revitid + '</td><td style="width:4%"> <input type ="button" value = ' + Forgeid + '  id =' + Forgeid + ' onclick="window.parent.ADAHighlightbox1(this.id);window.parent.onSlopeClick(this.id);"/></td><td style="width:4%">' + Level + '</td><td style="width:4%">' + RoomName + '</td><td style="width:4%">' + Property_Value + '</td></tr>');
+            }
+
+            $("#ADAdatatable").show();
+        }
+
+    </script>
+
+    <script>
+
+        function onFileChange() {
+
+            var ddl = $("#versiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+
+        }
+
+        var Category_Data = '';
+        function GridSearchModelData(e) {
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName,
+                categoryname: Category_Data
+            }
+        }
+
+
+        function onVersionChange() {
+            //var ddl = $("#ddlcategory").data("kendoDropDownList");
+            // ddl.dataSource.read();
+        }
+
+        $("#btnsavebounding").click(function (e) {
+
+            window.parent.fnSlopeCoordinate();
+
+        });
+
+    </script>
+
+
+    @*Paramter Tab*@
+
+    <script>
+
+            $(document).ready(function () {
+                var ddl = $("#ddlcategory").data("kendoDropDownList");
+                ddl.dataSource.read();
+
+            });
+
+            function GetADAModelData() {
+
+                var urn = $("#versiontypepara").data("kendoDropDownList").value();
+                var v = $("#versiontypepara").data("kendoDropDownList").text();
+                v = v.split('-')[0].trim();
+
+                return {
+                    Urn: urn,
+                    VersionNo: v
+
+                }
+
+            }
+
+            function onADACategoryChange() {
+
+                var ddl = $("#ddlcatProperty").data("kendoDropDownList");
+                ddl.dataSource.read();
+            }
+
+            function GetADACatData() {
+                var urn1 = $("#versiontypepara").data("kendoDropDownList").value();
+                var CatName = $("#ddlcategory").data("kendoDropDownList").text();
+                return {
+                    Urn: urn1,
+                    CategoryName: CatName
+
+                }
+            }
+
+
+            $('#BtnAdasearchPara').click(function (e) {
+
+                if ($('#SearchOptionAda option:selected').text() == "") {
+                    alert("Please Select Operator")
+                    return;
+                }
+                else {
+                    if ($('#txtSearchPropValueADa').val() == "") {
+                        alert("Please Enter Property Value")
+                        return;
+                    }
+
+                }
+
+                var FileName = $("#filetypepara").data("kendoDropDownList").text();
+                if (FileName == "Select File") {
+                    alert("Please Select File");
+                    return false;
+                }
+
+
+                var urn = $("#versiontypepara").data("kendoDropDownList").value();
+                if (urn == "") {
+                    alert("Please Select Version");
+                    return false;
+                }
+
+                var category = $("#ddlcategory").data("kendoDropDownList").text();
+                if (category == "Select Category") {
+                    alert("Please Select Category");
+                    return false;
+                }
+
+                var para = $("#ddlcatProperty").data("kendoDropDownList").text();
+                if (para == "Select Parameter") {
+                    alert("Please Select Parameter");
+                    return false;
+                }
+
+                $("#loadingGroupPara").show();
+                var value = JSON.stringify({
+                    "Urn": urn,
+                    "Categoryname": category,
+                    "Propertyname": para,
+                    "Propertyvalue": $('#txtSearchPropValueADa').val(),
+                    "Operator": $('#SearchOptionAda option:selected').text(),
+
+                });
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: value,
+                    url: '@Url.Action("GetADAClearanceSearch", "ADAClearance")',
+                    dataType: "json",
+                    success: function (result) {
+
+                        BindAdvaSearchpara(result);
+                        $("#loadingGroupPara").hide();
+                    },
+                    error: function (result) {
+                        $("#loadingGroupPara").hide();
+
+                    }
+                });
+
+            });
+
+        function BindAdvaSearchpara(result)
+        {
+            console.log("--values--");
+            console.log(result);
+            console.log(result.length);
+            console.log(result.detailsTable.length);
+
+            $("#ADAdatatablePara tbody").html('');
+
+            for (var i = 0; i < result.detailsTable.length; i++) {
+
+                var Category_Name = result.detailsTable[i].Category_Name;
+                var Family_Type = result.detailsTable[i].Family_Type;
+                var Revitid = result.detailsTable[i].Revitid;
+                var Forgeid = result.detailsTable[i].Forgeid;
+                var Level = result.detailsTable[i].Level;
+                var RoomName = result.detailsTable[i].RoomName;
+                var Property_Value = result.detailsTable[i].Property_Value;
+
+
+
+                $("#ADAdatatablePara tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + Family_Type + '</td><td style="width:4%">' + Revitid + '</td><td style="width:4%"> <input type ="button" value = ' + Forgeid + '  id =' + Forgeid + ' onclick="window.parent.ADAHighlightbox1(this.id)"/></td><td style="width:4%">' + Level + '</td><td style="width:4%">' + RoomName + '</td><td style="width:4%">' + Property_Value + '</td></tr>');
+            }
+
+            $("#ADAdatatablePara").show();
+        }
+
+    </script>
+
+    <script>
+
+        function onFileChangepara() {
+
+            var ddl = $("#versiontypepara").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+
+        }
+
+        var Category_Data = '';
+        function GridSearchModelDatapara(e) {
+            var VersionNo = $("#versiontypepara").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetypepara").data("kendoDropDownList").text();
+            var urn = $("#versiontypepara").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName,
+                categoryname: Category_Data
+            }
+        }
+
+
+        function onVersionChangepara() {
+            var ddl = $("#ddlcategory").data("kendoDropDownList");
+            ddl.dataSource.read();
+        }
+
+    </script>
+</body>
+</html>

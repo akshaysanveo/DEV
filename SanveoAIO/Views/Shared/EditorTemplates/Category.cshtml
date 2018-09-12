@@ -1,0 +1,12 @@
+﻿
+
+@(
+       Html.Kendo().DropDownList()
+                   .Name("Category")  //is this Name important?
+                   .DataTextField("text")
+                   .DataValueField("value")
+                    //.SelectedIndex(1)
+                   
+                   .Events(e=>e.Change("onChange"))
+//.BindTo((System.Collections.IEnumerable)ViewBag.GENERIC)
+)

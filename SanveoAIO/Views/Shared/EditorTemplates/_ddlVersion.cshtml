@@ -1,0 +1,20 @@
+﻿@(
+       Html.Kendo().DropDownList()
+       .Name("ddlVersionList")
+                              // .OptionLabel("Select version")
+                              .DataTextField("version")
+                              .DataValueField("Urn")
+                              .Events(e => { e.Change("onddlVersionChange"); })
+                              .DataSource(source =>
+                              {
+                                  source.Read(read =>
+                                  {
+                                      read.Action("GetVersion", "Home").Data("GetVersionListFileUrn");
+                                  });
+                              })
+                              .Events(e => e.DataBound("ddlVersionBound"))
+                              .SelectedIndex(1)
+                              .HtmlAttributes(new { style = "width: 100%" })
+)
+
+

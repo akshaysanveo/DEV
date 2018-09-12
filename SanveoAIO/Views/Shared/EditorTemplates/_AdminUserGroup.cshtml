@@ -1,0 +1,24 @@
+﻿@(
+       Html.Kendo().DropDownList()
+
+                   .Name("GroupForGrid")  //is this Name important?
+                   .DataTextField("Group_Name")
+                   .DataValueField("Group_Id")
+                     .DataSource(source =>
+                     {
+                         source.Read(read => { read.Action("GetAdminUserGroup", "Inspire"); });
+                     })
+                     .Events(e =>
+                     {
+                         e.DataBound("ddlUserGroupBound");
+                     })
+
+                  .OptionLabel("Select Group")
+
+
+
+)
+
+
+
+

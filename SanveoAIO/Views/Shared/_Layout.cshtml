@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET MVC Application</title>
+    @*@Styles.Render("~/Content/css")*@
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    <title>SanveoAIO</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+
+    <style type="text/css">
+        span.themeChooser {
+            margin-left: 30px;
+        }
+
+
+        div.form-group {
+            visibility: hidden;
+        }
+
+        #control-sidebar-heading {
+            margin-top: 1000px;
+        }
+        /* Large desktops and laptops */
+        @@media (min-width: 1200px) {
+            div.navbar-custom-menu {
+                display: block;
+            }
+
+            .skin-blue-light .main-footer {
+                border-top-color: rgb(255, 255, 255);
+            }
+
+            #SideBarLogoutMenu {
+                display: none;
+            }
+        }
+
+        /* Landscape tablets and medium desktops */
+        @@media (min-width: 992px) and (max-width: 1199px) {
+            div.navbar-custom-menu {
+                display: block;
+            }
+
+            #SideBarLogoutMenu {
+                display: none;
+            }
+        }
+
+        /* Portrait tablets and small desktops */
+        @@media (min-width: 768px) and (max-width: 991px) {
+            div.navbar-custom-menu {
+                display: block;
+            }
+
+            #SideBarLogoutMenu {
+                display: none;
+            }
+        }
+
+        /* Landscape phones and portrait tablets */
+        @@media (max-width: 767px) {
+            div.navbar-custom-menu {
+                display: none;
+            }
+
+            #SideBarLogoutMenu {
+                display: block;
+            }
+        }
+
+        /* Portrait phones and smaller */
+        @@media (max-width: 480px) {
+            div.navbar-custom-menu {
+                display: none;
+            }
+
+            #SideBarLogoutMenu {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini skin-blue">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="#" class="logo" style="text-decoration : none;background-color:white">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                @*<span class="logo-mini">Inspire</span>*@
+                <!-- logo for regular state and mobile devices -->
+                @*<span class="logo-lg">SanveoInspire</span>*@
+                <span class="logo-lg"><img src="~/content/SanveoInspire.png" style="width:100%;"/></span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <a href="#" style="font-size:14px;color:white;" class="logo">
+                        Hello : <span id="EmailId"></span>
+                    </a>
+                    <a href="#" class="logo" style="font-size:14px;color:white;background-color:#3c8dbc;width:150px;" title="@ViewBag.validity Days Remaining of your trail period">
+                      <i class="fa fa-clock-o fa-lg" aria-hidden="true" title="@ViewBag.validity Days Remaining of your trail period"></i>&nbsp; @ViewBag.validity Days Remaining
+                    </a>
+                    @*<a href="@Url.Content("~")Inspire/Help" class="logo" style="font-size:14px;color:white;background-color:#3c8dbc;width:50px;" target="_blank">
+                        <i class="fa fa-question-circle fa-lg" aria-hidden="true" title="Help"></i>
+                    </a>*@
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-right:10px;">
+                                <i class="fa fa-user"></i>
+                                <span class="hidden-xs" id="UserName">
+
+                                </span>
+                                <i class="caret"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header" style="height:195px;">
+
+                                    <img id="ProfileImageLayout" style="border-radius: 30%;width:30%;height:50%;" src="@Url.Content("~/UploadFiles/ProfilePic/Avatar.png")">
+
+                                    <div style="margin-left:1px;font-size:17px;color:white;" id="Userfullname">
+                                    </div>
+                                    <div id="Designation" style="font-size:17px;color:white;">
+                                    </div>
+                                    <div id="Company" style="font-size:17px;color:white;">
+                                    </div>
+                                </li>
+                                <!-- Menu Body -->
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat" role="button" data-toggle="modal" data-target="#passwordModal">Change Password</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="@Url.Content("~")Login/Logout" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <section class="sidebar">
+
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    @if (Session["GID"].ToString() != "3" && Session["GID"].ToString() != "2")
+                    {
+                        <li class="@((ViewBag.PageName == "SuperAdmin") ? "treeview active" : "treeview")">
+                            <a href="@Url.Content("~")Inspire/SuperAdmin">
+                                <i class="fa  fa-user-secret"></i> <span>SuperAdmin</span>
+                                <span class="label label-primary pull-right"></span>
+                            </a>
+                        </li>
+                    }
+                    @if (Session["GID"].ToString() != "3")
+                    {
+                        <li class="@((ViewBag.PageName == "Admin") ? "treeview active" : "treeview")">
+                            <a href="@Url.Content("~")Inspire/Admin">
+                                <i class="fa  fa-user"></i> <span>Admin</span>
+                                <span class="label label-primary pull-right"></span>
+                            </a>
+                        </li>
+                    }
+
+                    <li class="@((ViewBag.PageName == "Index") ? "treeview active" : "treeview")">
+                        <a href="@Url.Content("~")Home/Index" target="_blank">
+                            <i class="fa fa-briefcase"></i> <span>Active Project</span>
+                            <span class="label label-primary pull-right"></span>
+                        </a>
+                    </li>
+
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <div class="content-wrapper" style="background-color:#ffffff">
+            <section class="content">
+                @RenderBody()
+            </section>
+
+        </div><!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.01
+            </div>
+            <strong>Copyright &copy;2017 <a href="#">Sanveo</a>.</strong> All rights reserved.
+            @*<strong>Copyright &copy; 2014-2015 <a href="https://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights reserved.*@
+        </footer>
+
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+    @* Modal popup *@
+    <div class="modal fade" id="passwordModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4>Change Password</h4>
+                </div>
+                <form action="javascript:ChangePassword();">
+                    <div class="modal-body">
+                        <div class="form-group" style="visibility:visible">
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                                <input class="form-control" type="password" id="oldpwd" placeholder="Current Password" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="visibility:visible">
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="glyphicon glyphicon-log-in"></span></div>
+                                <input class="form-control" type="password" id="newpwd" placeholder="New Password" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                        <button class="btn btn-primary" type="submit">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 3.3.5 -->
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+
+    @RenderSection("scripts", required: false)
+    @RenderSection("scripts1", required: false)
+
+    <script type="text/javascript">
+        var mastertheme = '';
+
+        $(document).ready(function () {
+            var val = '@ViewBag.ViewSanveo';
+            SetCurrentUserProfileInfo();
+            SetProfilePicInLayout();
+        });
+        function ChangePassword() {
+            if ($("#newpwd").val().length < 8)
+            {
+                alert("Password should be atleast 8 characters!!");               
+            }
+            else if (!$("#newpwd").val().match(/[A-z]/)) {
+                alert("Password should have atleast 1 small letter !!");
+            }
+            else if (!$("#newpwd").val().match(/[A-Z]/)) {
+                alert("Password should have atleast 1 capital letter !!");
+            }
+            else if (!$("#newpwd").val().match(/\d/)) {
+                alert("Password should have atleast 1 number !!");
+            }
+            else if ($("#newpwd").val().length >= 8) {
+                var value = JSON.stringify({
+                    'oldpass': $("#oldpwd").val(),
+                    'newpass': $("#newpwd").val()
+                });
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("ChangePassword", "LayoutData")',
+                    dataType: "json",
+                    data: value,
+                    success: function (result) {
+                        alert(result);
+                        if (result == "Password updated Successfully") {
+                            $("#oldpwd").val('');
+                            $("#newpwd").val('');
+                            $('#passwordModal').modal('hide');
+                        }
+                    },
+                    error: function (result) {
+                        alert("Error while saving Data");
+                    }
+                });
+            }
+        }
+        function SetCurrentUserProfileInfo()
+        {
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("SetCurrentUserProfileInfo", "LayoutData")',
+
+                dataType: "json",
+                success: function (result) {
+                    $("#Userfullname").text(result.username + " " + result.lastname);
+                    if (result.groupname == null)
+                        result.groupname = ' - ';
+                    $("#Designation").text("Group : " + result.groupname);
+                    $("#Company").text("Company : " + result.compname);
+                    $("#UserName").text(result.username);
+                    if (result.emailid == null)
+                        result.emailid = ' - ';
+                    $("#EmailId").text(result.emailid);
+
+                },
+                error: function (result) {
+                   // alert("Error");
+
+                }
+            });
+        }
+
+            //Saving kendo theme ends
+            // sample widgets on the page
+            $("#datetimepicker").kendoDateTimePicker();
+            $("#numeric").kendoNumericTextBox();
+            $("#slider").kendoSlider();
+            $("#tree").kendoTreeView({
+                dataSource: [
+                  {
+                      text: "foo", expanded: true, items: [
+                      { text: "bar", selected: true }
+                      ]
+                  },
+                  { text: "baz" }
+                ]
+            });
+
+
+        function SetProfilePicInLayout()
+        {
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetProfilePic", "ProfileInfo")',
+
+                dataType: "json",
+                success: function (result) {
+                //    //console.log(result[0].ProfilePic);
+                    var imagelocation = result[0].ProfilePic;
+                    if (imagelocation != null || imagelocation != undefined)
+                    {
+                        //console.log("fetched");
+                        var path = "@Url.Content("~")" + imagelocation;
+                        ////console.log(path);
+                        $("#ProfileImageLayout").attr("src", path);
+                    }
+                },
+                error: function (result) {
+                    //alert("Error Occurred While Saving Data.");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

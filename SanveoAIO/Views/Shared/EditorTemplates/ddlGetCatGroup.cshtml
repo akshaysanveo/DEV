@@ -1,0 +1,20 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+      .Name("ddlCatGroupList")
+      .OptionLabel("Select Group")
+      .HtmlAttributes(new {style = "width:100%"})
+      .DataTextField("PropertyName")
+      .DataValueField("Id")
+
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("GetCatPropertyMapName", "QuantityTest").Data("filterTemplateGroup1");
+          })
+              .ServerFiltering(true);
+      })
+      .Events(e => { e.DataBound("ddlGroupFromBound"); })
+   
+    )

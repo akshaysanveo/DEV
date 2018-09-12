@@ -1,0 +1,17 @@
+﻿@(Html.Kendo().DropDownList()
+                                .Name("ProfileList")
+                                .OptionLabel("Select Profile")
+                                .HtmlAttributes(new { style = "width:100%" })
+                                .DataTextField("Profile")
+                                .DataValueField("Id")
+                                .Template("<label for='' class='chkprop' ><input type='checkbox' id='#:data.Profile#' class='propchk check-item' name='Profile' value='#:data.Id#'/> #:data.Profile#</label>")
+                                .Events(e => { e.Close("onClosePropName"); })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("GetProfile", "Inspire");//.Data("filterTemplateCSSTemplate2");
+                                    })
+                                   .ServerFiltering(true);
+                                })
+)

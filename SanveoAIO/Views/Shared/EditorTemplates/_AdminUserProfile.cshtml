@@ -1,0 +1,22 @@
+﻿@(
+       Html.Kendo().DropDownList()
+
+                   .Name("ProfileForGrid")
+                   .DataTextField("Profile")
+                   .DataValueField("Id")
+                     .DataSource(source =>
+                     {
+                         source.Read(read => { read.Action("GetProfile", "Inspire"); });
+                     })
+                     .Events(e =>
+                     {
+                         e.DataBound("ddlUserProfileBound");
+                     })
+
+                  .OptionLabel("Select Profile")
+
+)
+
+
+
+

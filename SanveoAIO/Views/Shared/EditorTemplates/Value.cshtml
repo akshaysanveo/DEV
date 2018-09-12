@@ -1,0 +1,17 @@
+﻿
+   @*@(
+       Html.Kendo().DropDownList()
+                   .Name("Value")  //is this Name important?
+                   .DataTextField("text")
+                   .DataValueField("value")
+//.SelectedIndex(1)
+//.Events(e => e.change("onChangeSecond"))
+//.BindTo((System.Collections.IEnumerable)ViewBag.GENERIC)
+)*@
+
+
+@(Html.Kendo().TextBox()
+    .Name("ValueName")
+    .HtmlAttributes(new { placeholder = "Value", required = "required", validationmessage = "Enter Value" })
+    
+)

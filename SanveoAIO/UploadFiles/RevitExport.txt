@@ -1,0 +1,2 @@
+8372089,SFO_BoardingArea,Area A
+8372415,Type Mark,1234

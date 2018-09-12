@@ -1,0 +1,21 @@
+﻿@(
+       Html.Kendo().DropDownList()
+                   .Name("Condition")  //is this Name important?
+                   .DataTextField("Text")
+                   .DataValueField("Value")
+                   .BindTo(new List<SelectListItem>()
+                   {
+                    new SelectListItem() {
+                     Text = "=", Value = "1"
+                   },
+                  new SelectListItem() {
+                    Text = "not equals", Value = "2"
+                  },
+                  new SelectListItem() {
+                    Text = "Contains", Value = "3"
+                 }
+               })
+//.SelectedIndex(1)
+//.Events(e => e.change("onChangeSecond"))
+//.BindTo((System.Collections.IEnumerable)ViewBag.GENERIC)
+)

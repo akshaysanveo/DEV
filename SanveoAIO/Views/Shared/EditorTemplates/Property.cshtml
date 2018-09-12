@@ -1,0 +1,9 @@
+﻿@(
+       Html.Kendo().DropDownList()
+                   .Name("Property")  //is this Name important?
+                   .DataTextField("text")
+                   .DataValueField("value")
+                   //.SelectedIndex(1)
+                   .Events(e => e.Change("onChangeSecond"))
+//.BindTo((System.Collections.IEnumerable)ViewBag.GENERIC)
+)

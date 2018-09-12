@@ -1,0 +1,51 @@
+﻿<div style="height:250px;overflow:scroll">
+    <div id="tree1">
+    </div>
+</div>
+<script> 
+            $(document).ready(function () {               
+                var url = window.location.href;               
+                url = url.replace("GlueDocSync/GlueDocSync", "GlueDocSync/AddNodes");
+                $('#tree1').tree({
+                    dataUrl: url,
+                    closedIcon: $('<i class="fa fa-caret-down" aria-hidden="true" style="margin-right:5px;font-size: 150%;"> </i>'),
+                    openedIcon: $('<i class="fa fa-caret-right" aria-hidden="true" style="margin-right:5px;font-size: 150%;"> </i>'),
+                    dragAndDrop: false,
+                    selectable: true
+                });
+
+                // bind 'tree.click' event
+                $('#tree1').bind(
+                    'tree.click',
+                    function (event) {                      
+                        var node = event.node;
+                        console.log('clicked ' + node.name);
+                    }
+                );
+
+
+                $('#tree1').bind(
+                   'tree.select',
+                   function (event) {
+                       // The selected node is 'event.node'
+                       var node = event.node;
+                       console.log(node);
+                       Folderid = node.id;
+                       Foldername = node.name;
+                       version = node.version;
+                       var grid1 = $("#GlueDocGrid").data("kendoGrid");
+                       $("#GlueDocGrid #DocFileName").val(node.name);
+                       $("#GlueDocGrid #DocFileName").focus();
+                      // selectedItem1["DocFileName"] = node.name;
+                       $("#ddlGlueVerList").data("kendoDropDownList").dataSource.data([]);
+                       $("#ddlGlueVerList").data("kendoDropDownList").dataSource.add({ text: version, value: version });
+                       $("#ddlGlueVerList").data("kendoDropDownList").select(1);
+
+                   }
+               );
+
+              
+            });
+
+            
+</script>

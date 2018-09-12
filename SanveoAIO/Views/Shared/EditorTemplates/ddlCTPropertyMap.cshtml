@@ -1,0 +1,20 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+      .Name("PropertyList1")
+      .OptionLabel("Select Property")
+      .HtmlAttributes(new {style = "width:100%"})
+      .DataTextField("Property_Name")
+      .DataValueField("Id")
+
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("GetPropertyMapName", "PropertyMap").Data("filterTemplateCSSTemplate2");
+          })
+              .ServerFiltering(true);
+      })
+      .Events(e => { e.DataBound("ddlPropertyToBound"); })
+     
+      )
