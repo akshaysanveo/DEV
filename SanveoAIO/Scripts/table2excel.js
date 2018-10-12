@@ -1,11 +1,32 @@
-﻿//table2excel.js
+﻿/*
+ *  jQuery table2excel - v1.1.1
+ *  jQuery plugin to export an .xls file in browser from an HTML table
+ *  https://github.com/rainabba/jquery-table2excel
+ *
+ *  Made by rainabba
+ *  Under MIT License
+ */
+/*
+ *  jQuery table2excel - v1.1.1
+ *  jQuery plugin to export an .xls file in browser from an HTML table
+ *  https://github.com/rainabba/jquery-table2excel
+ *
+ *  Made by rainabba
+ *  Under MIT License
+ */
+//table2excel.js
 ; (function ($, window, document, undefined) {
     var pluginName = "table2excel",
 
-    defaults = {
-        exclude: ".noExl",
-        name: "Table2Excel"
-    };
+        defaults = {
+            exclude: ".noExl",
+            name: "Table2Excel",
+            filename: "table2excel",
+            fileext: ".xls",
+            exclude_img: true,
+            exclude_links: true,
+            exclude_inputs: true
+        };
 
     // The actual plugin constructor
     function Plugin(element, options) {
@@ -45,9 +66,53 @@
             // get contents of table except for exclude
             $(e.element).each(function (i, o) {
                 var tempRows = "";
-                $(o).find("tr").not(e.settings.exclude).each(function (i, o) {
-                    tempRows += "<tr>" + $(o).html() + "</tr>";
+                $(o).find("tr").not(e.settings.exclude).each(function (i, p) {
+
+                    tempRows += "<tr>";
+                    $(p).find("td,th").not(e.settings.exclude).each(function (i, q) { // p did not exist, I corrected
+
+                        var rc = {
+                            rows: $(this).attr("rowspan"),
+                            cols: $(this).attr("colspan"),
+                            flag: $(q).find(e.settings.exclude)
+                        };
+
+                        if (rc.flag.length > 0) {
+                            tempRows += "<td> </td>"; // exclude it!!
+                        } else {
+                            if (rc.rows & rc.cols) {
+                                tempRows += "<td>" + $(q).html() + "</td>";
+                            } else {
+                                tempRows += "<td";
+                                if (rc.rows > 0) {
+                                    tempRows += " rowspan=\'" + rc.rows + "\' ";
+                                }
+                                if (rc.cols > 0) {
+                                    tempRows += " colspan=\'" + rc.cols + "\' ";
+                                }
+                                tempRows += "/>" + $(q).html() + "</td>";
+                            }
+                        }
+                    });
+
+                    tempRows += "</tr>";
+                    console.log(tempRows);
+
                 });
+                // exclude img tags
+                if (e.settings.exclude_img) {
+                    tempRows = exclude_img(tempRows);
+                }
+
+                // exclude link tags
+                if (e.settings.exclude_links) {
+                    tempRows = exclude_links(tempRows);
+                }
+
+                // exclude input tags
+                if (e.settings.exclude_inputs) {
+                    tempRows = exclude_inputs(tempRows);
+                }
                 e.tableRows.push(tempRows);
             });
 
@@ -57,10 +122,6 @@
         tableToExcel: function (table, name, sheetName) {
             var e = this, fullTemplate = "", i, link, a;
 
-            e.uri = "data:application/vnd.ms-excel;base64,";
-            e.base64 = function (s) {
-                return window.btoa(unescape(encodeURIComponent(s)));
-            };
             e.format = function (s, c) {
                 return s.replace(/{(\w+)}/g, function (m, p) {
                     return c[p];
@@ -72,7 +133,7 @@
             e.ctx = {
                 worksheet: name || "Worksheet",
                 table: table,
-                sheetName: sheetName,
+                sheetName: sheetName
             };
 
             fullTemplate = e.template.head;
@@ -99,10 +160,12 @@
             }
             delete e.ctx.table;
 
-            if (typeof msie !== "undefined" && msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
-            {
+            var isIE = /*@cc_on!@*/false || !!document.documentMode; // this works with IE10 and IE11 both :)            
+            //if (typeof msie !== "undefined" && msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // this works ONLY with IE 11!!!
+            if (isIE) {
                 if (typeof Blob !== "undefined") {
                     //use blobs if we can
+                    fullTemplate = e.format(fullTemplate, e.ctx); // with this, works with IE
                     fullTemplate = [fullTemplate];
                     //convert to array
                     var blob1 = new Blob(fullTemplate, { type: "text/html" });
@@ -118,7 +181,9 @@
                 }
 
             } else {
-                link = e.uri + e.base64(e.format(fullTemplate, e.ctx));
+                var blob = new Blob([e.format(fullTemplate, e.ctx)], { type: "application/vnd.ms-excel" });
+                window.URL = window.URL || window.webkitURL;
+                link = window.URL.createObjectURL(blob);
                 a = document.createElement("a");
                 a.download = getFileName(e.settings);
                 a.href = link;
@@ -135,8 +200,38 @@
     };
 
     function getFileName(settings) {
-        return (settings.filename ? settings.filename : "table2excel") +
-			   (settings.fileext ? settings.fileext : ".xlsx");
+        return (settings.filename ? settings.filename : "table2excel");
+    }
+
+    // Removes all img tags
+    function exclude_img(string) {
+        var _patt = /(\s+alt\s*=\s*"([^"]*)"|\s+alt\s*=\s*'([^']*)')/i;
+        return string.replace(/<img[^>]*>/gi, function myFunction(x) {
+            var res = _patt.exec(x);
+            if (res !== null && res.length >= 2) {
+                return res[2];
+            } else {
+                return "";
+            }
+        });
+    }
+
+    // Removes all link tags
+    function exclude_links(string) {
+        return string.replace(/<a[^>]*>|<\/a>/gi, "");
+    }
+
+    // Removes input params
+    function exclude_inputs(string) {
+        var _patt = /(\s+value\s*=\s*"([^"]*)"|\s+value\s*=\s*'([^']*)')/i;
+        return string.replace(/<input[^>]*>|<\/input>/gi, function myFunction(x) {
+            var res = _patt.exec(x);
+            if (res !== null && res.length >= 2) {
+                return res[2];
+            } else {
+                return "";
+            }
+        });
     }
 
     $.fn[pluginName] = function (options) {

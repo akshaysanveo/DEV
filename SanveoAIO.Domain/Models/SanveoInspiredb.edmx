@@ -122,6 +122,11 @@
           <Parameter Name="propname" Type="varchar(max)" Mode="In" />
           <Parameter Name="getprop" Type="varchar(max)" Mode="In" />
         </Function>
+        <Function Name="GetPropertyValueByPropName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="category" Type="varchar(max)" Mode="In" />
+          <Parameter Name="propname" Type="varchar(max)" Mode="In" />
+        </Function>
         <Function Name="GetQuantity2GridModelData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="filename" Type="varchar(max)" Mode="In" />
           <Parameter Name="categoryName" Type="varchar(max)" Mode="In" />
@@ -217,6 +222,20 @@
         <Function Name="SaveTagNameTxt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="TagName" Type="varchar(max)" Mode="In" />
         </Function>
+        <Function Name="SP_ADDUPDATE_MaterialGBDescription" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="DESCRIPTION" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="UOM" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="QTY_Needed" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="GBID" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="GB_Description" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_ADDUPDATE_SettingDataDesc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Cat_Name" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ID" Type="bigint" Mode="In" />
+        </Function>
         <Function Name="SP_BulkModelData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_ChangePassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="U_ID" Type="int" Mode="In" />
@@ -276,6 +295,10 @@
           <Parameter Name="U_ID" Type="int" Mode="In" />
           <Parameter Name="CurrentUserId" Type="int" Mode="In" />
           <Parameter Name="Error" Type="varchar(max)" Mode="InOut" />
+        </Function>
+        <Function Name="SP_GET_CONSOLIDATED_DESC" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_GET_SettingDataDesc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="nvarchar(max)" Mode="In" />
         </Function>
         <Function Name="SP_GetAdminId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="compid" Type="int" Mode="In" />
@@ -338,6 +361,20 @@
           <Parameter Name="C_ID" Type="varchar(max)" Mode="In" />
           <Parameter Name="UserId" Type="int" Mode="In" />
           <Parameter Name="User_type" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_GetConduitMaterialByUrn" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Category" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Level" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_GetConsolidatedGBData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_GetConsolidatedSCMData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_GetConsolidatedSCMDataNew" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="SP_GetCustomQuantities" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="urn" Type="varchar(max)" Mode="In" />
@@ -426,6 +463,14 @@
           <Parameter Name="CompId" Type="int" Mode="In" />
           <Parameter Name="userId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SP_GetGB_DescriptionByGBID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Searchtext" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_GetGbId_GBDescListByCategory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="SearchtextDesc" Type="varchar(max)" Mode="In" />
+        </Function>
         <Function Name="SP_GetGlueDocDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_GetGlueDocNewDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="MapID" Type="int" Mode="In" />
@@ -499,6 +544,13 @@
           <Parameter Name="CompId" Type="int" Mode="In" />
           <Parameter Name="Propvalue" Type="varchar(max)" Mode="In" />
         </Function>
+        <Function Name="SP_GetQuantitySetting" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="SP_GetReferrenceLevelByUrn" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="category" Type="varchar(max)" Mode="In" />
+        </Function>
         <Function Name="sp_GetRuleCategoryByModelID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Model_id" Type="nvarchar(max)" Mode="In" />
         </Function>
@@ -508,6 +560,10 @@
         </Function>
         <Function Name="SP_GetstdBends" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="CompId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_GetSupplyChainMasterDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Category_Name" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="Sp_GetTagName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_GetTrade" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -543,6 +599,14 @@
           <Parameter Name="baseversion" Type="varchar" Mode="In" />
           <Parameter Name="CompId" Type="int" Mode="In" />
         </Function>
+        <Function Name="SP_INSERT_UpdateQuantitySetting" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Category" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Level" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Standard" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Group" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ID" Type="bigint" Mode="In" />
+        </Function>
         <Function Name="SP_InsertActivityLog" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="U_Id" Type="int" Mode="In" />
           <Parameter Name="Module" Type="varchar(max)" Mode="In" />
@@ -569,6 +633,14 @@
           <Parameter Name="TagName" Type="varchar(max)" Mode="In" />
           <Parameter Name="Modelid" Type="varchar(max)" Mode="In" />
           <Parameter Name="Modelversion" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_InsertSupplyChainMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Urn" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Cat_name" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Prop_Name" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Prop_Value" Type="varchar(max)" Mode="In" />
+          <Parameter Name="IsGroup" Type="bit" Mode="In" />
+          <Parameter Name="Report_Id" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="SP_LoginAIO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserName" Type="varchar" Mode="In" />
@@ -614,6 +686,7 @@
           <Parameter Name="Error" Type="varchar(max)" Mode="InOut" />
           <Parameter Name="Profile" Type="int" Mode="In" />
           <Parameter Name="Trade" Type="int" Mode="In" />
+          <Parameter Name="IsEmail" Type="bit" Mode="In" />
         </Function>
         <Function Name="Sp_SaveEditRunEngine" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="filename" Type="varchar(max)" Mode="In" />
@@ -1277,10 +1350,6 @@
             <Parameter Name="compid" Mode="In" Type="Int32" />
             <Parameter Name="CurrentUserId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="SP_GetFoldersDetails" ReturnType="Collection(SanveoInspireModel.SP_GetFoldersDetails_Result)">
-            <Parameter Name="CompId" Mode="In" Type="Int32" />
-            <Parameter Name="userId" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="SP_GetFiles" ReturnType="Collection(SanveoInspireModel.SP_GetFiles_Result)">
             <Parameter Name="compid" Mode="In" Type="Int32" />
             <Parameter Name="userid" Mode="In" Type="Int32" />
@@ -1443,28 +1512,8 @@
           <FunctionImport Name="SP_GetTrade" ReturnType="Collection(SanveoInspireModel.SP_GetTrade_Result)">
           <Parameter Name="CompId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="Sp_GetCompanyUsers" ReturnType="Collection(SanveoInspireModel.Sp_GetCompanyUsers_Result)">
-            <Parameter Name="C_ID" Mode="In" Type="String" />
-            <Parameter Name="UserId" Mode="In" Type="Int32" />
-            <Parameter Name="User_type" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="SP_GetUserTrade" ReturnType="Collection(SanveoInspireModel.SP_GetUserTrade_Result)">
           <Parameter Name="CompId" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_SaveCompanyUser">
-            <Parameter Name="U_ID" Mode="In" Type="Int32" />
-            <Parameter Name="FirstName" Mode="In" Type="String" />
-            <Parameter Name="LastName" Mode="In" Type="String" />
-            <Parameter Name="Username" Mode="In" Type="String" />
-            <Parameter Name="password" Mode="In" Type="String" />
-            <Parameter Name="Emailid" Mode="In" Type="String" />
-            <Parameter Name="MobileNo" Mode="In" Type="String" />
-            <Parameter Name="Group_Id" Mode="In" Type="Int32" />
-            <Parameter Name="Active" Mode="In" Type="Boolean" />
-            <Parameter Name="CurrentID" Mode="In" Type="Int32" />
-            <Parameter Name="Error" Mode="InOut" Type="String" />
-            <Parameter Name="Profile" Mode="In" Type="Int32" />
-            <Parameter Name="Trade" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetModules" ReturnType="Collection(SanveoInspireModel.SP_GetModules_Result)" />
           <FunctionImport Name="SaveCategoryFilter">
@@ -1742,7 +1791,100 @@
             <Parameter Name="CompId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_GetUSerAccessData" ReturnType="Collection(SanveoInspireModel.SP_GetUSerAccessData_Result)">
-            <Parameter Name="Compid" Mode="In" Type="String" />
+          <Parameter Name="Compid" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetSupplyChainMasterDetails" ReturnType="Collection(SanveoInspireModel.SP_GetSupplyChainMasterDetails_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Category_Name" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetPropertyValueByPropName" ReturnType="Collection(SanveoInspireModel.GetPropertyValueByPropName_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="category" Mode="In" Type="String" />
+            <Parameter Name="propname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_InsertSupplyChainMaster">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Cat_name" Mode="In" Type="String" />
+            <Parameter Name="Prop_Name" Mode="In" Type="String" />
+            <Parameter Name="Prop_Value" Mode="In" Type="String" />
+            <Parameter Name="IsGroup" Mode="In" Type="Boolean" />
+            <Parameter Name="Report_Id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetReferrenceLevelByUrn" ReturnType="Collection(SanveoInspireModel.SP_GetReferrenceLevelByUrn_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="category" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_INSERT_UpdateQuantitySetting">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Category" Mode="In" Type="String" />
+            <Parameter Name="Level" Mode="In" Type="String" />
+            <Parameter Name="Standard" Mode="In" Type="String" />
+            <Parameter Name="Group" Mode="In" Type="String" />
+            <Parameter Name="ID" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetQuantitySetting" ReturnType="Collection(SanveoInspireModel.SP_GetQuantitySetting_Result)">
+          <Parameter Name="Urn" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Sp_GetCompanyUsers" ReturnType="Collection(SanveoInspireModel.Sp_GetCompanyUsers_Result)">
+            <Parameter Name="C_ID" Mode="In" Type="String" />
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="User_type" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetConduitMaterialByUrn" ReturnType="Collection(SanveoInspireModel.SP_GetConduitMaterialByUrn_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Category" Mode="In" Type="String" />
+            <Parameter Name="Level" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_SaveCompanyUser">
+            <Parameter Name="U_ID" Mode="In" Type="Int32" />
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="LastName" Mode="In" Type="String" />
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="Emailid" Mode="In" Type="String" />
+            <Parameter Name="MobileNo" Mode="In" Type="String" />
+            <Parameter Name="Group_Id" Mode="In" Type="Int32" />
+            <Parameter Name="Active" Mode="In" Type="Boolean" />
+            <Parameter Name="CurrentID" Mode="In" Type="Int32" />
+            <Parameter Name="Error" Mode="InOut" Type="String" />
+            <Parameter Name="Profile" Mode="In" Type="Int32" />
+            <Parameter Name="Trade" Mode="In" Type="Int32" />
+            <Parameter Name="IsEmail" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetConsolidatedSCMData" ReturnType="Collection(SanveoInspireModel.SP_GetConsolidatedSCMData_Result)">
+          <Parameter Name="Urn" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_CONSOLIDATED_DESC" ReturnType="Collection(SanveoInspireModel.SP_GET_CONSOLIDATED_DESC_Result)" />
+          <FunctionImport Name="SP_GET_SettingDataDesc" ReturnType="Collection(SanveoInspireModel.SP_GET_SettingDataDesc_Result)">
+          <Parameter Name="Urn" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ADDUPDATE_SettingDataDesc">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Cat_Name" Mode="In" Type="String" />
+            <Parameter Name="Description" Mode="In" Type="String" />
+            <Parameter Name="ID" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetConsolidatedSCMDataNew" ReturnType="Collection(SanveoInspireModel.SP_GetConsolidatedSCMDataNew_Result)">
+          <Parameter Name="Urn" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ADDUPDATE_MaterialGBDescription">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="DESCRIPTION" Mode="In" Type="String" />
+            <Parameter Name="UOM" Mode="In" Type="String" />
+            <Parameter Name="QTY_Needed" Mode="In" Type="String" />
+            <Parameter Name="GBID" Mode="In" Type="String" />
+            <Parameter Name="GB_Description" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetGbId_GBDescListByCategory" ReturnType="Collection(SanveoInspireModel.SP_GetGbId_GBDescListByCategory_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="SearchtextDesc" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetGB_DescriptionByGBID" ReturnType="Collection(SanveoInspireModel.SP_GetGB_DescriptionByGBID_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
+            <Parameter Name="Searchtext" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GetConsolidatedGBData" ReturnType="Collection(SanveoInspireModel.SP_GetConsolidatedGBData_Result)">
+            <Parameter Name="Urn" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GetFileUpload_Result">
@@ -2067,21 +2209,6 @@
           <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="CompId" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="Sp_GetCompanyUsers_Result">
-          <Property Type="Int32" Name="U_ID" Nullable="false" />
-          <Property Type="String" Name="FirstName" Nullable="true" />
-          <Property Type="String" Name="LastName" Nullable="true" />
-          <Property Type="String" Name="Username" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Password" Nullable="true" />
-          <Property Type="String" Name="Emailid" Nullable="true" />
-          <Property Type="String" Name="MobileNo" Nullable="true" />
-          <Property Type="DateTime" Name="ExpiredDate" Nullable="true" Precision="23" />
-          <Property Type="String" Name="CompName" Nullable="true" />
-          <Property Type="String" Name="Group_Name" Nullable="true" />
-          <Property Type="Boolean" Name="Active" Nullable="true" />
-          <Property Type="String" Name="Profile" Nullable="true" />
-          <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
-        </ComplexType>
         <ComplexType Name="SP_GetUserTrade_Result">
           <Property Type="Int32" Name="Id" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
@@ -2271,6 +2398,111 @@
           <Property Type="Boolean" Name="BtnADAClearance" Nullable="false" />
           <Property Type="Boolean" Name="BtnElectrial" Nullable="false" />
           <Property Type="Boolean" Name="BtnAutoSearch" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SP_GetSupplyChainMasterDetails_Result">
+          <Property Type="Int32" Name="Report_Id" Nullable="false" />
+          <Property Type="String" Name="Urn" Nullable="true" />
+          <Property Type="String" Name="Cat_Name" Nullable="true" />
+          <Property Type="String" Name="Prop_Name" Nullable="true" />
+          <Property Type="String" Name="Prop_Value" Nullable="true" />
+          <Property Type="String" Name="IsGroup" Nullable="false" MaxLength="3" />
+        </ComplexType>
+        <ComplexType Name="GetPropertyValueByPropName_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Property_Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetReferrenceLevelByUrn_Result">
+          <Property Type="Int32" Name="FileID" Nullable="true" />
+          <Property Type="String" Name="Property_Value" Nullable="true" />
+          <Property Type="String" Name="Property_Name" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetQuantitySetting_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Category" Nullable="true" />
+          <Property Type="String" Name="Level" Nullable="true" />
+          <Property Type="String" Name="Standard" Nullable="true" />
+          <Property Type="String" Name="Group" Nullable="true" />
+          <Property Type="Boolean" Name="Deleted" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Sp_GetCompanyUsers_Result">
+          <Property Type="Int32" Name="U_ID" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" />
+          <Property Type="String" Name="LastName" Nullable="true" />
+          <Property Type="String" Name="Username" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" />
+          <Property Type="String" Name="Emailid" Nullable="true" />
+          <Property Type="String" Name="MobileNo" Nullable="true" />
+          <Property Type="DateTime" Name="ExpiredDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CompName" Nullable="true" />
+          <Property Type="String" Name="Group_Name" Nullable="true" />
+          <Property Type="Boolean" Name="Active" Nullable="true" />
+          <Property Type="Boolean" Name="IsEmail" Nullable="true" />
+          <Property Type="String" Name="Profile" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SP_GetConduitMaterialByUrn_Result">
+          <Property Type="Int32" Name="FileId" Nullable="true" />
+          <Property Type="String" Name="Property_Name" Nullable="true" />
+          <Property Type="String" Name="Property_Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetConsolidatedSCMData_Result">
+          <Property Type="Int32" Name="sortindex" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="UOM" Nullable="true" />
+          <Property Type="String" Name="QTY_Needed" Nullable="true" />
+          <Property Type="String" Name="GBID" Nullable="true" />
+          <Property Type="String" Name="SIZE" Nullable="true" />
+          <Property Type="String" Name="DIAMETER" Nullable="true" />
+          <Property Type="String" Name="GB_DESCRIPTION" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GET_CONSOLIDATED_DESC_Result">
+          <Property Type="String" Name="SAP_UNSPSC_DESCRIPTION" Nullable="true" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SP_GET_SettingDataDesc_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Urn" Nullable="true" />
+          <Property Type="String" Name="Cat_Name" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetConsolidatedSCMDataNew_Result">
+          <Property Type="Int32" Name="sortindex" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="UOM" Nullable="true" />
+          <Property Type="String" Name="QTY_Needed" Nullable="true" />
+          <Property Type="String" Name="GBID" Nullable="true" />
+          <Property Type="String" Name="SIZE" Nullable="true" />
+          <Property Type="String" Name="DIAMETER" Nullable="true" />
+          <Property Type="String" Name="GB_DESCRIPTION" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetGbId_GBDescListByCategory_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="MFR_NAME" Nullable="true" />
+          <Property Type="String" Name="Manufacturer_Part_No" Nullable="true" />
+          <Property Type="String" Name="Catalog" Nullable="true" />
+          <Property Type="String" Name="Material_Description" Nullable="true" />
+          <Property Type="String" Name="Material" Nullable="true" />
+          <Property Type="String" Name="SAP_UNSPSC_Description" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetGB_DescriptionByGBID_Result">
+          <Property Type="Int64" Name="ID" Nullable="false" />
+          <Property Type="String" Name="MFR_NAME" Nullable="true" />
+          <Property Type="String" Name="Manufacturer_Part_No" Nullable="true" />
+          <Property Type="String" Name="Catalog" Nullable="true" />
+          <Property Type="String" Name="Material_Description" Nullable="true" />
+          <Property Type="String" Name="Material" Nullable="true" />
+          <Property Type="String" Name="SAP_UNSPSC_Description" Nullable="true" />
+          <Property Type="String" Name="NewDescription" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_GetConsolidatedGBData_Result">
+          <Property Type="Int32" Name="sortindex" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="UOM" Nullable="true" />
+          <Property Type="String" Name="QTY_Needed" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="GBID" Nullable="true" />
+          <Property Type="String" Name="diameter" Nullable="true" />
+          <Property Type="String" Name="GB_DESCRIPTION" Nullable="true" />
+          <Property Type="String" Name="StdType" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2626,15 +2858,6 @@
           <FunctionImportMapping FunctionImportName="SP_SaveNodeDetails" FunctionName="SanveoInspireModel.Store.SP_SaveNodeDetails" />
           <FunctionImportMapping FunctionImportName="SP_SaveNodeFolderDetails" FunctionName="SanveoInspireModel.Store.SP_SaveNodeFolderDetails" />
           <FunctionImportMapping FunctionImportName="SP_SavePersonalModelUrnDetails" FunctionName="SanveoInspireModel.Store.SP_SavePersonalModelUrnDetails" />
-          <FunctionImportMapping FunctionImportName="SP_GetFoldersDetails" FunctionName="SanveoInspireModel.Store.SP_GetFoldersDetails">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetFoldersDetails_Result">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="FolderName" ColumnName="FolderName" />
-                <ScalarProperty Name="CompId" ColumnName="CompId" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_GetFiles" FunctionName="SanveoInspireModel.Store.SP_GetFiles">
             <ResultMapping>
               <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetFiles_Result">
@@ -2810,25 +3033,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="Sp_GetCompanyUsers" FunctionName="SanveoInspireModel.Store.Sp_GetCompanyUsers">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="SanveoInspireModel.Sp_GetCompanyUsers_Result">
-                <ScalarProperty Name="U_ID" ColumnName="U_ID" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Emailid" ColumnName="Emailid" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
-                <ScalarProperty Name="CompName" ColumnName="CompName" />
-                <ScalarProperty Name="Group_Name" ColumnName="Group_Name" />
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="Profile" ColumnName="Profile" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_GetUserTrade" FunctionName="SanveoInspireModel.Store.SP_GetUserTrade">
             <ResultMapping>
               <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetUserTrade_Result">
@@ -2838,7 +3042,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_SaveCompanyUser" FunctionName="SanveoInspireModel.Store.sp_SaveCompanyUser" />
           <FunctionImportMapping FunctionImportName="SP_GetModules" FunctionName="SanveoInspireModel.Store.SP_GetModules">
             <ResultMapping>
               <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetModules_Result">
@@ -3175,6 +3378,168 @@
                 <ScalarProperty Name="BtnADAClearance" ColumnName="BtnADAClearance" />
                 <ScalarProperty Name="BtnElectrial" ColumnName="BtnElectrial" />
                 <ScalarProperty Name="BtnAutoSearch" ColumnName="BtnAutoSearch" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetSupplyChainMasterDetails" FunctionName="SanveoInspireModel.Store.SP_GetSupplyChainMasterDetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetSupplyChainMasterDetails_Result">
+                <ScalarProperty Name="Report_Id" ColumnName="Report_Id" />
+                <ScalarProperty Name="Urn" ColumnName="Urn" />
+                <ScalarProperty Name="Cat_Name" ColumnName="Cat_Name" />
+                <ScalarProperty Name="Prop_Name" ColumnName="Prop_Name" />
+                <ScalarProperty Name="Prop_Value" ColumnName="Prop_Value" />
+                <ScalarProperty Name="IsGroup" ColumnName="IsGroup" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetPropertyValueByPropName" FunctionName="SanveoInspireModel.Store.GetPropertyValueByPropName">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.GetPropertyValueByPropName_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Property_Value" ColumnName="Property_Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_InsertSupplyChainMaster" FunctionName="SanveoInspireModel.Store.SP_InsertSupplyChainMaster" />
+          <FunctionImportMapping FunctionImportName="SP_GetReferrenceLevelByUrn" FunctionName="SanveoInspireModel.Store.SP_GetReferrenceLevelByUrn">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetReferrenceLevelByUrn_Result">
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="Property_Value" ColumnName="Property_Value" />
+                <ScalarProperty Name="Property_Name" ColumnName="Property_Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_INSERT_UpdateQuantitySetting" FunctionName="SanveoInspireModel.Store.SP_INSERT_UpdateQuantitySetting" />
+          <FunctionImportMapping FunctionImportName="SP_GetQuantitySetting" FunctionName="SanveoInspireModel.Store.SP_GetQuantitySetting">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetQuantitySetting_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Standard" ColumnName="Standard" />
+                <ScalarProperty Name="Group" ColumnName="Group" />
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Sp_GetCompanyUsers" FunctionName="SanveoInspireModel.Store.Sp_GetCompanyUsers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.Sp_GetCompanyUsers_Result">
+                <ScalarProperty Name="U_ID" ColumnName="U_ID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Emailid" ColumnName="Emailid" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+                <ScalarProperty Name="CompName" ColumnName="CompName" />
+                <ScalarProperty Name="Group_Name" ColumnName="Group_Name" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="IsEmail" ColumnName="IsEmail" />
+                <ScalarProperty Name="Profile" ColumnName="Profile" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetConduitMaterialByUrn" FunctionName="SanveoInspireModel.Store.SP_GetConduitMaterialByUrn">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetConduitMaterialByUrn_Result">
+                <ScalarProperty Name="FileId" ColumnName="FileId" />
+                <ScalarProperty Name="Property_Name" ColumnName="Property_Name" />
+                <ScalarProperty Name="Property_Value" ColumnName="Property_Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_SaveCompanyUser" FunctionName="SanveoInspireModel.Store.sp_SaveCompanyUser" />
+          <FunctionImportMapping FunctionImportName="SP_GetConsolidatedSCMData" FunctionName="SanveoInspireModel.Store.SP_GetConsolidatedSCMData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetConsolidatedSCMData_Result">
+                <ScalarProperty Name="sortindex" ColumnName="sortindex" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_Needed" ColumnName="QTY_Needed" />
+                <ScalarProperty Name="GBID" ColumnName="GBID" />
+                <ScalarProperty Name="SIZE" ColumnName="SIZE" />
+                <ScalarProperty Name="DIAMETER" ColumnName="DIAMETER" />
+                <ScalarProperty Name="GB_DESCRIPTION" ColumnName="GB_DESCRIPTION" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_CONSOLIDATED_DESC" FunctionName="SanveoInspireModel.Store.SP_GET_CONSOLIDATED_DESC">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GET_CONSOLIDATED_DESC_Result">
+                <ScalarProperty Name="SAP_UNSPSC_DESCRIPTION" ColumnName="SAP_UNSPSC_DESCRIPTION" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_SettingDataDesc" FunctionName="SanveoInspireModel.Store.SP_GET_SettingDataDesc">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GET_SettingDataDesc_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Urn" ColumnName="Urn" />
+                <ScalarProperty Name="Cat_Name" ColumnName="Cat_Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ADDUPDATE_SettingDataDesc" FunctionName="SanveoInspireModel.Store.SP_ADDUPDATE_SettingDataDesc" />
+          <FunctionImportMapping FunctionImportName="SP_GetConsolidatedSCMDataNew" FunctionName="SanveoInspireModel.Store.SP_GetConsolidatedSCMDataNew">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetConsolidatedSCMDataNew_Result">
+                <ScalarProperty Name="sortindex" ColumnName="sortindex" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_Needed" ColumnName="QTY_Needed" />
+                <ScalarProperty Name="GBID" ColumnName="GBID" />
+                <ScalarProperty Name="SIZE" ColumnName="SIZE" />
+                <ScalarProperty Name="DIAMETER" ColumnName="DIAMETER" />
+                <ScalarProperty Name="GB_DESCRIPTION" ColumnName="GB_DESCRIPTION" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ADDUPDATE_MaterialGBDescription" FunctionName="SanveoInspireModel.Store.SP_ADDUPDATE_MaterialGBDescription" />
+          <FunctionImportMapping FunctionImportName="SP_GetGbId_GBDescListByCategory" FunctionName="SanveoInspireModel.Store.SP_GetGbId_GBDescListByCategory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetGbId_GBDescListByCategory_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MFR_NAME" ColumnName="MFR_NAME" />
+                <ScalarProperty Name="Manufacturer_Part_No" ColumnName="Manufacturer_Part_No" />
+                <ScalarProperty Name="Catalog" ColumnName="Catalog" />
+                <ScalarProperty Name="Material_Description" ColumnName="Material_Description" />
+                <ScalarProperty Name="Material" ColumnName="Material" />
+                <ScalarProperty Name="SAP_UNSPSC_Description" ColumnName="SAP_UNSPSC_Description" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetGB_DescriptionByGBID" FunctionName="SanveoInspireModel.Store.SP_GetGB_DescriptionByGBID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetGB_DescriptionByGBID_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MFR_NAME" ColumnName="MFR_NAME" />
+                <ScalarProperty Name="Manufacturer_Part_No" ColumnName="Manufacturer_Part_No" />
+                <ScalarProperty Name="Catalog" ColumnName="Catalog" />
+                <ScalarProperty Name="Material_Description" ColumnName="Material_Description" />
+                <ScalarProperty Name="Material" ColumnName="Material" />
+                <ScalarProperty Name="SAP_UNSPSC_Description" ColumnName="SAP_UNSPSC_Description" />
+                <ScalarProperty Name="NewDescription" ColumnName="NewDescription" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GetConsolidatedGBData" FunctionName="SanveoInspireModel.Store.SP_GetConsolidatedGBData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SanveoInspireModel.SP_GetConsolidatedGBData_Result">
+                <ScalarProperty Name="sortindex" ColumnName="sortindex" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="QTY_Needed" ColumnName="QTY_Needed" />
+                <ScalarProperty Name="GBID" ColumnName="GBID" />
+                <ScalarProperty Name="diameter" ColumnName="diameter" />
+                <ScalarProperty Name="GB_DESCRIPTION" ColumnName="GB_DESCRIPTION" />
+                <ScalarProperty Name="StdType" ColumnName="StdType" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

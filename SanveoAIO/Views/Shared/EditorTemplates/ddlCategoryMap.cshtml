@@ -6,7 +6,7 @@
         .DataTextField("Category_Name")
         .DataValueField("Id")
         .OptionLabel("Select Category")
-        .HtmlAttributes(new {style = "width:100%"})
+        .HtmlAttributes(new { style = "width:100%" })
         .DataSource(source =>
         {
             source.Read(read =>
@@ -14,5 +14,6 @@
                 read.Action("GetCategoryName", "Home").Data("searchCategoryData");
             });
         })
-        .Events(e => { e.Change("onSearchCategorysChange").DataBound("ddlCategoryBound"); })
+        .Events(e => e.DataBound("OnBoundCategoryName").Change("onSearchCategorysChange"))
+
       )

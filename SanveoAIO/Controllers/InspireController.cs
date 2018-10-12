@@ -29,6 +29,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing;
 using System.Globalization;
 using System.Net;
+using System.Net.Mail;
 
 namespace SanveoAIO.Controllers
 {
@@ -672,7 +673,7 @@ namespace SanveoAIO.Controllers
             return Json(result1, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult SaveCompanyUser(string U_Id, string FirstName, string LastName, string Username, string Password, string Emailid, string MobileNo, int Group_Name, string Profile, string Active, string compid, string Trade)
+        public JsonResult SaveCompanyUser(string U_Id, string FirstName, string LastName, string Username, string Password, string Emailid, string MobileNo, int Group_Name, string Profile, string Active, string compid, string Trade,string IsEmail)
         {
             if (Session["UserInfo"] != null)
             {
@@ -685,12 +686,13 @@ namespace SanveoAIO.Controllers
             int userid = Int32.Parse(U_Id);
             string data = "";
             bool isactive = bool.Parse(Active);
+            bool isEmail = bool.Parse(IsEmail);
             try
             {
                 if (compid == "")
                 {
                     var Error = new ObjectParameter("Error", typeof(string));
-                    var result = db.sp_SaveCompanyUser(userid, FirstName, LastName, Username, Password, Emailid, MobileNo, Group_Name, isactive, user.U_Id, Error, 0, Convert.ToInt16(Trade));
+                    var result = db.sp_SaveCompanyUser(userid, FirstName, LastName, Username, Password, Emailid, MobileNo, Group_Name, isactive, user.U_Id, Error, 0, Convert.ToInt16(Trade), isEmail);
                     data = Error.Value.ToString();
 
                     List<SqlParameter> parameters1 = new List<SqlParameter>();
@@ -739,7 +741,7 @@ namespace SanveoAIO.Controllers
                     }
 
                     var Error = new ObjectParameter("Error", typeof(string));
-                    var result = db.sp_SaveCompanyUser(userid, FirstName, LastName, Username, Password, Emailid, MobileNo, Group_Name, isactive, uID, Error, 0, Convert.ToInt16(Trade));
+                    var result = db.sp_SaveCompanyUser(userid, FirstName, LastName, Username, Password, Emailid, MobileNo, Group_Name, isactive, uID, Error, 0, Convert.ToInt16(Trade), isEmail);
                     data = Error.Value.ToString();
 
                     // For profile Mapping
@@ -776,6 +778,9 @@ namespace SanveoAIO.Controllers
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
         public JsonResult DeleteUser(string U_Id)
         {
             if (Session["UserInfo"] != null)
@@ -2584,6 +2589,19 @@ namespace SanveoAIO.Controllers
 
         public JsonResult DeleteFile(string modelname)
         {
+
+            string[] weekDays = { "64T4SI8Y_logo.jpg", "1.dwg", "glyphicons-halflings-regular.ttf", "64T4SI8Y_logo.jpg", "glyphicons-halflings-regular.woff2", "ScopeBoxTest1.rvt", "ScopeBoxTest1.nwd" };
+
+            for (int i = 0; i < weekDays.Length; i++)
+            {
+                var sanveo_test1 = "sanveobucket1";
+
+                var objectsList1 = objectsApi.DeleteObjectAsync(sanveo_test1, weekDays[i]);
+                // Console.WriteLine(stringArray[i]);
+            }
+
+            //objectsApi.DeleteObject(BUCKET_KEY, modelname);
+
             if (Session["UserInfo"] != null)
             {
                 user = (UserInfo)Session["UserInfo"];
@@ -3734,6 +3752,7 @@ namespace SanveoAIO.Controllers
 
         public ActionResult GetAccessRights([DataSourceRequest] DataSourceRequest request, int? ModuleId)
         {
+
             if (Session["UserInfo"] != null)
             {
                 user = (UserInfo)Session["UserInfo"];
@@ -4092,8 +4111,136 @@ namespace SanveoAIO.Controllers
             return Json(result1, JsonRequestBehavior.AllowGet);
         }
 
+        public string sendmail(string filename,string usertype,string compid)
+        {
+            DataSet dtRuleData = null ;
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+            if (!(int.TryParse(usertype, out type)))
+            {
+                type = 0;
+            }
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@C_ID",
+                SqlDbType = SqlDbType.VarChar,
+                Value = user.Comp_ID,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@UserId",
+                SqlDbType = SqlDbType.VarChar,
+                Value = user.U_Id,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@User_type",
+                SqlDbType = SqlDbType.VarChar,
+                Value = type,
+                Direction = System.Data.ParameterDirection.Input
+            });
+          
 
-       
+            //if (string.IsNullOrWhiteSpace(compid))
+            //{
+            //    user = (UserInfo)Session["UserInfo"];
+            //    var result = db.Database.SqlQuery<Sp_GetCompanyUsers_Result>("Sp_GetCompanyUsers  @C_ID={0},@UserId={1},@User_type={2}", user.Comp_ID, user.U_Id, type).ToList();
+            //    result1 = result.ToDataSourceResult(request);
+
+            //}
+            //else
+            //{
+            //    var result = db.Database.SqlQuery<Sp_GetCompanyUsers_Result>("Sp_GetCompanyUsers  @C_ID={0},@UserId={1},@User_type={2}", compid, user.U_Id, type).ToList();
+            //    result1 = result.ToDataSourceResult(request);
+            //}
+
+
+            if (string.IsNullOrWhiteSpace(compid))
+            {
+                user = (UserInfo)Session["UserInfo"];
+                {
+                   
+                    dtRuleData = SqlManager.ExecuteDataSet("GetEmailForNotification", parameters1.ToArray());
+                }
+            }
+            DataTable dtRuleData1 = dtRuleData.Tables[0];
+            //  int numberOfRecords1 = dtRuleData.Tables[0].AsEnumerable().Where(x => x["Emailid"].ToString() == "Y").ToList().Count;
+            //send mail
+            MailMessage msg = new MailMessage();
+            DataSet ConfigMasterCollection = telmvc.SqlManager.ExecuteDataSet("SELECT * FROM ConfigMaster");
+            DataTable dataTableSetMailConfiguration = ConfigMasterCollection.Tables[0];
+
+            string tempFromAddress = dataTableSetMailConfiguration.AsEnumerable().First(r => r.Field<string>("KeyName") == "MailFromAddress")["Value"].ToString();
+            string tempFromPassword = dataTableSetMailConfiguration.AsEnumerable().First(r => r.Field<string>("KeyName") == "MailFromPassword")["Value"].ToString();
+            string tempMailHostName = dataTableSetMailConfiguration.AsEnumerable().First(r => r.Field<string>("KeyName") == "MailHostName")["Value"].ToString();
+            int tempMailPortNumber = int.Parse(dataTableSetMailConfiguration.AsEnumerable().First(r => r.Field<string>("KeyName") == "MailPortNumber")["Value"].ToString());
+            string tempMailToAddress = dataTableSetMailConfiguration.AsEnumerable().First(r => r.Field<string>("KeyName") == "MailToAddress")["Value"].ToString();
+
+            string fromAddress = tempFromAddress;
+            string fromPassword = tempFromPassword;
+            string SendToAddress = "";
+            
+            string body = "Dear User,<hr>New file is Uploaded <b>" + filename + "</b> on Sanveo Inspire at <b>"+ DateTime.Now.ToString()+ "</b><br><br>Thanks,<br>Inspire Team";
+
+
+
+            string subject = "New file uploaded "+ filename;
+            string ToEMail = "";
+
+            var smtp = new SmtpClient();
+            {
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential(fromAddress, fromPassword);
+                smtp.Host = tempMailHostName;
+                smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                smtp.EnableSsl = true;
+                if (tempMailHostName == "smtp.office365.com")
+                {
+                    smtp.TargetName = "STARTTLS/smtp.office365.com";
+                }
+                smtp.Port = tempMailPortNumber;
+            }
+            MailAddress mailFromAddress = new MailAddress(fromAddress);
+            msg.From = mailFromAddress;
+            // msg.Bcc.Add(SendToAddress);
+
+            if(dtRuleData1.Rows.Count>0)
+            {
+                for (int i = 0; i <= dtRuleData1.Rows.Count - 1; i++)
+                {
+                    ToEMail += dtRuleData1.Rows[i]["Emailid"].ToString() + ",";
+
+
+
+                }
+            }
+          if(ToEMail!="")
+            {
+                ToEMail = ToEMail.Remove(ToEMail.Length - 1);
+            }
+            
+
+            //string ToEMail = "akshay@sanveotech.com,monish@sanveotech.com";
+            string[] Multi = ToEMail.Split(',');
+          
+            foreach (string multiemailid in Multi)
+            {
+                msg.Bcc.Add(new MailAddress(multiemailid));
+            }
+            msg.Subject = subject;
+            msg.IsBodyHtml = true;
+            msg.Body = body;
+          
+            smtp.Send(msg);
+            return "";
+        }
+
     }
 
 

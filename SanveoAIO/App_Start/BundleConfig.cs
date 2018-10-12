@@ -36,6 +36,30 @@ namespace SanveoAIO
                                 "~/Content/font-awesome.min.css",
                                 "~/Content/jqTree-master/static/bower_components/fontawesome/css/font-awesome.min.css",
                                 "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/Content/JavaScript.js").Include(
+                 "~/Content/JS/RoomData.js",
+                 "~/Content/JS/RunShrader.js",
+                 "~/Content/JS/RoomWiseQuantity.js",
+                  "~/Content/JS/ADAClearenceCheck.js",
+                  "~/Content/JS/DextractAndUpload.js"
+                  ));
+
+            ScriptBundle thirdPartyScripts = new ScriptBundle("~/Scripts/ThirdParty");
+            thirdPartyScripts.Include("~/Scripts/jquery-{version}.js",
+                                "~/Scripts/bootstrap.min.js");
+
+            bundles.Add(thirdPartyScripts);
+            BundleTable.EnableOptimizations = true;
+
+
+
+
+
+
+
+
+
         }
     }
 }

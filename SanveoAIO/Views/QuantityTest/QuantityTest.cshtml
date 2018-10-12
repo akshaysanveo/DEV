@@ -634,12 +634,12 @@
             var urn = $("#versiontype").data("kendoDropDownList").value();
             if (FileName == "Select File") {
                 alert("Select File");
-                return false;
+                e.preventDefault();
             }
 
             if (v == "Select Version") {
                 alert("Select Version");
-                return false;
+                e.preventDefault();
             }
 
             var value = JSON.stringify({

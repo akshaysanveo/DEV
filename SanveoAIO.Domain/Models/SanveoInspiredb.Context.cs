@@ -1407,19 +1407,6 @@ namespace SanveoAIO.Domain.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_SavePersonalModelUrnDetails", fileNameParameter, urnParameter, versionNoParameter, modifiedDateParameter, fileSizeParameter, compidParameter, currentUserIdParameter);
         }
     
-        public virtual ObjectResult<SP_GetFoldersDetails_Result> SP_GetFoldersDetails(Nullable<int> compId, Nullable<int> userId)
-        {
-            var compIdParameter = compId.HasValue ?
-                new ObjectParameter("CompId", compId) :
-                new ObjectParameter("CompId", typeof(int));
-    
-            var userIdParameter = userId.HasValue ?
-                new ObjectParameter("userId", userId) :
-                new ObjectParameter("userId", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetFoldersDetails_Result>("SP_GetFoldersDetails", compIdParameter, userIdParameter);
-        }
-    
         public virtual ObjectResult<SP_GetFiles_Result> SP_GetFiles(Nullable<int> compid, Nullable<int> userid, Nullable<int> groupid)
         {
             var compidParameter = compid.HasValue ?
@@ -1955,23 +1942,6 @@ namespace SanveoAIO.Domain.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetTrade_Result>("SP_GetTrade", compIdParameter);
         }
     
-        public virtual ObjectResult<Sp_GetCompanyUsers_Result> Sp_GetCompanyUsers(string c_ID, Nullable<int> userId, Nullable<int> user_type)
-        {
-            var c_IDParameter = c_ID != null ?
-                new ObjectParameter("C_ID", c_ID) :
-                new ObjectParameter("C_ID", typeof(string));
-    
-            var userIdParameter = userId.HasValue ?
-                new ObjectParameter("UserId", userId) :
-                new ObjectParameter("UserId", typeof(int));
-    
-            var user_typeParameter = user_type.HasValue ?
-                new ObjectParameter("User_type", user_type) :
-                new ObjectParameter("User_type", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Sp_GetCompanyUsers_Result>("Sp_GetCompanyUsers", c_IDParameter, userIdParameter, user_typeParameter);
-        }
-    
         public virtual ObjectResult<SP_GetUserTrade_Result> SP_GetUserTrade(Nullable<int> compId)
         {
             var compIdParameter = compId.HasValue ?
@@ -1979,59 +1949,6 @@ namespace SanveoAIO.Domain.Models
                 new ObjectParameter("CompId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetUserTrade_Result>("SP_GetUserTrade", compIdParameter);
-        }
-    
-        public virtual int sp_SaveCompanyUser(Nullable<int> u_ID, string firstName, string lastName, string username, string password, string emailid, string mobileNo, Nullable<int> group_Id, Nullable<bool> active, Nullable<int> currentID, ObjectParameter error, Nullable<int> profile, Nullable<int> trade)
-        {
-            var u_IDParameter = u_ID.HasValue ?
-                new ObjectParameter("U_ID", u_ID) :
-                new ObjectParameter("U_ID", typeof(int));
-    
-            var firstNameParameter = firstName != null ?
-                new ObjectParameter("FirstName", firstName) :
-                new ObjectParameter("FirstName", typeof(string));
-    
-            var lastNameParameter = lastName != null ?
-                new ObjectParameter("LastName", lastName) :
-                new ObjectParameter("LastName", typeof(string));
-    
-            var usernameParameter = username != null ?
-                new ObjectParameter("Username", username) :
-                new ObjectParameter("Username", typeof(string));
-    
-            var passwordParameter = password != null ?
-                new ObjectParameter("password", password) :
-                new ObjectParameter("password", typeof(string));
-    
-            var emailidParameter = emailid != null ?
-                new ObjectParameter("Emailid", emailid) :
-                new ObjectParameter("Emailid", typeof(string));
-    
-            var mobileNoParameter = mobileNo != null ?
-                new ObjectParameter("MobileNo", mobileNo) :
-                new ObjectParameter("MobileNo", typeof(string));
-    
-            var group_IdParameter = group_Id.HasValue ?
-                new ObjectParameter("Group_Id", group_Id) :
-                new ObjectParameter("Group_Id", typeof(int));
-    
-            var activeParameter = active.HasValue ?
-                new ObjectParameter("Active", active) :
-                new ObjectParameter("Active", typeof(bool));
-    
-            var currentIDParameter = currentID.HasValue ?
-                new ObjectParameter("CurrentID", currentID) :
-                new ObjectParameter("CurrentID", typeof(int));
-    
-            var profileParameter = profile.HasValue ?
-                new ObjectParameter("Profile", profile) :
-                new ObjectParameter("Profile", typeof(int));
-    
-            var tradeParameter = trade.HasValue ?
-                new ObjectParameter("Trade", trade) :
-                new ObjectParameter("Trade", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_SaveCompanyUser", u_IDParameter, firstNameParameter, lastNameParameter, usernameParameter, passwordParameter, emailidParameter, mobileNoParameter, group_IdParameter, activeParameter, currentIDParameter, error, profileParameter, tradeParameter);
         }
     
         public virtual ObjectResult<SP_GetModules_Result> SP_GetModules()
@@ -2964,6 +2881,324 @@ namespace SanveoAIO.Domain.Models
                 new ObjectParameter("Compid", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetUSerAccessData_Result>("SP_GetUSerAccessData", compidParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetSupplyChainMasterDetails_Result> SP_GetSupplyChainMasterDetails(string urn, string category_Name)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var category_NameParameter = category_Name != null ?
+                new ObjectParameter("Category_Name", category_Name) :
+                new ObjectParameter("Category_Name", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetSupplyChainMasterDetails_Result>("SP_GetSupplyChainMasterDetails", urnParameter, category_NameParameter);
+        }
+    
+        public virtual ObjectResult<GetPropertyValueByPropName_Result> GetPropertyValueByPropName(string urn, string category, string propname)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var categoryParameter = category != null ?
+                new ObjectParameter("category", category) :
+                new ObjectParameter("category", typeof(string));
+    
+            var propnameParameter = propname != null ?
+                new ObjectParameter("propname", propname) :
+                new ObjectParameter("propname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPropertyValueByPropName_Result>("GetPropertyValueByPropName", urnParameter, categoryParameter, propnameParameter);
+        }
+    
+        public virtual int SP_InsertSupplyChainMaster(string urn, string cat_name, string prop_Name, string prop_Value, Nullable<bool> isGroup, string report_Id)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var cat_nameParameter = cat_name != null ?
+                new ObjectParameter("Cat_name", cat_name) :
+                new ObjectParameter("Cat_name", typeof(string));
+    
+            var prop_NameParameter = prop_Name != null ?
+                new ObjectParameter("Prop_Name", prop_Name) :
+                new ObjectParameter("Prop_Name", typeof(string));
+    
+            var prop_ValueParameter = prop_Value != null ?
+                new ObjectParameter("Prop_Value", prop_Value) :
+                new ObjectParameter("Prop_Value", typeof(string));
+    
+            var isGroupParameter = isGroup.HasValue ?
+                new ObjectParameter("IsGroup", isGroup) :
+                new ObjectParameter("IsGroup", typeof(bool));
+    
+            var report_IdParameter = report_Id != null ?
+                new ObjectParameter("Report_Id", report_Id) :
+                new ObjectParameter("Report_Id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_InsertSupplyChainMaster", urnParameter, cat_nameParameter, prop_NameParameter, prop_ValueParameter, isGroupParameter, report_IdParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetReferrenceLevelByUrn_Result> SP_GetReferrenceLevelByUrn(string urn, string category)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var categoryParameter = category != null ?
+                new ObjectParameter("category", category) :
+                new ObjectParameter("category", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetReferrenceLevelByUrn_Result>("SP_GetReferrenceLevelByUrn", urnParameter, categoryParameter);
+        }
+    
+        public virtual int SP_INSERT_UpdateQuantitySetting(string urn, string category, string level, string standard, string group, Nullable<long> iD)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var categoryParameter = category != null ?
+                new ObjectParameter("Category", category) :
+                new ObjectParameter("Category", typeof(string));
+    
+            var levelParameter = level != null ?
+                new ObjectParameter("Level", level) :
+                new ObjectParameter("Level", typeof(string));
+    
+            var standardParameter = standard != null ?
+                new ObjectParameter("Standard", standard) :
+                new ObjectParameter("Standard", typeof(string));
+    
+            var groupParameter = group != null ?
+                new ObjectParameter("Group", group) :
+                new ObjectParameter("Group", typeof(string));
+    
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_INSERT_UpdateQuantitySetting", urnParameter, categoryParameter, levelParameter, standardParameter, groupParameter, iDParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetQuantitySetting_Result> SP_GetQuantitySetting(string urn)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetQuantitySetting_Result>("SP_GetQuantitySetting", urnParameter);
+        }
+    
+        public virtual ObjectResult<Sp_GetCompanyUsers_Result> Sp_GetCompanyUsers(string c_ID, Nullable<int> userId, Nullable<int> user_type)
+        {
+            var c_IDParameter = c_ID != null ?
+                new ObjectParameter("C_ID", c_ID) :
+                new ObjectParameter("C_ID", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            var user_typeParameter = user_type.HasValue ?
+                new ObjectParameter("User_type", user_type) :
+                new ObjectParameter("User_type", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Sp_GetCompanyUsers_Result>("Sp_GetCompanyUsers", c_IDParameter, userIdParameter, user_typeParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetConduitMaterialByUrn_Result> SP_GetConduitMaterialByUrn(string urn, string category, string level)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var categoryParameter = category != null ?
+                new ObjectParameter("Category", category) :
+                new ObjectParameter("Category", typeof(string));
+    
+            var levelParameter = level != null ?
+                new ObjectParameter("Level", level) :
+                new ObjectParameter("Level", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetConduitMaterialByUrn_Result>("SP_GetConduitMaterialByUrn", urnParameter, categoryParameter, levelParameter);
+        }
+    
+        public virtual int sp_SaveCompanyUser(Nullable<int> u_ID, string firstName, string lastName, string username, string password, string emailid, string mobileNo, Nullable<int> group_Id, Nullable<bool> active, Nullable<int> currentID, ObjectParameter error, Nullable<int> profile, Nullable<int> trade, Nullable<bool> isEmail)
+        {
+            var u_IDParameter = u_ID.HasValue ?
+                new ObjectParameter("U_ID", u_ID) :
+                new ObjectParameter("U_ID", typeof(int));
+    
+            var firstNameParameter = firstName != null ?
+                new ObjectParameter("FirstName", firstName) :
+                new ObjectParameter("FirstName", typeof(string));
+    
+            var lastNameParameter = lastName != null ?
+                new ObjectParameter("LastName", lastName) :
+                new ObjectParameter("LastName", typeof(string));
+    
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var passwordParameter = password != null ?
+                new ObjectParameter("password", password) :
+                new ObjectParameter("password", typeof(string));
+    
+            var emailidParameter = emailid != null ?
+                new ObjectParameter("Emailid", emailid) :
+                new ObjectParameter("Emailid", typeof(string));
+    
+            var mobileNoParameter = mobileNo != null ?
+                new ObjectParameter("MobileNo", mobileNo) :
+                new ObjectParameter("MobileNo", typeof(string));
+    
+            var group_IdParameter = group_Id.HasValue ?
+                new ObjectParameter("Group_Id", group_Id) :
+                new ObjectParameter("Group_Id", typeof(int));
+    
+            var activeParameter = active.HasValue ?
+                new ObjectParameter("Active", active) :
+                new ObjectParameter("Active", typeof(bool));
+    
+            var currentIDParameter = currentID.HasValue ?
+                new ObjectParameter("CurrentID", currentID) :
+                new ObjectParameter("CurrentID", typeof(int));
+    
+            var profileParameter = profile.HasValue ?
+                new ObjectParameter("Profile", profile) :
+                new ObjectParameter("Profile", typeof(int));
+    
+            var tradeParameter = trade.HasValue ?
+                new ObjectParameter("Trade", trade) :
+                new ObjectParameter("Trade", typeof(int));
+    
+            var isEmailParameter = isEmail.HasValue ?
+                new ObjectParameter("IsEmail", isEmail) :
+                new ObjectParameter("IsEmail", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_SaveCompanyUser", u_IDParameter, firstNameParameter, lastNameParameter, usernameParameter, passwordParameter, emailidParameter, mobileNoParameter, group_IdParameter, activeParameter, currentIDParameter, error, profileParameter, tradeParameter, isEmailParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetConsolidatedSCMData_Result> SP_GetConsolidatedSCMData(string urn)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetConsolidatedSCMData_Result>("SP_GetConsolidatedSCMData", urnParameter);
+        }
+    
+        public virtual ObjectResult<SP_GET_CONSOLIDATED_DESC_Result> SP_GET_CONSOLIDATED_DESC()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_CONSOLIDATED_DESC_Result>("SP_GET_CONSOLIDATED_DESC");
+        }
+    
+        public virtual ObjectResult<SP_GET_SettingDataDesc_Result> SP_GET_SettingDataDesc(string urn)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_SettingDataDesc_Result>("SP_GET_SettingDataDesc", urnParameter);
+        }
+    
+        public virtual int SP_ADDUPDATE_SettingDataDesc(string urn, string cat_Name, string description, Nullable<long> iD)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var cat_NameParameter = cat_Name != null ?
+                new ObjectParameter("Cat_Name", cat_Name) :
+                new ObjectParameter("Cat_Name", typeof(string));
+    
+            var descriptionParameter = description != null ?
+                new ObjectParameter("Description", description) :
+                new ObjectParameter("Description", typeof(string));
+    
+            var iDParameter = iD.HasValue ?
+                new ObjectParameter("ID", iD) :
+                new ObjectParameter("ID", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_ADDUPDATE_SettingDataDesc", urnParameter, cat_NameParameter, descriptionParameter, iDParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetConsolidatedSCMDataNew_Result> SP_GetConsolidatedSCMDataNew(string urn)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetConsolidatedSCMDataNew_Result>("SP_GetConsolidatedSCMDataNew", urnParameter);
+        }
+    
+        public virtual int SP_ADDUPDATE_MaterialGBDescription(string urn, string dESCRIPTION, string uOM, string qTY_Needed, string gBID, string gB_Description)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var dESCRIPTIONParameter = dESCRIPTION != null ?
+                new ObjectParameter("DESCRIPTION", dESCRIPTION) :
+                new ObjectParameter("DESCRIPTION", typeof(string));
+    
+            var uOMParameter = uOM != null ?
+                new ObjectParameter("UOM", uOM) :
+                new ObjectParameter("UOM", typeof(string));
+    
+            var qTY_NeededParameter = qTY_Needed != null ?
+                new ObjectParameter("QTY_Needed", qTY_Needed) :
+                new ObjectParameter("QTY_Needed", typeof(string));
+    
+            var gBIDParameter = gBID != null ?
+                new ObjectParameter("GBID", gBID) :
+                new ObjectParameter("GBID", typeof(string));
+    
+            var gB_DescriptionParameter = gB_Description != null ?
+                new ObjectParameter("GB_Description", gB_Description) :
+                new ObjectParameter("GB_Description", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_ADDUPDATE_MaterialGBDescription", urnParameter, dESCRIPTIONParameter, uOMParameter, qTY_NeededParameter, gBIDParameter, gB_DescriptionParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetGbId_GBDescListByCategory_Result> SP_GetGbId_GBDescListByCategory(string urn, string searchtextDesc)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var searchtextDescParameter = searchtextDesc != null ?
+                new ObjectParameter("SearchtextDesc", searchtextDesc) :
+                new ObjectParameter("SearchtextDesc", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetGbId_GBDescListByCategory_Result>("SP_GetGbId_GBDescListByCategory", urnParameter, searchtextDescParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetGB_DescriptionByGBID_Result> SP_GetGB_DescriptionByGBID(string urn, string searchtext)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            var searchtextParameter = searchtext != null ?
+                new ObjectParameter("Searchtext", searchtext) :
+                new ObjectParameter("Searchtext", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetGB_DescriptionByGBID_Result>("SP_GetGB_DescriptionByGBID", urnParameter, searchtextParameter);
+        }
+    
+        public virtual ObjectResult<SP_GetConsolidatedGBData_Result> SP_GetConsolidatedGBData(string urn)
+        {
+            var urnParameter = urn != null ?
+                new ObjectParameter("Urn", urn) :
+                new ObjectParameter("Urn", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GetConsolidatedGBData_Result>("SP_GetConsolidatedGBData", urnParameter);
         }
     }
 }

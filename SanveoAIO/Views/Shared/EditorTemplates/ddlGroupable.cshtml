@@ -1,0 +1,25 @@
+﻿@(
+       Html.Kendo().DropDownList()
+              
+                   .Name("ddlSCGroup")  //is this Name important?
+                   .DataTextField("Text")
+                   .DataValueField("Value")
+                   .OptionLabel("Select Filter")
+                     .Events(e => e.DataBound("OnBoundDDLGroupBound"))
+                   .BindTo(new List<SelectListItem>()
+                  
+          {
+              new SelectListItem() {
+                Text = "Yes", Value ="1"
+              },
+              new SelectListItem() {
+                Text = "No", Value ="0"
+              },
+            
+          })
+)
+                   
+                   
+
+
+

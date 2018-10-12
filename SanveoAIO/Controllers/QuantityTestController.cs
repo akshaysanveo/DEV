@@ -309,6 +309,8 @@ namespace SanveoAIO.Controllers
 
         }
 
+       
+
         public string GetFamilyCount(string filename, string version, string categoryname, string urn)
         {
             if (Session["UserInfo"] != null)
@@ -355,7 +357,18 @@ namespace SanveoAIO.Controllers
                 Direction = System.Data.ParameterDirection.Input
             });
 
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@MGUID",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = urn,
+                Direction = System.Data.ParameterDirection.Input
+            });
             DataSet ds = SqlManager.ExecuteDataSet("SP_GetFamilyCountNew", parameters.ToArray());
+
+
+           
 
             string data = JsonConvert.SerializeObject(ds);
             data = data.Replace("{\"Table\":", "");
@@ -1150,16 +1163,64 @@ namespace SanveoAIO.Controllers
         }
 
 
-        public JsonResult GetSCMQTYValue(string urn)
+        public string GetSCMQTYValue(string urn,string Category,string Level,string Standard)
+        {
+            if (urn != "")
+            {
+
+                List<SqlParameter> parameters1 = new List<SqlParameter>();
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Urn",
+                    SqlDbType = SqlDbType.VarChar,
+                    Value = urn,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Category",
+                    SqlDbType = SqlDbType.VarChar,
+                    Value = Category,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Level",
+                    SqlDbType = SqlDbType.VarChar,
+                    Value = Level,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Standard",
+                    SqlDbType = SqlDbType.VarChar,
+                    Value = Standard,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+
+
+
+                DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_GetSCMQuantityValue", parameters1.ToArray());
+                string data = JsonConvert.SerializeObject(dtRuleData);
+                return data;
+
+
+            }
+            else
+            {
+                return "";
+            }
+           
+        }
+
+        public JsonResult GetLevelSize(string urn,string Category_Name)
         {
             if (urn != "")
             {
                 string JHOOK1 = "";
                 string JunctionBox1 = "";
-                string Property_Value1 = "";
-                string _Angle = "";
-                string _Bend_Radius = "";
-                string _Conduit_Length = "";
+              
+
                 List<SqlParameter> parameters1 = new List<SqlParameter>();
                 parameters1.Add(new SqlParameter()
                 {
@@ -1168,71 +1229,39 @@ namespace SanveoAIO.Controllers
                     Value = urn,
                     Direction = System.Data.ParameterDirection.Input
                 });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Category_Name",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = Category_Name,
+                    Direction = System.Data.ParameterDirection.Input
+                });
 
-                DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_Get_SCMQuantity_Data", parameters1.ToArray());
+                DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_GetLevelSize", parameters1.ToArray());
                 DataTable JHOOK = dtRuleData.Tables[0];
-                DataTable JunctionBox = dtRuleData.Tables[1];
-                DataTable Property_Value = dtRuleData.Tables[2];
-                DataTable Angle = dtRuleData.Tables[3];
-                DataTable Bend_Radius = dtRuleData.Tables[4];
-                DataTable Conduit_Length = dtRuleData.Tables[5];
-                if (JHOOK.Rows.Count > 0)
+                // DataTable JunctionBox = dtRuleData.Tables[1];
+
+
+                for (int j = 0; j < JHOOK.Rows.Count; j++)
                 {
-                    JHOOK1 = JHOOK.Rows[0]["Count1"].ToString();
-                   
-
-                }
-                if (JunctionBox.Rows.Count > 0)
-                {
-                    JunctionBox1 = JunctionBox.Rows[0]["Count2"].ToString();
-                }
-                if (Property_Value.Rows.Count > 0)
-                {
-
-
-                    for (int j = 0; j < Property_Value.Rows.Count; j++)
-                    {
-                        Property_Value1 += Property_Value.Rows[j]["Conduits_Length"].ToString() + ",";
-                       
-                    }
-                   
-                }
-                if (Angle.Rows.Count > 0)
-                {
-
-
-                    for (int j = 0; j < Angle.Rows.Count; j++)
-                    {
-                        _Angle += Angle.Rows[j]["Angle"].ToString();
-
-                    }
-
-                }
-                if (Bend_Radius.Rows.Count > 0)
-                {
-
-
-                    for (int j = 0; j < Bend_Radius.Rows.Count; j++)
-                    {
-                        _Bend_Radius += Bend_Radius.Rows[j]["Bend_Radius"].ToString();
-
-                    }
-
-                }
-                if (Conduit_Length.Rows.Count > 0)
-                {
-
-
-                    for (int j = 0; j < Conduit_Length.Rows.Count; j++)
-                    {
-                        _Conduit_Length += Conduit_Length.Rows[j]["Conduit_Length"].ToString();
-
-                    }
+                    JHOOK1 += JHOOK.Rows[j]["Reference_Level"].ToString() + ",";
 
                 }
 
+                //if (JHOOK.Rows.Count > 0)
+                //{
+                //    JHOOK1 = JHOOK.Rows[0]["Reference_Level"].ToString();
 
-                return Json(JHOOK1+","+ JunctionBox1+","+ Property_Value1+","+_Angle+","+_Bend_Radius+","+ _Conduit_Length, JsonRequestBehavior.AllowGet);
+
+                //}
+                //if (JunctionBox.Rows.Count > 0)
+                //{
+                //    JunctionBox1 = JunctionBox.Rows[0]["Count2"].ToString();
+                //}
+               
+
+
+                return Json(JHOOK1  , JsonRequestBehavior.AllowGet);
 
 
             }
@@ -1242,5 +1271,546 @@ namespace SanveoAIO.Controllers
                 return Json("", JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult GetSupplyChainData([DataSourceRequest] DataSourceRequest request, string Urn, string Category)
+        {
+            DataSourceResult result1 = new DataSourceResult();
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            var result = db.Database.SqlQuery<SP_GetSupplyChainMasterDetails_Result>("SP_GetSupplyChainMasterDetails  @Urn={0},@Category_Name={1}", Urn, Category).ToList();
+            result1 = result.ToDataSourceResult(request);
+
+            return Json(result1, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetPropertyName(string urn, string category)
+        {
+            try
+            {
+                if (category != "")
+                {
+
+                    IEnumerable<GetPropertyName_Result> items = db.Database
+                        .SqlQuery<GetPropertyName_Result>("GetPropertyName @Guid={0},@category={1}", urn, category)
+                        .ToList().Select(c => new GetPropertyName_Result
+                        {
+
+                            Id = c.Id,
+                            Property_Name = c.Property_Name
+                        });
+                    return Json(items, JsonRequestBehavior.AllowGet);
+
+                }
+                else
+                {
+
+                    return Json("", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        public JsonResult SaveSupplyChainData(string Urn, string Cat_Name, string Prop_Name,string Prop_Value,string IsGroup,string Report_Id)
+        {
+            bool IsGroupBool;
+            if (IsGroup == "Yes")
+            {
+                IsGroupBool = true;
+            }
+            else
+                IsGroupBool = false;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+          //  int id = Int32.Parse(Id);
+
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Urn",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = Urn,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Cat_name",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Cat_Name,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Prop_Name",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Prop_Name,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Prop_Value",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Prop_Value,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@IsGroup",
+                SqlDbType = SqlDbType.Bit,
+                Value = IsGroupBool,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Report_Id",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Report_Id,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+
+
+            DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_InsertSupplyChainMaster", parameters1.ToArray());
+
+            string errormessage = dtRuleData.Tables[1].Rows[0]["Action"].ToString();
+
+            // return Json(errormessage, "text/plain");
+
+            return this.Json(new DataSourceResult
+            {
+                Errors = errormessage
+            });
+           
+
+        }
+        
+       public JsonResult AddSetingsData(string Urn, string Category, string Level, string Standard, string GroupQuantity, string ID)
+        {
+            int id = Convert.ToInt32(ID);
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+            //  int id = Int32.Parse(Id);
+
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Urn",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = Urn,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Category",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Category,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Level",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Level,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Standard",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Standard,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Group",
+                SqlDbType = SqlDbType.VarChar,
+                Value = GroupQuantity,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@ID",
+                SqlDbType = SqlDbType.Int,
+                Value = id,
+                Direction = System.Data.ParameterDirection.Input
+            });
+           
+
+
+
+
+            DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_INSERT_UpdateQuantitySetting", parameters1.ToArray());
+
+            string errormessage = dtRuleData.Tables[0].Rows[0]["Action"].ToString();
+
+            // return Json(errormessage, "text/plain");
+
+            return this.Json(new DataSourceResult
+            {
+                Errors = errormessage
+            });
+
+
+        }
+
+        public JsonResult AddConsolidatedData(string Urn, string DESCRIPTION, string UOM, string QTY_Needed, string GB_ID, string a123)
+        {
+
+            if((Urn=="" || Urn==null || a123 == "" || a123 == null) )
+            {
+                 return this.Json(new DataSourceResult
+                {
+                    Errors = ""
+                });
+            }
+           
+            else
+            {
+                //int id = Convert.ToInt32(ID);
+                if (Session["UserInfo"] != null)
+                {
+                    user = (UserInfo)Session["UserInfo"];
+                }
+
+                //  int id = Int32.Parse(Id);
+
+                List<SqlParameter> parameters1 = new List<SqlParameter>();
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@Urn",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = Urn,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@DESCRIPTION",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = DESCRIPTION,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@UOM",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = UOM,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@QTY_Needed",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = QTY_Needed,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@GBID",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = GB_ID,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                parameters1.Add(new SqlParameter()
+                {
+                    ParameterName = "@GB_Description",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = a123,
+                    Direction = System.Data.ParameterDirection.Input
+                });
+                //parameters1.Add(new SqlParameter()
+                //{
+                //    ParameterName = "@ID",
+                //    SqlDbType = SqlDbType.Int,
+                //    Value = id,
+                //    Direction = System.Data.ParameterDirection.Input
+                //});
+
+
+
+
+
+                DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_ADDUPDATE_MaterialGBDescription", parameters1.ToArray());
+
+                string errormessage = dtRuleData.Tables[0].Rows[0]["Action"].ToString();
+
+                // return Json(errormessage, "text/plain");
+
+                return this.Json(new DataSourceResult
+                {
+                    Errors = errormessage
+                });
+            }
+
+        }
+
+        public JsonResult AddSetDescriptionData(string Urn, string Cat_Name, string Description,string ID)
+        {
+            int id = Convert.ToInt32(ID);
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+            //  int id = Int32.Parse(Id);
+
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Urn",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = Urn,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Cat_Name",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Cat_Name,
+                Direction = System.Data.ParameterDirection.Input
+            });
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Description",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Description,
+                Direction = System.Data.ParameterDirection.Input
+            });
+          
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@ID",
+                SqlDbType = SqlDbType.Int,
+                Value = id,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+
+
+
+
+            DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_ADDUPDATE_SettingDataDesc", parameters1.ToArray());
+
+            //string errormessage = dtRuleData.Tables[0].Rows[0]["Action"].ToString();
+            string errormessage = "";
+            // return Json(errormessage, "text/plain");
+
+            return this.Json(new DataSourceResult
+            {
+                Errors = errormessage
+            });
+
+
+        }
+
+        public JsonResult GetSetingsData([DataSourceRequest] DataSourceRequest request,string Urn)
+        {
+
+            DataSourceResult result1 = new DataSourceResult();
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            var result = db.Database.SqlQuery<SP_GetQuantitySetting_Result>("EXEC SP_GetQuantitySetting @Urn={0}", Urn).ToList();
+            result1 = result.ToDataSourceResult(request);
+
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+          
+
+        }
+
+        public JsonResult GetDescriptionData([DataSourceRequest] DataSourceRequest request, string Urn)
+        {
+
+            DataSourceResult result1 = new DataSourceResult();
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            var result = db.Database.SqlQuery<SP_GET_SettingDataDesc_Result>("EXEC SP_GET_SettingDataDesc @Urn={0}", Urn).ToList();
+            result1 = result.ToDataSourceResult(request);
+
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+
+
+        }
+
+
+
+        public JsonResult GetConsoliatedData([DataSourceRequest] DataSourceRequest request, string Urn)
+        {
+
+            DataSourceResult result1 = new DataSourceResult();
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            var result = db.Database.SqlQuery<SP_GetConsolidatedSCMData_Result>("EXEC SP_GetConsolidatedSCMData @Urn={0}", Urn).ToList();
+            result1 = result.ToDataSourceResult(request);
+
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+
+
+        }
+
+        public JsonResult GetConsoliatedDataNew([DataSourceRequest] DataSourceRequest request, string Urn)
+        {
+
+            DataSourceResult result1 = new DataSourceResult();
+            int type = 0;
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            var result = db.Database.SqlQuery<SP_GetConsolidatedGBData_Result > ("EXEC SP_GetConsolidatedGBData @Urn={0}", Urn).ToList();
+            result1 = result.ToDataSourceResult(request);
+
+            return Json(result1, JsonRequestBehavior.AllowGet);
+
+
+
+        }
+
+        public JsonResult GetPropValues(string Urn, string Category, string Property)
+        {
+
+            try
+            {
+                IEnumerable<GetPropertyValueByPropName_Result> items = db.Database
+               .SqlQuery<GetPropertyValueByPropName_Result>("EXEC GetPropertyValueByPropName @Urn={0},@category={1},@propname={2}", Urn, Category, Property)
+               .ToList().Select(c => new GetPropertyValueByPropName_Result
+               {
+
+                   ID = c.ID,
+                   Property_Value = c.Property_Value
+               });
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+
+        public string GetConsolidatedQuantity(string urn)
+        {
+            try
+            {
+                if (urn != "")
+                {
+                    //comment
+                    List<SqlParameter> parameters1 = new List<SqlParameter>();
+                    parameters1.Add(new SqlParameter()
+                    {
+                        ParameterName = "@Urn",
+                        SqlDbType = SqlDbType.VarChar,
+                        Value = urn,
+                        Direction = System.Data.ParameterDirection.Input
+                    });
+
+
+                    DataSet dtRuleData = SqlManager.ExecuteDataSet("SP_GetConsolidatedSCMData", parameters1.ToArray());
+                    string data = JsonConvert.SerializeObject(dtRuleData);
+                    return data;
+
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+
+        }
+
+
+        public string GetScopeBoxElement(string Urn, string VersionNo, string Roomid)
+        {
+            if (Session["UserInfo"] != null)
+            {
+                user = (UserInfo)Session["UserInfo"];
+            }
+
+
+            List<SqlParameter> parameters1 = new List<SqlParameter>();
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@VersionNo",
+                SqlDbType = SqlDbType.VarChar,
+                Value = VersionNo,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Urn",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Urn,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@Roomid",
+                SqlDbType = SqlDbType.VarChar,
+                Value = Roomid,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+            parameters1.Add(new SqlParameter()
+            {
+                ParameterName = "@CompId",
+                SqlDbType = SqlDbType.Int,
+                Value = user.Comp_ID,
+                Direction = System.Data.ParameterDirection.Input
+            });
+
+            DataSet dataSet2 = SqlManager.ExecuteDataSet("SP_GetRoomElements", parameters1.ToArray());
+            DataTable datatable = new DataTable();
+
+            if (dataSet2.Tables.Count > 0)
+                datatable = dataSet2.Tables[0];
+
+
+            string data = JsonConvert.SerializeObject(datatable);
+            return data;
+        }
+
+
+       
+
     }
 }

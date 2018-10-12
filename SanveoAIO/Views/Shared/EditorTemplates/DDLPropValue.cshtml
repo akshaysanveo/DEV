@@ -1,0 +1,22 @@
+﻿@(
+       Html.Kendo().DropDownList()
+                   .Name("ddlPropValue")  //is this Name important?
+                   .DataTextField("Property_Value")
+                   .DataValueField("ID")
+                   .OptionLabel("Select and Click")
+                  // .Events(e => e.DataBound("OnBoundPropValue"))
+                  .DataSource(source =>
+                  {
+                      source.Read(read =>
+                      {
+                          read.Action("GetPropValues", "QuantityTest").Data("AdditionalPropValues");
+                      });
+                  })
+
+.Template("<label><input type='checkbox' class='usernamecheck' id='#:data.Property_Value#' name='CheckUsers' value='#:data.Property_Value#' /> #:data.Property_Value#</label>")
+
+                   @*.Template("<label><input type='checkbox' id='#:data.Property_Value#' name=' #:data.Property_Value#' value='#:data.Property_Value#' /> #:data.Property_Value#</label>")*@
+                   //.CascadeFrom("ddlPropName")*@
+)
+
+

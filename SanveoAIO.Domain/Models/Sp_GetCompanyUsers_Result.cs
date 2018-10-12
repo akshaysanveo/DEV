@@ -24,6 +24,7 @@ namespace SanveoAIO.Domain.Models
         public string CompName { get; set; }
         public string Group_Name { get; set; }
         public Nullable<bool> Active { get; set; }
+        public Nullable<bool> IsEmail { get; set; }
         public string Profile { get; set; }
         public string Name { get; set; }
     }

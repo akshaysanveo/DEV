@@ -49,9 +49,8 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Autodesk.Forge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\prashant\Desktop\Autodesk.Forge.dll</HintPath>
+    <Reference Include="Autodesk.Forge, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autodesk.Forge.1.4.0\lib\net452\Autodesk.Forge.dll</HintPath>
     </Reference>
     <Reference Include="ClosedXML, Version=0.86.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.86.0\lib\net40\ClosedXML.dll</HintPath>
@@ -134,17 +133,15 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -242,7 +239,13 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\JS\ADAClearenceCheck.js" />
+    <Content Include="Content\JS\DextractAndUpload.js" />
+    <Content Include="Content\JS\RoomWiseQuantity.js" />
+    <Content Include="Content\JS\RunShrader.js" />
+    <Content Include="Content\JS\RoomData.js" />
     <Content Include="Content\Index.css" />
+    <Content Include="Content\JavaScript.js" />
     <Content Include="Content\jqTree-master\gulpfile.js" />
     <Content Include="Content\jqTree-master\index.html" />
     <Content Include="Content\jqTree-master\jqtree-circle.png" />
@@ -255,6 +258,7 @@
     <Content Include="Content\jqTree-master\webpack.config.js" />
     <Content Include="Content\jqTree-master\webpack.config.production.js" />
     <Content Include="Content\jqtree.css" />
+    <Content Include="Content\JS\ViewerLoad.js" />
     <Content Include="Content\kendo\2016.3.1028-source\gulpfile.js" />
     <Content Include="Content\kendo\2016.3.1028-source\mobile\images\back.png" />
     <Content Include="Content\kendo\2016.3.1028-source\mobile\images\kendoui.svg" />
@@ -893,6 +897,8 @@
     <Content Include="Content\logo new transparent.png" />
     <Content Include="Content\logo old.png" />
     <Content Include="Content\logo.png" />
+    <Content Include="Content\newLogo.png" />
+    <Content Include="Content\newLogoWhite.png" />
     <Content Include="Content\Nlogo.jpg" />
     <Content Include="Content\plus.png" />
     <Content Include="Content\Quantity.png" />
@@ -1692,6 +1698,7 @@
     <Content Include="Content\Skins\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="Content\Skins\plugins\timepicker\bootstrap-timepicker.min.js" />
     <Content Include="Content\SPM.png" />
+    <Content Include="Content\style.css" />
     <Content Include="Content\thumbnail_check - Copy.jpg" />
     <Content Include="Content\Untitled.png" />
     <Content Include="Content\Untitled1.png" />
@@ -2277,6 +2284,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\boudingboxextension.js" />
+    <Content Include="Scripts\ConvexGeometry.js" />
+    <Content Include="Scripts\FileSaver.js" />
     <Content Include="Scripts\FloatThead.js" />
     <Content Include="Scripts\ForgeViewer.js" />
     <Content Include="Scripts\ForgeXLS1.js" />
@@ -2285,6 +2294,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.1.js" />
     <Content Include="Scripts\jquery.signalR-2.2.1.min.js" />
+    <Content Include="Scripts\jszip.js" />
     <Content Include="Scripts\kendo.modernizr.custom.js" />
     <Content Include="Scripts\libraries\Blob.js" />
     <Content Include="Scripts\libraries\FileSaver.min.js" />
@@ -2296,7 +2306,9 @@
     <Content Include="Scripts\MeasureTool.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\my-awesome-extension.js" />
+    <Content Include="Scripts\myexcel.js" />
     <Content Include="Scripts\npm.js" />
+    <Content Include="Scripts\QuickHull.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\table2excel.js" />
@@ -2353,6 +2365,7 @@
     <Content Include="Vendors\nprogress\nprogress.js" />
     <Content Include="Vendors\nprogress\support\extras.css" />
     <Content Include="Vendors\nprogress\support\style.css" />
+    <Content Include="Views\Electrical360\Electrical360.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2569,11 +2582,19 @@
     <Content Include="Views\Shared\EditorTemplates\ddlGetMeasurement.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\ddlGetCatGroup.cshtml" />
     <Content Include="Views\ADAClearance\ADAClearance.cshtml" />
-    <Content Include="Views\Electrical360\Electrical360.cshtml" />
     <Content Include="UploadFiles\2.mtl" />
     <Content Include="UploadFiles\2.obj" />
     <Content Include="UploadFiles\AddonFBX.fbx" />
     <Content Include="UploadFiles\new office without furniture2.fbx" />
+    <Content Include="Views\Shared\EditorTemplates\DDLPropValue.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DDLPropName.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ddlGroupable.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DDLPropNameForStandard.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DDLPropNameForGroup.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ddlDescription.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ddlDESC.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ddlGBID.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\cmbCategory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

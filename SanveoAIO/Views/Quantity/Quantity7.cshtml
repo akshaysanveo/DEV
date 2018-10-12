@@ -1,0 +1,3770 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sanveo Inspire</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="@Url.Content("~")Content/Skins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @*<link href="~/bower_components/morrisjs/morris.css" rel="stylesheet">*@
+    <link href="@Url.Content("~")Content/Skins/dist/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~")Content/Skins/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/viewingservice/v1/viewers/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.rtl.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.silver.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.1.223/styles/kendo.material.mobile.min.css" />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.504/js/kendo.all.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/angular.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/jszip.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://the360view.typepad.com/files/glue-embedded.js"></script>
+    <script src="@Url.Content("~")Content/Skins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/app.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~")Content/Skins/dist/js/demo.js"></script>
+    <script src="@Url.Content("~")Content/Skins/plugins/confirm/jquery.confirm.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
+
+    @* Files to Export Model to excel *@
+    <script src="~/Scripts/libraries/notify.min.js"></script>
+    <script src="https://developer.api.autodesk.com/viewingservice/v1/viewers/three.min.js?v=2.13"></script>
+    <script src="~/Scripts/ForgeViewer.js"></script>
+    <script src="~/Scripts/libraries/Blob.js"></script>
+    <script src="~/Scripts/libraries/FileSaver.min.js"></script>
+    <script src="~/Scripts/libraries/xlsx.core.min.js"></script>
+    <script src="~/Scripts/ForgeXLS1.js"></script>
+
+
+    <script src="~/Scripts/jszip.js"></script>
+    <script src="~/Scripts/FileSaver.js"></script>
+    <script src="~/Scripts/myexcel.js"></script>
+
+
+    <style>
+        body {
+            font-family: Arial;
+            color: white;
+        }
+
+        .split {
+            height: 100%;
+            width: 50%;
+            position: fixed;
+            z-index: 1;
+            top: 116px;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        #SettingsGrid .k-grid-add {
+            background-color: #3c8dbc !important;
+        }
+
+        .left {
+            left: 0;
+            /*background-color: #111;*/
+        }
+
+        .right {
+            right: 0;
+            /*background-color: red;*/
+        }
+
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+            .centered img {
+                width: 150px;
+                border-radius: 50%;
+            }
+    </style>
+
+    @*Loader*@
+    <style>
+        .imgload {
+            display: none;
+            padding-left: 875px;
+            padding-top: 100px;
+            position: fixed;
+            height: 200px;
+            margin-left: -478px;
+            margin-top: 60px;
+        }
+
+        .loading-image {
+            position: initial;
+            top: 50%;
+            left: 50%;
+            z-index: 10;
+        }
+
+        .loader {
+            display: none;
+            width: 100px;
+            height: 100px;
+            position: fixed;
+            top: 40%;
+            left: 40%;
+            text-align: center;
+            margin-left: -50px;
+            margin-top: -100px;
+            z-index: 2;
+        }
+    </style>
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            /*-moz-opacity: 0.8;*/
+        }
+
+        .modal1 {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            /*-moz-opacity: 0.8;*/
+        }
+
+        .center {
+            z-index: 1000;
+            margin: 300px auto;
+            /*padding: 20px;*/
+            width: 120px;
+            background-color: #000000;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            transform: none;
+            /*-moz-opacity: 1;*/
+        }
+
+            .center img {
+                height: 30px;
+                width: 30px;
+            }
+
+        .scm {
+            overflow: scroll;
+            position: relative;
+            height: 500px;
+        }
+
+        .k-content {
+            font-size: 11px !important;
+        }
+
+        .dropdown-menu {
+            font-size: 10px;
+        }
+
+        .k-dropdown {
+            font-size: 10px;
+            height: 25px;
+        }
+
+        .k-button {
+            font-size: 90%;
+            height: 30px;
+        }
+    </style>
+</head>
+<body style="overflow:hidden;">
+
+
+    <div class="k-content">
+        <ul class="nav nav-tabs" id="QuantityMainTabStrip">
+            @*<li class="active" id=""><a data-toggle="tab" href="#Quantity2" onclick="">Quantity Master</a></li>*@
+            <li class="active"><a data-toggle="tab" href="#Quantity1">Quantity</a></li>
+            <li><a data-toggle="tab" href="#Quantity3">SCM-Quantity</a></li>
+
+        </ul>
+
+        <div class="tab-content col-xs-12" style="padding-left:0px;">
+            <div id="Quantity1" class="tab-pane fade in active" style="">
+                <div class="modal" id="Modelloader">
+                    <div class="center">
+                        <img src="~/Content/loading256.gif" style="height:70px; width:70px" />
+                    </div>
+                </div>
+                <div class="k-content col-xs-12" style="padding-left:0px;">
+                    <br />
+                    <div id="" class="col-xs-3" style="padding-left:0px;">
+
+                        @(
+                                                                        Html.Kendo().DropDownList()
+                                                                        .Name("filetype")
+                                                                        .DataTextField("NodeName")
+                                                                        .DataValueField("id")
+                                                                        .OptionLabel("Select File")
+                                                                        .HtmlAttributes(new { style = "width:100%" })
+                                                                        .DataSource(source =>
+                                                                        {
+                                                                            source.Read(read =>
+                                                                            {
+                                                                                read.Action("GetFiles", "Home");
+                                                                            });
+                                                                        })
+                                                                       .Events(e => { e.Change("onFileChange").DataBound("GetFileName"); })
+                        )
+                        <br /> <br />
+
+                        @(
+                                                                        Html.Kendo().DropDownList()
+                                                                        .Name("versiontype")
+                                                                        .DataTextField("version")
+                                                                        .DataValueField("Urn")
+                                                                        .OptionLabel("Select Base Version")
+                                                                        .HtmlAttributes(new { style = "width:100%" })
+                                                                        .DataSource(source =>
+                                                                        {
+                                                                            source.Read(read =>
+                                                                            {
+                                                                                read.Action("GetVersion", "Home").Data("GridSearchModelData");
+                                                                            });
+                                                                        })
+                                                                        .Events(e => { e.Change("onVersionChange").DataBound("Getversion1"); })
+                        )
+
+
+                        <br /><br />
+
+                        @(Html.Kendo().Grid<SanveoAIO.Domain.Models.GetQuantityGridModelDataNew_Result>()
+                                                                 .Name("Quantitygrid1")
+                                                                 .Columns(columns =>
+                                                                 {
+                                                                     columns.Bound(c => c.Category_Name).Title("Category Name").Width(3);
+                                                                     columns.Bound(c => c.count).HtmlAttributes(new { style = "text-align: center;" }).Width(3).Title("Count");
+                                                                     columns.Bound(c => c.UOM).Title("UOM").HtmlAttributes(new { style = "text-align: center;" }).Width(3);
+                                                                 })
+
+                                                                 .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                                                                 .Editable(editable => editable.Mode(GridEditMode.InLine))
+                                                                 .Pageable(pageable => pageable
+                                                                 .Refresh(false))
+                                                                 .HtmlAttributes(new { style = "height:370px;width:100%;border-radius:3px;" })
+                                                                 .Reorderable(reorder => reorder.Columns(true))
+                                                                 .Resizable(resize => resize.Columns(true))
+                                                                 .Sortable()
+                                                                 .Scrollable()
+                                                                 .Filterable()
+                                                                 .Events(events => events.Change("onChangeTreeList"))
+                                                                 .DataSource(dataSource => dataSource
+
+                                                                     .Ajax()
+                                                                     .PageSize(100)
+                                                                     .Model(model =>
+                                                                     {
+                                                                         model.Id(p => p.Category_Name);
+                                                                     })
+                                                                     .Read(read => read.Action("GetQuantityGridModelData", "QuantityTest").Data("GridSearchModelData"))
+                                                                     )
+                        )
+
+                    </div>
+
+
+                    <div class="k-content col-xs-9">
+                        <ul class="nav nav-tabs" id="QuantityTabStrip">
+                            <li class="active" id="QuantityTab2" style="width:15%;"><a data-toggle="tab" href="#chartview" onclick="HideDDL();">Quantity Visualization</a></li>
+                            <li id="QuantityTab1" style="width:15%;"><a data-toggle="tab" href="#compare" onclick="ShowDDL();">Quantity Comparision</a></li>
+                            <li id="QuantityTab3" style="width:15%;"><a data-toggle="tab" href="#VerwiseProperty" onclick="ShowPropDDL();">Per Level Comparision</a></li>
+                            <li id="QuantityTab4" style="width:20%;"><a data-toggle="tab" href="#RoomWise" onclick="ShowRoomWise();">Room Wise Quantity(Element)</a></li>
+                            <li id="QuantityTab5" style="width:20%;"><a data-toggle="tab" href="#RoomWisegroup" onclick="ShowRoomWiseGroup();">Room Wise Quantity(Group)</a></li>
+                        </ul>
+                        <div class="tab-content col-xs-12">
+
+                            @*Quantity Visualization*@
+                            <div id="chartview" class="tab-pane fade in active" style="margin-left:-15px">
+                                <div><input type="button" id="btnMainChart" value="Reset Chart" style="text-transform: capitalize;margin-top:5px" class="k-button" /></div>
+                                <br /><br /><br />
+                                <div class="k-content col-xs-12" id="chart" style="margin-left:-27px;margin-right:0px;padding-left:0px;padding-right:0px;width:742px;margin-top:-44px">
+
+                                    <br /><br /><br />
+                                    <div id="chartLoader" class="k-loading-mask __web-inspector-hide-shortcut__" style="width: 100%; height:50%;display:none;"><span class="k-loading-text">Loading...</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>
+                                </div>
+                            </div>
+
+                            @*Quantity Comparision*@
+
+                            <div id="compare" class="tab-pane fade " style="margin-top:5px;margin-left:-46px">
+
+
+                                <div class="k-content col-xs-12">
+
+                                    <div class="k-content col-xs-4">
+                                        <div class="dropdown" id="VersionList" style="">
+                                            <button class="btn k-dropdown dropdown-toggle" type="button" data-toggle="dropdown" style="height:30px">
+                                                Select Diff Version<span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="overflow-y: scroll; height: 200px;width:22%"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="k-content col-xs-4" style="margin-left:-79px;">
+                                        <div class="dropdown" id="CategoryList" style="">
+                                            <button class="btn k-dropdown dropdown-toggle" type="button" data-toggle="dropdown" style="height:30px">
+                                                Select Categories <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="overflow-y: scroll; height: 200px;width:100%"></ul>
+                                        </div>
+                                    </div>
+                                    <div class="k-content col-xs-4" style="margin-left:-79px;">
+                                        <a id="exportDiffGrid" onclick="downloadDiffGrid();" href="javascript:void(0);" title="Export to Excel" style="font-size:17px;"><span class="fa fa-file-excel-o"></span></a>
+                                        @*<input id="exportDiffGrid" onclick="downloadDiffGrid();" type="image" alt="Login" src="~/Content/BtnExport.png" style="width:90px;height:32px" >*@
+
+                                    </div>
+                                </div>
+                                <br /><br /><br />
+                                <div class="k-content col-xs-12" style="height:390px;overflow-x:auto;margin-top: -10px;margin-left: 15px;">
+                                    <div id="VerisonTableDiv" class="dvTable" style="height: 380px; width:99%; overflow: scroll; border:1px solid #9999FF;padding-left: 0px">
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Per Level Comparision*@
+
+                            <div id="VerwiseProperty" class="tab-pane fade" style="margin-top:5px;margin-left:-45px">
+                                <div class="k-content col-xs-12">
+                                    <div class="k-content col-xs-3">
+                                        <div class="dropdown" id="VersionListLevel">
+                                            <button class="btn k-dropdown dropdown-toggle" type="button" data-toggle="dropdown" style="height:30px">
+                                                Select Diff Version<span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="overflow-y: scroll; height: 200px;width:60%"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="k-content col-xs-4" style="margin-left: -23px;">
+                                        <div class="dropdown" id="CategoryListLevel">
+                                            <button class="btn k-dropdown dropdown-toggle" type="button" data-toggle="dropdown" style="height:30px">
+                                                Select Categories <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="overflow-y: scroll; height: 200px;width:100%"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="k-content col-xs-4" style="margin-left: -77px;" id="PropValueListDiv">
+                                        <div class="dropdown" id="PropValueList">
+                                            <button class="btn k-dropdown dropdown-toggle" type="button" data-toggle="dropdown" style="height:30px">
+                                                Select Property Value <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="overflow-y: scroll; height: 200px;width:100%"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="k-content col-xs-1" style="margin-left: -78px;">
+                                        <a onclick="downloadDiffGridLevel();" id="exportDiffGridLevel" href="javascript:void(0);" title="Export to Excel" style="font-size:17px;"><span class="fa fa-file-excel-o"></span></a>
+
+                                        &nbsp; &nbsp;
+                                        @*<a onclick="SendEmailNotify();" id="btnSendEmail" href="javascript:void(0);" title="Send Email" style="font-size:17px;"><span class="fa fa-send-o"></span></a>*@
+
+                                    </div>
+                                </div>
+
+                                <br /><br /><br />
+                                <div class="k-content col-xs-12" style="height:390px;margin-top: -10px;margin-left: 15px;">
+
+                                    <div id="PropertyTableDiv" class="dvTable" style="height: 380px; width:99%; overflow: scroll; border:1px solid #9999FF;padding-left: 0px">
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*Room Wise Comparision element*@
+
+                            <div id="RoomWise" class="tab-pane fade" style="margin-top:5px;margin-left:-45px">
+
+                                <div class="k-content col-xs-12">
+                                    <div class="k-content col-xs-3">
+                                        <input type="button" id="btnsavebounding" value="Save Geometry" style="text-transform: capitalize" class="k-button" />
+                                    </div>
+
+
+                                    @*<input type="button" id="vgggfg" onclick="window.parent.ClearModel()" value="clear" style="text-transform: capitalize;margin-top:5px" class="k-button" />*@
+
+
+                                    <div class="k-content col-xs-4" style="margin-left: -53px;">
+                                        @(
+                                                                        Html.Kendo().DropDownList()
+                                                                        .Name("ddlroomName")
+                                                                        .DataTextField("Rooms")
+                                                                        .DataValueField("Forgeid")
+                                                                        .OptionLabel("Select Room")
+                                                                        .HtmlAttributes(new { style = "width:100%" })
+                                                                        .DataSource(source =>
+                                                                        {
+                                                                            source.Read(read =>
+                                                                            {
+                                                                                read.Action("GetRooms", "QuantityTest").Data("RoomModelData");
+                                                                            });
+                                                                        })
+
+                                        )
+                                    </div>
+
+                                    <div class="k-content col-xs-2" style="margin-left: -13px;">
+
+                                        <input type="button" id="BtnGetelement" onclick="RoomElementCount();" value="Apply" style="text-transform: capitalize" class="k-button" />
+
+                                    </div>
+                                    <div class="k-content col-xs-2" style="margin-left: -37px;">
+
+                                        <a onclick="downloadRoomwise();" id="exportRoomwise" href="javascript:void(0);" title="Export to Excel" style="font-size:17px;"><span class="fa fa-file-excel-o"></span></a>
+                                    </div>
+
+
+                                </div>
+                                <br /><br /><br />
+                                <div class="k-content col-xs-12" style="height:390px; margin-top: -10px; margin-left: 15px;">
+                                    <div id="RoomWiseElementTblDiv" class="dvTable" style="height: 380px; width: 99%; overflow: auto; border: 1px solid rgb(153, 153, 255); padding-left: 0px;">
+                                        <center><div id="loading" style="display:none;align-content:center">Loading..... Please Wait</div></center>
+                                        <table id="roomdatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 11px;display:none;width:100%;">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Category Name</th>
+                                                    <th>Count</th>
+                                                    <th>ForgeId</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <table id="roomdatatableexcel" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:30px;width:700px;">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Category Name</th>
+                                                    <th>Count</th>
+                                                    <th>ForgeId</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @*Room Wise Comparision Group*@
+
+                            <div id="RoomWisegroup" class="tab-pane fade" style="margin-top:5px;margin-left:-45px">
+
+                                <div class="k-content col-xs-12">
+
+                                    @*<div class="k-content col-xs-3">
+                                            <input type="button" id="btnsavebounding" onclick="window.parent.RoomBox();" value="SaveBoundingPoints" style="text-transform: capitalize" class="k-button" />
+                                        </div>*@
+
+
+                                    @*<input type="button" id="vgggfg" onclick="window.parent.ClearModel()" value="clear" style="text-transform: capitalize;margin-top:5px" class="k-button" />*@
+
+
+                                    <div class="k-content col-xs-4">
+                                        @(
+                                                                        Html.Kendo().DropDownList()
+                                                                        .Name("ddlroomNameGroup")
+                                                                        .DataTextField("Rooms")
+                                                                        .DataValueField("Forgeid")
+                                                                        .OptionLabel("Select Room")
+                                                                        .HtmlAttributes(new { style = "width:100%" })
+                                                                        .DataSource(source =>
+                                                                        {
+                                                                            source.Read(read =>
+                                                                            {
+                                                                                read.Action("GetRooms", "QuantityTest").Data("RoomModelDataGroup");
+                                                                            });
+                                                                        })
+
+                                        )
+                                    </div>
+
+                                    <div class="k-content col-xs-2" style="margin-left: -15px;">
+
+                                        <input type="button" id="BtnGetelementGroup" onclick="RoomElementCountGroup();" value="Apply" style="text-transform: capitalize" class="k-button" />
+
+                                    </div>
+                                    <div class="k-content col-xs-2" style="margin-left:-38px;">
+                                        <a onclick="downloadRoomwiseGroup();" id="exportRoomwiseGrop" href="javascript:void(0);" title="Export to Excel" style="font-size:17px;"><span class="fa fa-file-excel-o"></span></a>
+                                    </div>
+
+
+                                </div>
+                                <br /><br /><br />
+                                <div class="k-content col-xs-12" style="height:390px;margin-top: -10px;margin-left: 15px;">
+                                    <div id="RoomWiseGroupTblDiv" class="dvTable" style="height: 380px; width: 99%; overflow: auto; border: 1px solid rgb(153, 153, 255); padding-left: 0px;">
+                                        <center><div id="loadingGroup" style="display:none;align-content:center">Loading..... Please Wait</div></center>
+                                        <table id="roomdatatableGroup" class="table table-striped table-bordered" cellspacing="0" style="font-size: 11px;display:none;width:100%;">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Category Name</th>
+                                                    <th>Family Type</th>
+                                                    <th>Count</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            @*<div id="Quantity2" class="tab-pane fade  in active" style="">
+                    <br />
+                    <div class="col-xs-12" style="padding-left:0px;">
+                        @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetCategoryPropertyMap_Result>()
+                                                             .Name("GridCategoryAdmin")
+                                                             .Columns(columns =>
+                                                             {
+                                                                 columns.Bound(e => e.Id).Title("Id").Visible(false);
+                                                                 columns.Bound(c => c.CategoryName).Title("Category Name").Width(50);
+                                                                 columns.Bound(c => c.PropertyName).Title("Mapping").EditorTemplateName("ddlGetCatProperties").ClientTemplate("#: PropertyName #").Width(40);
+                                                                 columns.Bound(c => c.GroupBy).Title("GroupBy").EditorTemplateName("ddlGetCatGroup").ClientTemplate("#: GroupBy #").Width(40);
+                                                                 columns.Bound(c => c.MeasurementName).Title("Unit").EditorTemplateName("ddlGetMeasurement").ClientTemplate("#: MeasurementName #").Width(30);
+                                                                 columns.Command(command =>
+                                                                 {
+                                                                     command.Edit();
+                                                                     command.Destroy();
+                                                                 }).Title("Action Performed").Width(50);
+                                                             })
+                                                             .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                                                             .Editable(editable => editable.Mode(GridEditMode.InLine))
+                                                             .Pageable(pageable => pageable
+                                                             .Refresh(false))
+                                                             .HtmlAttributes(new { style = "height:485px;width:102%;border-radius:3px;" })
+                                                             .Reorderable(reorder => reorder.Columns(true))
+                                                             .Sortable()
+                                                             .Scrollable()
+                                                             .Filterable()
+                                                              .Events(events => events.Change("onChangePropertyMap").Save("onUpdatePropertyMap").Edit("onEditPropertyMap").DataBound("onCategoryAdminDataBound"))
+                                                             .DataSource(dataSource => dataSource
+                                                                 .Ajax()
+                                                                 .PageSize(100)
+                                                                 .Model(model =>
+                                                                 {
+                                                                     model.Field(p => p.CategoryName).Editable(false);
+                                                                     model.Id(p => p.Id);
+                                                                 })
+                                                                  .Events(events =>
+                                                                  {
+                                                                      events.Error("onRunruleRequestEnd");
+
+                                                                  })
+                                                                 .Read(read => read.Action("GetAdminFileCategory", "QuantityTest").Data("GridCustomQuantityData"))
+                                                                   .Update(update => update.Action("SavePropertyMap", "QuantityTest"))
+                                                                   .Destroy(update => update.Action("DeletePropertyMap", "QuantityTest"))
+                                                                 ) )
+
+
+                    </div>
+                </div>*@
+
+            <div id="Quantity3" class="tab-pane fade" style="margin-top:10px">
+                <div class="k-content">
+                    <ul class="nav nav-tabs" id="QuantityMainTabStrip1">
+
+                        @*<li><a data-toggle="tab" href="#Quantity7"> Formula</a></li>*@
+                        <li class="active"><a data-toggle="tab" href="#Quantity5">Categorized Quantity</a></li>
+                        <li><a data-toggle="tab" href="#Quantity6"> Consolidated Quantity</a></li>
+                        <li><a data-toggle="tab" href="#Quantity4">Settings</a></li>
+                        @*<li><a data-toggle="tab" href="#Quantity8">Custom Quantity</a></li>*@
+                    </ul>
+                    <div class="tab-content">
+                        <div id="Quantity4" class="tab-pane fade" style="">
+                            <div class="tab-content col-xs-12" style="padding-left:0px;">
+                                <div class="col-xs-12">
+
+                                    <div class="col-xs-12" style="margin-top: 7px;">
+                                        @(Html.Kendo().Grid<SanveoAIO.Domain.Models.SP_GetQuantitySetting_Result>()
+                                                                                                            .Name("SettingsGrid")
+                                                                                                            .Columns(columns =>
+                                                                                                            {
+                                                                                                                columns.Bound(e => e.ID).Visible(false);
+
+                                                                                                                columns.Bound(e => e.Category).Title("Category").EditorTemplateName("ddlCategoryMap").ClientTemplate("#:Category#").Width(100);
+
+                                                                                                                columns.Bound(e => e.Level).Title("Level").EditorTemplateName("ddlpropname").ClientTemplate("#:Level#").Width(100);
+                                                                                                                columns.Bound(e => e.Standard).Title("Standard").EditorTemplateName("DDLPropNameForStandard").ClientTemplate("#:Standard#").Width(180);
+                                                                                                                columns.Bound(e => e.Group).Title("Group").EditorTemplateName("DDLPropNameForGroup").ClientTemplate("#:Group#").Width(90);
+
+                                                                                                                columns.Command(command => { command.Edit(); }).Title("Action Performed").Width(180);
+                                                                                                            })
+                                                                                                            .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                                                                                                            .Editable(editable => editable.Mode(GridEditMode.InLine))
+                                                                                                            .Pageable(pageable => pageable
+                                                                                                            .Refresh(false))
+                                                                                                            .HtmlAttributes(new { style = "width:100%;border-radius:3px;font-size:11px;" })
+                                                                                                            .Resizable(resize => resize.Columns(true))
+                                                                                                            .Reorderable(reorder => reorder.Columns(true))
+                                                                                                            .ToolBar(toolbar => toolbar.Create())
+                                                                                                            .Sortable()
+                                                                                                            .Scrollable(scr => scr.Height(250))
+                                                                                                            .Filterable()
+                                                                                                                .Events(m => m.Change("onChangeSettingsGrid").Save("onUpdateSettingChain").DataBound("onDataBoundSettingsgrid").Edit("onEditSettingsGrid"))
+                                                                                                            .DataSource(dataSource => dataSource
+                                                                                                                .Ajax()
+                                                                                                                .PageSize(20)
+                                                                                                                .Model(model =>
+                                                                                                                {
+
+                                                                                                                    model.Id(p => p.ID);
+                                                                                                                    model.Id(p => p.Category);
+                                                                                                                    model.Field(p => p.Level).Editable(true);
+                                                                                                                    model.Field(p => p.Standard).Editable(true);
+                                                                                                                    model.Field(p => p.Group).Editable(true);
+
+
+                                                                                                                })
+                                                                                                                .Events(events =>
+                                                                                                                {
+                                                                                                                    events.Error("onSupplyChainError").RequestEnd("onSupplyRequestEnd");
+                                                                                                                })
+
+                                                                                                                    .Read(read => read.Action("GetSetingsData", "QuantityTest").Data("SettingData"))
+                                                                                                                    .Create(update => update.Action("AddSetingsData", "QuantityTest"))
+                                                                                                                    .Update(update => update.Action("AddSetingsData", "QuantityTest"))
+
+                                                                                                                ))
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div id="Quantity5" class="tab-pane fade in active" style="">
+                            <div class="tab-content col-xs-12" style="padding-left:0px;">
+                                @*<div id="chartLoader1" class="k-loading-mask __web-inspector-hide-shortcut__" style="width: 100%; height:50%;display:none;"><span class="k-loading-text">Loading...</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>*@
+                                <div>
+
+                                    <img class="imgload" src="~/Content/loading256.gif" id="img" />
+
+
+                                </div>
+
+
+
+                                <div class="col-xs-12" style="padding-top: 10px" ;>
+                                    <div id="" class="col-xs-2" style="padding-left:0px; margin-top:5px">
+
+                                        @(
+                                                                                                              Html.Kendo().DropDownList()
+                                                                                                               .Name("ddlcategory")
+                                                                                                                .DataTextField("Category_Name")
+                                                                                                                .DataValueField("Id")
+                                                                                                                 .OptionLabel("Select Category")
+.HtmlAttributes(new { style = "width:100%" })
+                                                                                                                 .DataSource(source =>
+                                                                                                                 {
+                                                                                                                     source.Read(read =>
+                                                                                                                     {
+                                                                                                                         read.Action("GetCategoryName", "Home").Data("GetDataUrn");
+                                                                                                                     });
+                                                                                                                 })
+                                                                                                                        .Events(e =>
+                                                                                                                        {
+                                                                                                                            e.Change("onddlcategoryChange");
+                                                                                                                        })
+                                        )
+                                    </div>
+
+
+                                    <div id="" class="col-xs-2" style="padding-left:0px; margin-top:5px">
+
+                                        @(
+                                                                                                               Html.Kendo().DropDownList()
+                                                                                                               .Name("ddlreflevel")
+                                                                                                               .DataTextField("Property_Value")
+                                                                                                               .DataValueField("FileId")
+                                                                                                               .OptionLabel("Select Level")
+                                                                                                                .HtmlAttributes(new { style = "width:100%" })
+                                                                                                                .DataSource(source =>
+                                                                                                                {
+                                                                                                                    source.Read(read =>
+                                                                                                                    {
+                                                                                                                        read.Action("GetReferrenceLevel", "Home").Data("GetDataUrn1");
+                                                                                                                    });
+                                                                                                                })
+                                                                                                                 .Events(e =>
+                                                                                                                 {
+                                                                                                                     e.Change("onReferrenceLevelChange");
+                                                                                                                 })
+                                        )
+                                    </div>
+
+                                    <div id="" class="col-xs-2" style="padding-left:0px; margin-top:5px">
+                                        @(Html.Kendo().DropDownList()
+                                                                                                                .Name("ddlemtpvc")
+                                                                                                                 .DataTextField("Property_Value")
+                                                                                                                 .DataValueField("FileId")
+                                                                                                                 .OptionLabel("Select Standard")
+                                                                                                                 .HtmlAttributes(new { style = "width:100%" })
+                                                                                                                 .DataSource(source =>
+                                                                                                                 {
+                                                                                                                     source.Read(read =>
+                                                                                                                     {
+                                                                                                                         read.Action("GetConduitMaterial", "Home").Data("GetDataUrnLevel");
+                                                                                                                     });
+                                                                                                                 })
+                                                //  .Events(e => { e.Change("onCategoryChange");
+                                                @*})*@
+                                        )
+                                    </div>
+                                    <div id="" class="col-xs-4"></div>
+                                    <div class="col-xs-1" style="">
+                                        <input type="button" id="btnProcess" onclick="genrateSCMqty()" value="Process" style="text-transform: capitalize;margin-top:5px;width:70px" class="k-button pull-right" />
+
+                                    </div>
+
+                                    <div class="col-xs-1">
+                                        <input type="button" id="exportFeederDetailsGrid" value="Excel" onclick="downloadSCMQty();" style="text-transform: capitalize;margin-top:5px;width:70px" href="javascript:void(0);" title="Export to Excel" class="k-button pull-right" />
+
+
+                                    </div>
+                                </div>
+                                <div class="col-xs-12" style="">
+
+                                    <div id="divtablescmQty" class="dvTable" style="height: 380px; width: 99%; overflow: auto;padding-left: 0px;margin-top: 12px;">
+
+                                        @*<div class="loader">
+                        <center>
+                            <img class="loading-image" src="~/Content/loading256.gif" alt="loading..">
+                        </center>
+                    </div>*@
+
+
+
+                                        <table id="tablescmQty" class="table table-bordered dataTable table-hover" style="width:auto;font-family:Calibri;width:100%;">
+
+                                            <THEAD style="font-size:14px;font-weight:bold;">
+                                                <TR>
+                                                    <th style="background-color:#D0ECF0;text-align:center;">DESCRIPTION</th>
+                                                    <th style="background-color:#D0ECF0;text-align:center;">UOM</th>
+                                                    <th style="background-color:#D0ECF0;text-align:center;">QTY NEEDED</th>
+                                                    <th style="background-color:#D0ECF0;text-align:center;">GBID</th>
+                                                    <th style="background-color:#D0ECF0;text-align:center;">GB Description</th>
+                                                </TR>
+                                            </THEAD>
+                                            <tbody style="overflow-y:scroll; height:100px;"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                          
+
+                        </div>
+                        <div id="Quantity6" class="tab-pane fade" style="">
+                            <div class="col-xs-10"></div>
+                            <div>
+                                <img class="imgload" src="~/Content/loading256.gif" id="img2" />
+                            </div>
+                            <div class="col-xs-1" style="">
+
+                                <input type="button" id="btnProcessConsolidate" onclick="genrateConsolidatedQuantity()" value="Process" style="text-transform: capitalize;margin-top:5px;width:70px" class="k-button pull-right" />
+                            </div>
+
+                            <div class="col-xs-1">
+                                <input type="button" id="btnexldwnld" value="Excel" onclick="downloadConsolidatedSCMQty();" style="text-transform: capitalize;margin-top:5px;width:70px" href="javascript:void(0);" title="Export to Excel" class="k-button pull-right" />
+
+                            </div>
+
+
+                            <div class="col-xs-12" style="">
+                                <div id="divtableConsolidateQty" class="dvTable" style="height: 380px; width: 100%; overflow: auto;padding-left: 0px;margin-top: 12px;">
+
+
+                                    <table id="tableConsolidateQty" class="table table-bordered dataTable table-hover" style="width:auto;font-family:Calibri;width:100%;">
+
+                                        <THEAD style="font-size:14px;font-weight:bold;">
+                                            <TR>
+                                                <th style="background-color:#D0ECF0;text-align:center;">DESCRIPTION</th>
+                                                <th style="background-color:#D0ECF0;text-align:center;">UOM</th>
+                                                <th style="background-color:#D0ECF0;text-align:center;">QTY NEEDED</th>
+                                                <th style="background-color:#D0ECF0;text-align:center;">GBID</th>
+                                                <th style="background-color:#D0ECF0;text-align:center;">GB Description</th>
+                                            </TR>
+                                        </THEAD>
+                                        <tbody style="overflow-y:scroll; height:100px;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div id="Quantity7" class="tab-pane fade" style="">
+                                <div class="col-xs-10" style="margin-top:20px;border:thin solid black;">
+                                    <h2>CALCULATIONS</h2>
+                                    <br />
+                                    <p>
+                                        <span style="font-weight:bold;font-size:15px;">Length=</span>
+                                        <span>TOTAL LENGTH(ft)/10+1 [Total length includes the length of bends also][+1 only when in decimal]</span>
+                                    </p><br>
+
+                                    <p>
+                                        <span style="font-weight:bold;font-size:15px;">Connectors=</span>
+                                        Number count of unique"Conduit Run ID"(parameter)*2
+                                    </p><br>
+
+
+                                    <p>
+                                        <span style="font-weight:bold;font-size:15px;">Couplings=</span>
+                                        TOTAL LENGTH(ft)/8 [intiger value,do not do +1 when in decimal,no decimal values, ignore remainder]
+                                    </p><br>
+                                </div>
+
+                            </div>*@
+                        <div id="Quantity8" class="tab-pane fade" style="display:none">
+                            <div class="col-xs-2">
+                                <input type="text" id="txtroomCordinate1" style="width:100%;margin-top:10px;">
+                            </div>
+
+                            <div class="col-xs-2">
+                                <input type="text" id="txtroomCordinate2" style="width:100%;margin-top:10px;">
+                            </div>
+                            <div class="k-content col-xs-2" style="margin-top:10px;">
+
+                                <input type="button" id="BtnGetelement1" value="Apply" onclick="GetQtyScopeBox()" style="text-transform: capitalize" class="k-button" />
+
+                            </div>
+
+
+
+
+                            <div class="k-content col-xs-12" style="height:390px; margin-top:10px; margin-left:0px;">
+                                <div id="ScopeElementTblDiv" class="dvTable" style="height: 380px; width: 99%; overflow: auto; border: 1px solid rgb(153, 153, 255); padding-left: 0px;">
+                                    <center><div id="loading" style="display:none;align-content:center">Loading..... Please Wait</div></center>
+                                    <table id="ScopeBoxdatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 11px;display:none;width:100%;">
+
+                                        <thead>
+                                            <tr>
+                                                <th>Category Name</th>
+                                                <th>Count</th>
+                                                <th>ForgeId</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    @*<table id="ScopeBoxdatatableexcel" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;margin-left:30px;width:700px;">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Category Name</th>
+                                                    <th>Count</th>
+                                                    <th>ForgeId</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>*@
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    </div>
+
+
+    <script type="text/javascript">
+        var CategoryGlobal = "";
+        var propNameGlobal = '';
+        var propValueGlobal = '';
+        var IsGroupGlobal = '';
+
+
+
+
+        var categoryGlobal = '';
+        var LEvelGlobal = '';
+        var StandardGlobal = '';
+        var GroupGlobal = '';
+        $("#SettingsGrid").on("click", ".k-grid-add", function (e) {
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            grid.addRow();
+            grid.select('tr:eq(0)');
+
+            var category = $("#ddlcategory").data("kendoDropDownList").text()
+
+            var firstItem = $("#SettingsGrid").data("kendoGrid").dataSource.data()[0];
+            firstItem.set('Cat_Name', category);
+            $('[name="Cat_Name"]').attr("readonly", true);
+            taskgrid.select('tr:eq(0)');
+
+
+        });
+
+
+        $("#SettingsGrid").on("click", ".k-grid-add", function (e) {
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            grid.addRow();
+            grid.select('tr:eq(0)');
+        });
+        function GetDataUrn(e) {
+
+            var category = $("#ddlcategory").data("kendoDropDownList").text()
+
+            var urn = sessionStorage.getItem("urn");
+            return {
+                urn: urn,
+                category: category,
+            }
+        }
+
+        function GetDataUrn1(e) {
+
+            var category = $("#ddlcategory").data("kendoDropDownList").text()
+
+            var urn = sessionStorage.getItem("urn");
+            return {
+                urn: urn,
+                category: category,
+            }
+        }
+
+
+        function onCategoryChange() {
+
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            grid.dataSource.read();
+        }
+
+
+
+
+
+        function onSupplyChainError() {
+
+        }
+        function onSupplyRequestEnd(e) {
+
+            console.log(e.type);
+            if (e.type == "update") {
+
+                var grid = $("#SettingsGrid").data("kendoGrid");
+                grid.dataSource.read();
+            }
+            if (e.type == "create") {
+
+                var grid = $("#SettingsGrid").data("kendoGrid");
+                grid.dataSource.read();
+            }
+            //if (e.type == "destroy") {
+
+            //    var grid = $("#SettingsGrid").data("kendoGrid");
+            //    grid.dataSource.read();
+            //    alert("Data Deleted successfully");
+            //}
+
+
+
+        }
+
+
+
+
+
+
+        function onChangeSettingsGrid() {
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            categoryGlobal = selectedItem["Category"];
+            LEvelGlobal = selectedItem["Level"];
+            StandardGlobal = selectedItem["Standard"];
+            GroupGlobal = selectedItem["Group"];
+            //  alert(categoryGlobal)
+            //alert(LEvelGlobal)
+            //alert(StandardGlobal)
+            //alert(GroupGlobal)
+
+        }
+
+        function onUpdateSettingChain(e) {
+
+
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            var ID = selectedItem["ID"];
+
+
+            var Category = $("#categorys").data().kendoDropDownList.text();
+            var Level = $("#ddlPropName").data().kendoDropDownList.text();
+            var Standard = $("#DDLPropNameForStandard").data().kendoDropDownList.text();
+            var Group = $("#DDLPropNameForGroup").data().kendoDropDownList.text();
+
+            if (Category == 'Select Category') {
+                alert("Please Select Category Name");
+                e.preventDefault();
+            }
+            if (Level == 'Select and Click') {
+                alert("Please Select Level");
+                e.preventDefault();
+            }
+            if (Standard == 'Select and Click') {
+                alert("Please Select Standard");
+                e.preventDefault();
+            }
+            if (Group == 'Select and Click') {
+                alert("Please Select Group");
+                e.preventDefault();
+
+            }
+
+            e.model.set("ID", ID);
+
+            e.model.set("urn", sessionStorage.getItem("urn"));
+            e.model.set("Category", Category);
+            e.model.set("Level", Level);
+            e.model.set("Standard", Standard);
+            e.model.set("GroupQuantity", Group);
+
+        }
+
+        function SettingData() {
+
+            return {
+                Urn: sessionStorage.getItem("urn")
+
+            };
+        }
+
+        function onDataBoundSettingsgrid() {
+
+        }
+
+        function onEditSettingsGrid(e) {
+
+            $("#SettingsGrid").data("kendoGrid").select(".k-grid-edit-row");
+            CategoryGlobal = e.model.get("Category");
+            PropertyFormGlobal = e.model.get("PropertyName");
+            MeasurementGlobal = e.model.get("MeasurementName");
+            GroupBYGlobal = e.model.get("GroupBy");
+
+            var Id = e.model.get("ID");
+
+
+            return
+            {
+                Id: Id
+            };
+        }
+
+        function onSupplyCshainError() {
+
+        }
+
+        function OnBoundPropName() {
+
+            var SETPropName = $("#ddlPropName").data("kendoDropDownList");
+            SETPropName.select(function (dataItem) {
+                return dataItem.Property_Name === CategoryGlobal;
+            });
+        }
+
+        function OnBoundCategoryName() {
+
+            var SETPropName = $("#categorys").data("kendoDropDownList");
+            SETPropName.select(function (dataItem) {
+                return dataItem.Category_Name === CategoryGlobal;
+            });
+            $("#ddlPropName").data("kendoDropDownList").dataSource.read();
+            $("#DDLPropNameForGroup").data("kendoDropDownList").dataSource.read();
+            $("#DDLPropNameForStandard").data("kendoDropDownList").dataSource.read();
+        }
+        function searchCategoryData() {
+
+
+
+            //  alert(urn + " " + cat_Name);
+            return {
+                urn: urn,
+
+            };
+        }
+        function onSearchCategorysChange() {
+            $("#ddlPropName").data("kendoDropDownList").dataSource.read();
+            $("#DDLPropNameForGroup").data("kendoDropDownList").dataSource.read();
+            $("#DDLPropNameForStandard").data("kendoDropDownList").dataSource.read();
+
+        }
+        function OnBoundPropNameForGroup() {
+
+            var SETPropName = $("#DDLPropNameForGroup").data("kendoDropDownList");
+            SETPropName.select(function (dataItem) {
+                return dataItem.Property_Name === GroupGlobal;
+            });
+        }
+
+
+        function OnBoundPropNameForStandard() {
+            var SETPropName = $("#DDLPropNameForStandard").data("kendoDropDownList");
+            SETPropName.select(function (dataItem) {
+                return dataItem.Property_Name === StandardGlobal;
+            });
+        }
+
+
+        function onPropNameChange() {
+            $("#ddlPropValue").data("kendoDropDownList").dataSource.read();
+        }
+
+
+        function AdditionalPropName() {
+
+
+            var grid = $("#SettingsGrid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            console.log(selectedItem)
+
+
+            ////var categoryname = selectedItem["Category"];
+
+            var urn = sessionStorage.getItem("urn");
+            var cat_Name = $("#categorys").data("kendoDropDownList").text();
+
+            //  alert(urn + " " + cat_Name);
+            return {
+                urn: urn,
+                category: cat_Name,
+            };
+        }
+
+
+
+
+        function onddlcategoryChange() {
+
+            var grid = $("#ddlreflevel").data("kendoDropDownList").dataSource.read();
+            grid.dataSource.read();
+        }
+    </script>
+
+
+
+    <script src="~/Scripts/tableHeadFixer.js"></script>
+    <!-- Script for QuantityWindow -->
+    <script type="text/javascript">
+            var fitting = false;
+
+
+            function GetDataUrn(e) {
+                var urn = sessionStorage.getItem("urn");
+                return {
+                    urn: urn,
+                }
+            }
+
+            function GetPropetyData() {
+                var category = $("#ddlcategorySetting").data("kendoDropDownList").text();
+                var urn = sessionStorage.getItem("urn");
+                return {
+                    urn: urn,
+                    category: category,
+                }
+            }
+
+            function GetLevelData() {
+                var propname = $("#ddlPropertySetting").data("kendoDropDownList").text();
+                var category = $("#ddlcategorySetting").data("kendoDropDownList").text();
+                var urn = sessionStorage.getItem("urn");
+                return {
+                    urn: urn,
+                    category: category,
+                    propname: propname,
+                }
+            }
+
+        function SaveQuantityData() {
+
+            @*var value = JSON.stringify({
+
+                'urn': sessionStorage.getItem("urn"),
+                'Level': $("#ddlPropertySetting").data("kendoDropDownList").text(),
+                'Standard': $("#ddlStandardSetting").data("kendoDropDownList").text(),
+                'Group': $("#ddlGroupSetting").data("kendoDropDownList").text(),
+            });
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("AddSetingsData", "QuantityTest")',
+
+                    data: value,
+                    dataType: "json",
+                    success: function (result) {
+                    }
+                });*@
+
+
+            }
+
+            function onCategorySettingChange() {
+                $("#ddlPropertySetting").data("kendoDropDownList").dataSource.read();
+                $("#ddlStandardSetting").data("kendoDropDownList").dataSource.read();
+                $("#ddlGroupSetting").data("kendoDropDownList").dataSource.read();
+
+            }
+
+            //function onPropertySettingChange() {
+            //    $("#ddlStandardSetting").data("kendoDropDownList").dataSource.read();
+            //}
+
+            function GetDataUrnLevel(e) {
+                var Level = $("#ddlreflevel").data("kendoDropDownList").text();
+                var catname = $("#ddlcategory").data("kendoDropDownList").text();
+                var urn = sessionStorage.getItem("urn");
+                return {
+                    urn: urn,
+                    Level: Level,
+                    Category: catname,
+                }
+            }
+
+            function onReferrenceLevelChange() {
+                var ddl = $("#ddlemtpvc").data("kendoDropDownList");
+                ddl.dataSource.read();
+            }
+
+
+
+
+       function downloadSCMQty() {
+
+           var filename = sessionStorage.getItem("filename")+"_" ;
+           filename += getDate();
+
+           goXLS("tablescmQty",filename,"Categorized Quantity")
+
+        }
+
+
+
+
+        function downloadConsolidatedSCMQty() {
+
+            var filename = sessionStorage.getItem("filename") + "_";
+            filename += getDate();
+
+            goXLS("tableConsolidateQty", filename,"Consolidated Quantity")
+
+        }
+
+            function getDate() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                var today = mm + '/' + dd + '/' + yyyy;
+                alert(today)
+                return today;
+            }
+
+
+            function goXLS(tablename,filename,sheetname) {
+                var filename = filename+".xlsx";
+                var tableName1 = "#" + tablename + " th";
+
+                var HeaderCount = $(tableName1).length;
+                var excel = $JExcel.new("Calibri light 10 #333333");			// Default font
+                excel.set({ sheet: 0, value: sheetname });
+
+                // excel.addSheet("Non-Compliant");
+                //var HeaderCount = $("#tablescmQty th").length;
+                var headers = new Array();
+                for (i = 0; i <= HeaderCount - 1; i++) {
+                    if (document.getElementById(tablename).rows[0].cells[i] === undefined) {
+                        //  alert('undefined')
+                    }
+                    else {
+                        // alert('Not Undefined')
+                        headers.push(document.getElementById(tablename).rows[0].cells[i].innerHTML)
+                    }
+
+                    //  alert(document.getElementById("tablescmQty").rows[0].cells[i].innerHTML)
+                }
+
+                // var headers = ["Material Name (Family)", "Standard", "Size", "Qty","UOM"];
+                var formatHeader = excel.addStyle({
+                    border: "none,none,none,thin #333333",
+                    font: "Calibri 12 #0000AA B"
+                });
+
+
+
+
+                for (var i = 0; i < headers.length; i++) {
+                    excel.set(0, i, 0, headers[i], formatHeader);
+                    excel.set(0, i, undefined, "auto");
+                }
+
+
+                var rowCount = $("#" + tablename + " td").closest("tr").length;
+
+                for (var i = 1; i <= rowCount; i++) {
+                    for (j = 0; j <= HeaderCount - 1; j++) {
+                        var value = document.getElementById(tablename).rows[i].cells[j].innerHTML;
+                        if (value == "&nbsp;") {
+                            value = "";
+                        }
+                        excel.set(0, j, i, value);
+                        excel.set(0, j, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                    }
+
+                    //var Standard = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+                    //var Size = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+                    //var Qty = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+                    //var UOM = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+
+
+                    //excel.set(0, 1, i, Standard);
+                    //excel.set(0, 1, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                    //excel.set(0, 2, i, Size);
+                    //excel.set(0, 2, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                    //excel.set(0, 3, i, Qty);
+                    //excel.set(0, 3, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                    //excel.set(0, 4, i, UOM);
+                    //excel.set(0, 4, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+
+                }
+
+                // excel.set({ sheet: 1, value: "NonCompliant" });
+                //for (var i = 0; i < headers.length; i++) {
+                //    excel.set(1, i, 0, headers[i], formatHeader);
+                //    excel.set(1, i, undefined, "auto");
+                //}
+
+                //for (var i = 1; i < noncompData.length; i++) {
+
+                //    var Bulkdatasplit = noncompData[i].split(":");
+                //    var Revitid = Bulkdatasplit[0];
+                //    var SurfaceId = Bulkdatasplit[1];
+                //    var BaseLevel = Bulkdatasplit[2];
+                //    var Slope = Bulkdatasplit[3];
+
+                //    excel.set(1, 0, i, Revitid);
+                //    excel.set(1, 0, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                //    excel.set(1, 1, i, SurfaceId);
+                //    excel.set(1, 1, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                //    excel.set(1, 2, i, BaseLevel);
+                //    excel.set(1, 2, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+                //    excel.set(1, 3, i, Slope);
+                //    excel.set(1, 3, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+
+                //}
+
+                excel.generate(filename);
+
+            }
+
+
+            function genrateSCMqty() {
+                var condutData = '';
+                $("#tablescmQty tbody").html(""); // clear table data
+                //var globalFittingValue=0;
+
+                var v = $("#versiontype").data("kendoDropDownList").value();
+                var catname = $("#ddlcategory").data("kendoDropDownList").text();
+                var emtpvc = $("#ddlemtpvc").data("kendoDropDownList").text();
+                var ddlreflevel = $("#ddlreflevel").data("kendoDropDownList").text();
+                if (v == "") {
+                    e.preventDefault();
+                    return;
+                }
+
+                if (catname == "" || catname == 'Select Category') {
+                    alert('Please Select Category');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (ddlreflevel == "" || ddlreflevel == 'Select Level') {
+                    alert('Please Select Level');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (emtpvc = "" || emtpvc == 'Select Standard') {
+                    alert('Please Select Standard');
+                    e.preventDefault();
+                    return;
+                }
+
+                else {
+                    var value = JSON.stringify({
+                        'urn': sessionStorage.getItem("urn"),
+                        'Category': $("#ddlcategory").data("kendoDropDownList").text(),
+                        'Level': $("#ddlreflevel").data("kendoDropDownList").text(),
+                        'Standard': $("#ddlemtpvc").data("kendoDropDownList").text(),
+                    });
+
+                    // var catname = "Conduits"
+
+                    var FileName = $("#filetype").data("kendoDropDownList").text();
+                    var v = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+                    var urn = $("#versiontype").data("kendoDropDownList").value();
+
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: 'application/json',
+                        url: '@Url.Action("GetSCMQTYValue", "QuantityTest")',
+
+                        data: value,
+                        dataType: "json",
+                        beforeSend: function () {
+                            $("img").show();
+
+                        },
+                        complete: function () {
+                           $("img").hide();
+
+                        },
+                        success: function (result) {
+
+
+
+
+                            if (result["Table"].length == "0") {
+                                condutData += '<tr><td colspan="5" style="text-align:center;font-weight:bold;">NO DATA FOUND</td></tr>';
+                            }
+                            else {
+                                for (var i = 0; i < result["Table"].length; i++) {
+                                    condutData += '<tr><td style="text-align:left">' + result["Table"][i].Description + '</td><td style="text-align:center;">' + result["Table"][i].UOM + '</td><td style="text-align:center;">' + result["Table"][i].QtyNeeded + '</td><td style="text-align:center;">' + result["Table"][i].GBID + '</td><td style="text-align:left;">' + result["Table"][i].GB_Description + '</td></tr>';
+                                }
+                            }
+
+                           // alert(condutData);
+                            $("#tablescmQty tbody").append(condutData);
+                            $("#tablescmQty").show();
+                            $("#tablescmQty").tableHeadFixer({});
+                        }
+                    });
+                }
+            }
+
+
+        function onCategoryAdminDataBound() {
+
+            $("#GridCategoryAdmin > div.k-grid-content").css("height", "400px");
+        }
+
+
+        $(document).ready(function () {
+            $('.dropdown-menu').click(function (e) {
+                if (e.target.nodeName !== 'BUTTON') e.stopPropagation();
+            });
+            var reajax = "";
+
+
+
+                var PolyVertices = (sessionStorage.getItem("PolygonVertices"));
+                //  alert(PolyVertices);
+                $("#txtroomCordinate1").val(PolyVertices);
+                $("#txtroomCordinate2").val(PolyVertices);
+
+        });
+
+        function SendEmailNotify() {
+            var TableValueQuantity = $("#PropertyTableDiv").html();
+            console.log('Quantity------');
+            console.log(TableValueQuantity);
+
+
+            var value = JSON.stringify({
+                'TableValueQuantity': TableValueQuantity,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("SendQuantityEmail", "QuantityTest")',
+
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    alert(result);
+
+                },
+                error: function (result) {
+                    alert(result);
+
+                }
+            });
+
+        }
+
+        function GetPropValue() {
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            if (FileName == "Select File") {
+                alert("Select File");
+                return false;
+            }
+
+            var v = $("#versiontype").data("kendoDropDownList").value();
+            if (v == "Select Version") {
+                alert("Select Version");
+                return false;
+            }
+            else {
+                v = v.split('-')[0].trim();
+            }
+
+            var c = new Array();
+            $.each($("input[name='CategoryLevel[]']:checked"), function () {
+                c.push($(this).val());
+            });
+            if (c == "") {
+                alert("Select atleast 1 Category");
+                return false;
+            }
+
+            var c = c.join(',');
+            var p = "Level";
+
+            $("#PropValueList ul").html('<li style="text-align: center;">Loading...</li>');
+            var value = JSON.stringify({
+                'urn': v,
+                'category': c,
+                'propname': p,
+                'GetProp': '0'
+            });
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetPropertyValue", "QuantityTest")',
+                beforeSend: function () {
+                    $('#diffLoader').show();
+                },
+                complete: function () {
+                    $('#diffLoader').hide();
+                },
+                data: value,
+                dataType: "json",
+                success: function (result) {
+                    $("#PropValueList ul").html('');
+                    check_boxes1 = '<li style="text-align: center;"><button class="btn dropdown-toggle" type="button" onClick="HideDiffGridColLevel()" style="width:40%;height:25px;font-size: 10px;"> Apply </button></li>';
+                    check_boxes1 += '<li style="padding-left:10px"><label><input type="checkbox" name="SelectAll" id="SelectAll" onchange = "onSelectAllPropchange(this)" value=""/>&nbsp;Select All</label></li>';
+                    check_boxes = "";
+                    $.each(result, function (index, item) {
+                        if (item.Property_Value != "") {
+                            check_boxes += '<li style="padding-left:10px"><label><input type="checkbox" name="PropValue[]" value="' + item.Property_Value + '"/>&nbsp;' + item.Property_Value + '</label></li>';
+                        }
+                    });
+                    if (check_boxes != "") {
+                        $("#PropValueList ul").append(check_boxes1 + check_boxes);
+                    }
+                    else {
+                        $("#PropValueList ul").append('<li style="padding-left:10px"><label>No record found!</label></li>');
+                    }
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+        }
+
+
+
+        function GridSearchModelData1(e) {
+            //  var grid = $("#Quantitygrid1").data("kendoGrid");
+            var row = $(e.target).closest("tr");
+            var treelist = $("#Quantitygrid1").data("kendoGrid");
+            // var dataItem = treelist.dataItem(row);
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var selectedItem = treelist.dataItem(row);
+            if (selectedItem != null) {
+                var catname = selectedItem["ItemType"];
+                // var catname = selectedItem["Category_Name"];
+            }
+            else {
+                var catname = "";
+            }
+            return {
+                filename: FileName,
+                categoryname: catname,
+                version: $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim()
+            }
+        }
+
+
+
+        $("#btnMainChart").click(function () {
+            createChart();
+        });
+
+        function createChart() {
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var v = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            if (FileName == "Select File") {
+               // alert("Select File");
+                return false;
+            }
+
+            if (v == "Select Version") {
+                alert("Select Version");
+                return false;
+            }
+
+            var value = JSON.stringify({
+                urn: urn,
+                filename: FileName,
+                version: v
+            });
+
+            if (FileName != "Select File" && v != "Select Version" && urn != "") {
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetCategoryCount", "QuantityTest")',
+                    dataType: "json",
+                    beforeSend: function () {
+                        $('#chartLoader').show();
+                    },
+                    complete: function () {
+                        $('#chartLoader').hide();
+                    },
+                    data: value,
+                    success: function (result) {
+                        console.log(result)
+                        $("#chart").html("");
+                        $("#chart").kendoChart({
+                            title: {
+                                position: "bottom",
+                                text: ""
+                            },
+                            legend: {
+                                visible: false,
+                                position: "left",
+                                margin: 5,
+                                padding: 15,
+                                labels: {
+                                    font: "15px Verdana"
+                                },
+                                template: "#= category #: \n #= value#%"
+                            },
+                            chartArea: {
+                                position: "center",
+                                background: "",
+                                height: 450
+                            },
+                            seriesDefaults: {
+                                labels: {
+                                    visible: true,
+                                    background: "transparent",
+                                    template: "#= category # :(#= value# %)"
+                                }
+                            },
+                            series: [{
+                                type: "pie",
+                                startAngle: 0,
+                                categoryField: "category_name",
+                                field: "percentage",
+                                data: result
+                            }],
+                            seriesClick: onSeriesClick,
+                            tooltip: {
+                                visible: true,
+                                template: "#= category # : \n #= value# %"
+                            },
+                        });
+                    },
+                    error: function (result) {
+                        alert("Error!!");
+                    }
+
+                });
+            }
+        }
+
+        function createChart2() {
+            var catname = "";
+            var grid = $("#Quantitygrid1").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            //var treelist = $("#Quantitygrid1").data("kendoGrid");
+            //var selectedItem = treelist.dataItem(treelist.select());
+
+
+            if (selectedItem != null)
+                catname = selectedItem["Category_Name"];
+            else
+                catname = ""
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var v = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+
+            var value = JSON.stringify({
+                'filename': FileName,
+                'version': v,
+                'categoryname': catname,
+                'urn': urn
+            });
+            if (v != "Select Base Version") {
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetFamilyCount", "QuantityTest")',
+                dataType: "json",
+                beforeSend: function () {
+
+                    $('#chartLoader').show();
+                    $('.modal').show();
+                },
+                complete: function () {
+                    $('#chartLoader').hide();
+                    $('.modal').hide();
+                },
+                data: value,
+                success: function (result) {
+                    $("#chart").html("");
+                    $("#chart").kendoChart({
+                        title: {
+                            position: "bottom",
+                            text: ""
+                        },
+                        legend: {
+                            visible: false,
+                            position: "left",
+                            margin: 5,
+                            padding: 5,
+                            labels: {
+                                font: "15px Verdana"
+                            },
+                            template: "#= category #: \n #= value# "
+                        },
+                        chartArea: {
+                            position: "left",
+                            background: "",
+                            height: 450
+                        },
+                        seriesDefaults: {
+                            labels: {
+                                visible: true,
+                                background: "transparent",
+                                template: "#= category # (#= value# )"
+                            }
+                        },
+                        series: [{
+                            type: "pie",
+                            startAngle: 0,
+                            categoryField: "Family_Type",
+                            field: "count",
+                            data: result
+                        }],
+                        seriesClick: onSeriesClick,
+                        tooltip: {
+                            visible: true,
+                            template: "#= category #: \n #= value#"
+                        }
+                    });
+                },
+                error: function (result) {
+                    alert("Error!!");
+                }
+
+            });
+            }
+            else {
+                alert('Please Select Base Version');
+            }
+        }
+
+        function onSeriesClick(e) {
+            var id = e.category;
+            var value = JSON.stringify({
+                'Id': $("#versiontype").data("kendoDropDownList").value(),
+                'CategoryName': id,
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetCategoryHighLight", "QuantityTest")',
+                dataType: "json",
+                data: value,
+                success: function (result) {
+                    var Data = result.split('|');
+                    viewer.clearSelection();
+                    var forgeid = [];
+                    if (Data.length > 0) {
+                        for (var i = 0; i < Data.length - 1; i++) {
+                            var id1 = parseInt(Data[i]);
+                            //console.log(id1);
+                            forgeid.push(id1);
+                            viewer.hide(id1);
+                        }
+                    }
+                    viewer.hide(forgeid);
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+        function onFileChange() {
+            document.getElementById("PropertyTableDiv").innerHTML = "";
+            document.getElementById("VerisonTableDiv").innerHTML = "";
+            document.getElementById("chart").innerHTML = "";
+            $("#PropValueList ul").html('');
+            $("#CategoryListLevel ul").html('');
+            $("#VersionListLevel ul").html('');
+            $("#VersionList ul").html('');
+            $("#CategoryList ul").html('');
+
+            $("#tablescmQty").hide();
+
+
+            $("#Quantitygrid1").data('kendoGrid').dataSource.data([]);
+            $("#CategoryList ul").html('');
+            if ($("#vTable").length) {
+                $("#vTable").hide();
+            }
+            var ddl = $("#versiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+
+        }
+
+        function onVersionChange() {
+            $("#VerisonTableDiv").html('');
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            GetDiffVersionList();
+            //  GetDiffVersionListLevel();
+            //$.each($("input[name='VersionList[]']"), function () {
+            //    $(this).prop("checked", false);
+            //    if ($(this).val() == v)
+            //        $(this).prop("disabled", true);
+            //    else
+            //        $(this).prop("disabled", false);
+            //});
+            GetCategory();
+            createChart();
+            //  GetCategoryLevel();
+            var grid = $("#Quantitygrid1").data("kendoGrid");
+            grid.dataSource.read();
+
+            var ddl = $("#ddlroomName").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+            var ddl = $("#ddlroomNameGroup").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+            //$("#Quantitygrid1").data("kendoTreeList").dataSource.read();
+
+        }
+
+        function GetDiffVersionList() {
+            var filename = $("#filetype").data("kendoDropDownList").text();
+            $("#VersionList ul").html('<li style="text-align: center;">Loading...</li>');
+            $("#VersionListLevel ul").html('<li style="text-align: center;">Loading...</li>');
+            var value = JSON.stringify({
+                'filename': filename,
+            });
+            reajax = $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetDiffVersion", "QuantityTest")',
+                data: value,
+                async: false,
+                dataType: "json",
+                success: function (result) {
+                    $("#VersionList ul").html('');
+                    $("#VersionListLevel ul").html('');
+                    var vcheck_boxes1 = "";
+                    var vcheck_boxes2 = "";
+                    var vcheck_boxes3 = "";
+                    vcheck_boxes = '<li style="text-align: center;"><button class="btn dropdown-toggle" type="button" onClick="HideDiffGridCol()" style="width:40%;height:25px;font-size: 10px;"> Apply </button></li>';
+                    vcheck_boxes3 = '<li style="text-align: center;"><button class="btn dropdown-toggle" type="button" onClick="HideDiffGridColLevel()" style="width:40%;height:25px;font-size: 10px;"> Apply </button></li>';
+                    $.each(result, function (index, item) {
+                        vcheck_boxes1 += '<li style="padding-left:10px"><label><input type="checkbox" name="VersionList[]" value="' + item.version + '"/>&nbsp;' + item.versiontag + '</label></li>';
+                        vcheck_boxes2 += '<li style="padding-left:10px"><label><input type="checkbox" name="VersionListLevel[]" value="' + item.version + '"/>&nbsp;' + item.versiontag + '</label></li>';
+                    });
+                    if (vcheck_boxes1 != "")
+                        $("#VersionList ul").append(vcheck_boxes + vcheck_boxes1);
+                    $("#VersionListLevel ul").append(vcheck_boxes3 + vcheck_boxes2);
+                },
+                error: function (result) {
+                    alert(result);
+                }
+            });
+
+        }
+
+
+        function GetCategory() {
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            $("#CategoryList ul").html('<li style="text-align: center;">Loading...</li>');
+            $("#CategoryListLevel ul").html('<li style="text-align: center;">Loading...</li>');
+
+            var value = JSON.stringify({
+                'urn': urn,
+                'version': v,
+            });
+            if (v != "Select Base Version") {
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetCategory", "QuantityTest")',
+                    async: false,
+                    data: value,
+                    dataType: "json",
+                    success: function (result) {
+                        $("#CategoryList ul").html('');
+                        $("#CategoryListLevel ul").html('');
+                        var check_boxes1 = '';
+                        check_boxes = '<li style="text-align: center;"><button class="btn dropdown-toggle" type="button" onClick="CheckQuantityTab()" style="width:40%;height:25px;font-size: 10px;"> Apply </button></li>';
+                        check_boxes1 = '<li style="text-align: center;"><button class="btn dropdown-toggle" type="button" onClick="CheckQuantityTabLevel()" style="width:40%;height:25px;font-size: 10px;"> Apply </button></li>';
+
+                        check_boxes += '<li style="padding-left:10px"><label><input type="checkbox" name="SelectAll" id="SelectAll" onchange = "onSelectAllchange(this)" value=""/>&nbsp;Select All</label></li>';
+                        check_boxes1 += '<li style="padding-left:10px"><label><input type="checkbox" name="SelectAll" id="SelectAll" onchange = "onSelectAllchangeLevel(this)" value=""/>&nbsp;Select All</label></li>';
+
+                        $.each(result, function (index, item) {
+                            check_boxes += '<li style="padding-left:10px"><label><input type="checkbox" name="Category[]" value="' + item.Category_Name + '"/>&nbsp;' + item.Category_Name + '</label></li>';
+                            check_boxes1 += '<li style="padding-left:10px"><label><input type="checkbox" name="CategoryLevel[]" value="' + item.Category_Name + '"/>&nbsp;' + item.Category_Name + '</label></li>';
+                        });
+                        $("#CategoryList ul").append(check_boxes);
+                        $("#CategoryListLevel ul").append(check_boxes1);
+                    },
+                    error: function (result) {
+                        alert(result);
+                    }
+                });
+            }
+        }
+
+
+
+        function CheckQuantityTab() {
+
+            GetVersionDiffTable();
+        }
+
+        function CheckQuantityTabLevel() {
+
+            GetPropValue();
+        }
+
+
+        function GetVersionDiffTable() {
+
+            //Check file ddl
+            var v = $("#filetype").data("kendoDropDownList").text();
+            if (v == "Select File") {
+                alert("Select File");
+                return false;
+            }
+
+            //Check Base version ddl
+            var v = $("#versiontype").data("kendoDropDownList").text();
+            if (v == "Select Base Version") {
+                alert("Select Base Version");
+                return false;
+            }
+            else {
+                v = v.split('-')[0].trim();
+            }
+
+            //check category ddl
+            var CategoryName = new Array();
+            $.each($("input[name='Category[]']:checked"), function () {
+                CategoryName.push($(this).val());
+            });
+            if (CategoryName == "") {
+                alert("Select atleast 1 Category");
+                return false;
+            }
+            var Categories = CategoryName.join(',');
+            //check diff version ddl
+            var diffVersion = new Array();
+            $.each($("input[name='VersionList[]']:checked"), function () {
+                diffVersion.push($(this).val());
+            });
+            if (diffVersion == "") {
+                alert("Select atleast 1 diff version");
+                return false;
+            }
+
+            if ($("#vTable").length) {
+                $("#vTable").hide();
+            }
+
+            $("#VerisonTableDiv").html('<div id="diffLoader" class="k-loading-mask __web-inspector-hide-shortcut__" style="width:100%; height: 50%;display:none;"><span class="k-loading-text">Loading...</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>');
+            $('#diffLoader').show();
+            $('#diffLoader').hide();
+
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var BaseVer = $("#versiontype").data("kendoDropDownList").text();
+            BaseVer = BaseVer.split('-')[0].trim();
+            var version1 = "", version2 = "", version3 = "", version4 = "";
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '@Url.Action("GetVersionTagging", "VersionTag")',
+                dataType: "json",
+                data: JSON.stringify({ 'FileName': FileName }),
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].VersionNo == "1" && data[i].VersionTag)
+                            version1 = data[i].VersionTag
+
+                        if (data[i].VersionNo == "2" && data[i].VersionTag)
+                            version2 = data[i].VersionTag
+                        if (data[i].VersionNo == "3" && data[i].VersionTag)
+                            version3 = data[i].VersionTag
+                        if (data[i].VersionNo == "4" && data[i].VersionTag)
+                            version4 = data[i].VersionTag
+                    }
+
+                    var tabledata = '<table id="vTable" class="table table-bordered dataTable table-hover" style="width:100%;" style="font-size: 12px">';
+
+                    tabledata += '<thead>';
+                    tabledata += '<tr>';
+                    tabledata += '<th rowspan="2" width="15%" align="center">Item Category</th>';
+                    tabledata += '<th rowspan="2" width="25%" align="center">Item Description</th>';
+                    console.log("BaseVer");
+                    console.log(BaseVer);
+                    if (BaseVer == "1") {
+                        if (version1)
+                            tabledata += '<th width="9%" style="text-align:center">' + version1 + '</th>';
+                        else
+                            tabledata += '<th width="9%" style="text-align:center">Version 1</th>';
+                    }
+                    else if (BaseVer == "2") {
+                        if (version2)
+                            tabledata += '<th width="9%" style="text-align:center">' + version2 + '</th>';
+                        else
+                            tabledata += '<th width="9%" style="text-align:center">Version 2</th>';
+                    }
+                    else if (BaseVer == "3") {
+                        if (version3)
+                            tabledata += '<th width="9%" style="text-align:center">' + version3 + '</th>';
+                        else
+                            tabledata += '<th width="9%" style="text-align:center">Version 3</th>';
+                    }
+                    else if (BaseVer == "4") {
+                        if (version4)
+                            tabledata += '<th width="9%" style="text-align:center">' + version4 + '</th>';
+                        else
+                            tabledata += '<th width="9%" style="text-align:center">Version 4</th>';
+                    }
+                    if (BaseVer == '1') {
+                        if (version2)
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">' + version2 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">Version 2</th>';
+                        if (version3)
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">' + version3 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">Version3</th>';
+                        if (version4)
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">' + version4 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">Version4</th>';
+                    }
+                    else if (BaseVer == '2') {
+                        if (version1)
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">' + version1 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">Version1</th>';
+                        if (version3)
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">' + version3 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">Version3</th>';
+                        if (version4)
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">' + version4 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">Version4</th>';
+                    }
+                    else if (BaseVer == '3') {
+                        if (version1)
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">' + version1 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">Version1</th>';
+                        if (version2)
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">' + version2 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">Version 2</th>';
+                        if (version4)
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">' + version4 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv4" width="16%" style="text-align:center">Version4</th>';
+                    }
+                    else if (BaseVer == '4') {
+                        if (version1)
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">' + version1 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv1" width="16%" style="text-align:center">Version1</th>';
+                        if (version2)
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">' + version2 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv2" width="16%" style="text-align:center">Version 2</th>';
+                        if (version3)
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">' + version3 + '</th>';
+                        else
+                            tabledata += '<th colspan="2" id="thv3" width="16%" style="text-align:center">Version3</th>';
+                    }
+                    tabledata += '</tr>';
+                    tabledata += '<tr>';
+                    tabledata += '<th id="q1" width="9%">Qty.</th>';
+                    tabledata += '<th id="q2" width="8%">Qty.</th><th id="d2" width="8%">Diff.</th>';
+                    tabledata += '<th id="q3" width="8%">Qty.</th><th id="d3" width="8%">Diff.</th>';
+                    tabledata += '<th id="q4" width="8%">Qty.</th><th id="d4" width="8%">Diff.</th>';
+                    tabledata += '</tr>';
+                    tabledata += '</thead>';
+
+                    var value = JSON.stringify({
+                        'FileName': FileName,
+                        'CategoryName': Categories,
+                        'BaseVersion': BaseVer,
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: 'application/json',
+                        beforeSend: function () {
+                            $('#diffLoader').show();
+                        },
+                        complete: function () {
+                            $('#diffLoader').hide();
+                        },
+                        url: '@Url.Action("GetVersionwiseDiff", "QuantityTest")',
+                        dataType: "json",
+                        data: value,
+                        success: function (data) {
+                            tabledata += '<tbody>';
+
+                            for (var i = 0; i < data.length; ++i) {
+                                tabledata += '<tr id="row_' + i + '">';
+                                tabledata += '<td width="15%">' + data[i].Category_Name + '</td>';
+                                tabledata += '<td width="25%">' + data[i].Family_Type + '</td>';
+                                if (data[i].v1Q != null) {
+                                    data[i].v1Q = parseFloat(data[i].v1Q).toFixed(2)
+                                tabledata += '<td width="9%">' + data[i].v1Q + '</td>';
+                            }
+                                else
+                                    tabledata += '<td width="8%">-</td>';
+
+                                if (data[i].v2Q != null) {
+                                    data[i].v2Q = parseFloat(data[i].v2Q).toFixed(2)
+                                    tabledata += '<td width="8%">' + data[i].v2Q + '</td>';
+                                }
+                                else
+                                    tabledata += '<td width="8%">-</td>';
+
+                                if (data[i].v2D != null) {
+
+                                    data[i].v2D = parseFloat(data[i].v2D).toFixed(2)
+                                    if (parseInt(data[i].v2D) == 0)
+                                        tabledata += '<td width="8%" style="color:green">' + data[i].v2D + '</td>';
+                                    else if (parseInt(data[i].v2D) < 0)
+                                        tabledata += '<td width="8%" style="color:red">' + data[i].v2D + '</td>';
+                                    else
+                                        tabledata += '<td width="8%">' + data[i].v2D + '</td>';
+                                }
+                                else {
+                                    tabledata += '<td width="8%">-</td>';
+                                }
+
+                                if (data[i].v3Q != null) {
+                                    data[i].v3Q = parseFloat(data[i].v2D).toFixed(2)
+                                    tabledata += '<td width="8%">' + data[i].v3Q + '</td>';
+                                }
+                                else
+                                    tabledata += '<td width="8%">-</td>';
+
+                                if (data[i].v3D != null) {
+                                    data[i].v3D = parseFloat(data[i].v3D).toFixed(2)
+                                    if (parseInt(data[i].v3D) == 0)
+                                        tabledata += '<td width="8%" style="color:green">' + data[i].v3D + '</td>';
+                                    else if (parseInt(data[i].v3D) < 0)
+                                        tabledata += '<td width="8%" style="color:red">' + data[i].v3D + '</td>';
+                                    else
+                                        tabledata += '<td width="8%">' + data[i].v3D + '</td>';
+                                }
+                                else {
+                                    tabledata += '<td width="8%">-</td>';
+                                }
+
+                                if (data[i].v4Q != null) {
+                                    data[i].v4Q = parseFloat(data[i].v4Q).toFixed(2)
+                                    tabledata += '<td width="8%">' + data[i].v4Q + '</td>';
+                                }
+                                else
+                                    tabledata += '<td width="8%">-</td>';
+
+                                if (data[i].v4D != null) {
+                                    data[i].v4D = parseFloat(data[i].v4D).toFixed(2)
+                                    if (parseInt(data[i].v4D) == 0)
+                                        tabledata += '<td width="8%" style="color:green">' + data[i].v4D + '</td>';
+                                    else if (parseInt(data[i].v4D) < 0)
+                                        tabledata += '<td width="8%" style="color:red">' + data[i].v4D + '</td>';
+                                    else
+                                        tabledata += '<td width="8%">' + data[i].v4D + '</td>';
+                                }
+                                else {
+                                    tabledata += '<td width="8%">-</td>';
+                                }
+                                tabledata += '</tr>';
+                            }
+                            tabledata += '</tbody></table>';
+                            $('#diffLoader').hide();
+                            $("#VerisonTableDiv").html('');
+                            $("#VerisonTableDiv").html(tabledata);
+                            $("#vTable").tableHeadFixer({ "left": 2 });
+                            $('#vTable tr td:nth-child(4)').hide();
+                            $('#vTable tr td:nth-child(5)').hide();
+                            $('#vTable tr td:nth-child(6)').hide();
+                            $('#vTable tr td:nth-child(7)').hide();
+                            $('#vTable tr td:nth-child(8)').hide();
+                            $('#vTable tr td:nth-child(9)').hide();
+                            $('#vTable #q2').hide();
+                            $('#vTable #d2').hide();
+                            $('#vTable #q3').hide();
+                            $('#vTable #d3').hide();
+                            $('#vTable #q4').hide();
+                            $('#vTable #d4').hide();
+                            $('#thv2').hide();
+                            $('#thv1').hide();
+                            $('#thv3').hide();
+                            $('#thv4').hide();
+
+
+                            $("input[name='VersionList[]']").each(function () {
+                                if ($(this).is(':checked')) {
+                                    if ($(this).val() == "1" && BaseVer != "1") {
+                                        $('#vTable tr td:nth-child(4)').show();
+                                        $('#vTable tr td:nth-child(5)').show();
+                                        $('#vTable #q2').show();
+                                        $('#vTable #d2').show();
+                                        $('#thv1').show();
+                                    }
+                                    else if ($(this).val() == "2" && BaseVer != "2") {
+                                        $('#vTable tr td:nth-child(4)').show();
+                                        $('#vTable tr td:nth-child(5)').show();
+                                        $('#vTable #q2').show();
+                                        $('#vTable #d2').show();
+                                        $('#thv2').show();
+                                    }
+                                    else if ($(this).val() == "3" && BaseVer != "3") {
+                                        $('#vTable tr td:nth-child(6)').show();
+                                        $('#vTable tr td:nth-child(7)').show();
+                                        $('#vTable #q3').show();
+                                        $('#vTable #d3').show();
+                                        $('#thv3').show();
+                                    }
+                                    else if ($(this).val() == "4" && BaseVer != "4") {
+                                        $('#vTable tr td:nth-child(8)').show();
+                                        $('#vTable tr td:nth-child(9)').show();
+                                        $('#vTable #q4').show();
+                                        $('#vTable #d4').show();
+                                        $('#thv4').show();
+                                    }
+                                }
+                            });
+                            $("#vTable").show();
+                        },
+                        error: function (result) {
+                            alert("Error");
+                        }
+                    });
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
+        }
+
+
+        function onChangeQuantitygrid1() {
+            var grid = $("#Quantity2grid").data("kendoGrid");
+            grid.dataSource.read();
+            createChart2();
+        }
+
+        function Quantity2grid_OnRowSelect() {
+            var grid = $("#Quantity2grid").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+
+            if (selectedItem != null) {
+                familyname = selectedItem["Family_Type"];
+            }
+
+            $('#vTable td:nth-of-type(2)').each(function (index) {
+                $(this).closest('tr').removeClass('Highlightrow');
+                if ($(this).text() == familyname) {
+                    $(this).closest('tr').addClass('Highlightrow');
+                    //$("#row_"+$(this).closest('tr').index())[0].scrollIntoView();
+                }
+            });
+        }
+
+        function onSelectAllchange(check) {
+            if (check.checked) {
+                $("input[name='Category[]']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            }
+            else {
+                $("input[name='Category[]']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+
+        function onSelectAllchangeLevel(check) {
+            if (check.checked) {
+                $("input[name='CategoryLevel[]']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            }
+            else {
+                $("input[name='CategoryLevel[]']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+
+
+
+        function onSelectAllPropchange(check) {
+            if (check.checked) {
+                $("input[name='PropValue[]']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            }
+            else {
+                $("input[name='PropValue[]']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+
+        function onSelectAllProperty(check) {
+            if (check.checked) {
+                $("input[name='Prop[]']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            }
+            else {
+                $("input[name='Prop[]']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+        function HideDDL() {
+            // $("#VersionList").hide();
+            //  $("#CategoryList").hide();
+            // $("#exportDiffGrid").hide();
+            // $("#CategoryChart").show();
+            $("#PropDiv").hide();
+            $("#PropValueListDiv").hide();
+            //  $("#exportModel").hide();
+            //  createChart();
+        }
+
+        function ShowDDL() {
+            // $("#VersionList").show();
+            //  $("#CategoryList").show();
+            //  $("#exportDiffGrid").show();
+            // $("#CategoryChart").hide();
+            $("#PropDiv").hide();
+            $("#PropValueListDiv").hide();
+            // $("#exportModel").show();
+
+        }
+
+        function ShowPropDDL() {
+            ////  $("#VersionList").show();
+            //  $("#CategoryList").show();
+            //  $("#exportDiffGrid").show();
+            //  $("#exportDiffGrid").show();
+            //  $("#CategoryChart").hide();
+            $("#PropDiv").show();
+            $("#PropValueListDiv").show();
+            //   $("#exportModel").hide();
+            //  GetPropValue();
+        }
+
+        function ShowRoomWise() {
+           // var ddl = $("#ddlroomName").data("kendoDropDownList");
+          //  ddl.dataSource.read();
+
+        }
+
+        function ShowRoomWiseGroup()
+        {
+
+        }
+
+
+        function ShowVerTagging() {
+            //  $("#VersionList").hide();
+            // $("#CategoryList").hide();
+            //  $("#exportDiffGrid").hide();
+            $("#CategoryChart").hide();
+            $("#PropDiv").hide();
+            $("#PropValueListDiv").hide();
+            $("#BaseVerList").hide();
+            //$("#exportModel").hide();
+        }
+
+
+
+
+        function downloadDiffGrid() {
+            $("#vTable *:hidden").remove();
+
+            $("#vTable thead th").css("background-color", "skyblue");
+            $("#vTable thead th ").css("border", "1px groove #686256");
+            $("#vTable tbody tr td").css("border", "1px groove #686256");
+            $("#vTable").table2excel({
+                name: "VersionwiseQuantity",
+                filename: "VersionWiseFileDetails",
+                fileext: ".xls"
+            });
+            $("#vTable thead th").css("background-color", "white");
+            $("#vTable thead th ").css("border", "1px solid #dddddd");
+            $("#vTable tbody tr td").css("border", "1px solid #dddddd");
+
+
+            //$("#vTable thead th").css("background-color", "skyblue");
+            //$("#vTable thead th ").css("border", "1px groove #686256");
+            //$("#vTable tbody tr td").css("border", "1px groove #686256");
+            //var sFileName = 'ngophi';
+            //$('#vTable').tableExport({
+            //    fileName: sFileName,
+            //    type: 'xlsx'
+            //});
+            //$("#vTable thead th").css("background-color", "");
+            //$("#vTable thead th ").css("border", "1px solid #dddddd");
+            //$("#vTable tbody tr td").css("border", "1px solid #dddddd");
+        }
+
+        function downloadDiffGridLevel() {
+            $("#CPTable *:hidden").remove();
+
+            $("#CPTable thead th").css("background-color", "skyblue");
+            $("#CPTable thead th ").css("border", "1px groove #686256");
+            $("#CPTable tbody tr td").css("border", "1px groove #686256");
+            $("#CPTable").table2excel({
+                name: "LevelwiseQuantity",
+                filename: "LevelWiseFileDetails",
+                fileext: ".xls"
+            });
+            $("#CPTable thead th").css("background-color", "white");
+            $("#CPTable thead th ").css("border", "1px solid #dddddd");
+            $("#CPTable tbody tr td").css("border", "1px solid #dddddd");
+        }
+
+        function downloadRoomwise()
+        {
+            $("#roomdatatableexcel thead th").css("background-color", "skyblue");
+            $("#roomdatatableexcel thead th ").css("border", "1px groove #686256");
+            $("#roomdatatableexcel tbody tr td").css("border", "1px groove #686256");
+            $("#roomdatatableexcel").table2excel({
+                name: "RoomwiseQuantity",
+                filename: "RoomWiseFileDetails",
+                fileext: ".xls"
+            });
+            $("#roomdatatableexcel thead th").css("background-color", "white");
+            $("#roomdatatableexcel thead th ").css("border", "1px solid #dddddd");
+            $("#roomdatatableexcel tbody tr td").css("border", "1px solid #dddddd");
+        }
+
+        function downloadRoomwiseGroup()
+        {
+            $("#roomdatatableGroup thead th").css("background-color", "skyblue");
+            $("#roomdatatableGroup thead th ").css("border", "1px groove #686256");
+            $("#roomdatatableGroup tbody tr td").css("border", "1px groove #686256");
+            $("#roomdatatableGroup").table2excel({
+                name: "RoomwiseQuantity",
+                filename: "RoomWiseFileDetails",
+                fileext: ".xls"
+            });
+            $("#roomdatatableGroup thead th").css("background-color", "white");
+            $("#roomdatatableGroup thead th ").css("border", "1px solid #dddddd");
+            $("#roomdatatableGroup tbody tr td").css("border", "1px solid #dddddd");
+        }
+
+        function HideDiffGridCol() {
+            // var activetab = $("#QuantityTabStrip li.active").attr('id');
+
+            // if (activetab == "QuantityTab1") {
+
+            //Check file ddl
+            var v = $("#filetype").data("kendoDropDownList").text();
+            if (v == "Select File") {
+                alert("Select File");
+                return false;
+            }
+
+            //Check Base version ddl
+            var ver = $("#versiontype").data("kendoDropDownList").text();
+            if (ver == "Select Base Version") {
+                alert("Select Base Version");
+                return false;
+            }
+            else {
+                ver = ver.split('-')[0].trim();
+            }
+
+            //check diff version ddl
+            var diffVersion = new Array();
+            $.each($("input[name='VersionList[]']:checked"), function () {
+                diffVersion.push($(this).val());
+            });
+            if (diffVersion == "") {
+                alert("Select atleast 1 diff version");
+                return false;
+            }
+
+            //check category ddl
+            var CategoryName = new Array();
+            $.each($("input[name='Category[]']:checked"), function () {
+                CategoryName.push($(this).val());
+            });
+            if (CategoryName == "") {
+                alert("Select atleast 1 Category");
+                return false;
+            }
+
+            if ($('#vTable').length) {
+                $('#vTable tr td:nth-child(4)').hide();
+                $('#vTable tr td:nth-child(5)').hide();
+                $('#vTable tr td:nth-child(6)').hide();
+                $('#vTable tr td:nth-child(7)').hide();
+                $('#vTable tr td:nth-child(8)').hide();
+                $('#vTable tr td:nth-child(9)').hide();
+                $('#vTable #q2').hide();
+                $('#vTable #d2').hide();
+                $('#vTable #q3').hide();
+                $('#vTable #d3').hide();
+                $('#vTable #q4').hide();
+                $('#vTable #d4').hide();
+                $('#thv1').hide();
+                $('#thv2').hide();
+                $('#thv3').hide();
+                $('#thv4').hide();
+
+                $("input[name='VersionList[]']").each(function () {
+                    if ($(this).is(':checked')) {
+                        if ($(this).val() == "1" && ver != "1") {
+                            $('#vTable tr td:nth-child(4)').show();
+                            $('#vTable tr td:nth-child(5)').show();
+                            $('#vTable #q2').show();
+                            $('#vTable #d2').show();
+                            $('#thv1').show();
+                        }
+                        else if ($(this).val() == "2" && ver != "2") {
+                            $('#vTable tr td:nth-child(4)').show();
+                            $('#vTable tr td:nth-child(5)').show();
+                            $('#vTable #q2').show();
+                            $('#vTable #d2').show();
+                            $('#thv2').show();
+                        }
+                        else if ($(this).val() == "3" && ver != "3") {
+                            $('#vTable tr td:nth-child(6)').show();
+                            $('#vTable tr td:nth-child(7)').show();
+                            $('#vTable #q3').show();
+                            $('#vTable #d3').show();
+                            $('#thv3').show();
+                        }
+                        else if ($(this).val() == "4" && ver != "4") {
+                            $('#vTable tr td:nth-child(8)').show();
+                            $('#vTable tr td:nth-child(9)').show();
+                            $('#vTable #q4').show();
+                            $('#vTable #d4').show();
+                            $('#thv4').show();
+                        }
+                    }
+                });
+            }
+            else {
+                GetVersionDiffTable();
+            }
+        }
+
+
+            function HideDiffGridColLevel() {
+
+                //Check file ddl
+                var v = $("#filetype").data("kendoDropDownList").text();
+                if (v == "Select File") {
+                    alert("Select File");
+                    return false;
+                }
+
+                //Check Base version ddl
+                var ver = $("#versiontype").data("kendoDropDownList").text();
+                if (ver == "Select Base Version") {
+                    alert("Select Base Version");
+                    return false;
+                }
+                else {
+                    ver = ver.split('-')[0].trim();
+                }
+
+                //check diff version ddl
+                var diffVersion = new Array();
+                $.each($("input[name='VersionListLevel[]']:checked"), function () {
+                    diffVersion.push($(this).val());
+                });
+                if (diffVersion == "") {
+                    alert("Select atleast 1 diff version");
+                    return false;
+                }
+
+                //check category ddl
+                var v = new Array();
+                $.each($("input[name='CategoryLevel[]']:checked"), function () {
+                    v.push($(this).val());
+                });
+                if (v == "") {
+                    alert("Select atleast 1 Category");
+                    return false;
+                }
+                v = v.join(',');
+
+                if ($('#CPTable').length) {
+                    // $('#CPTable tr td:nth-child(4)').hide();
+                    $('#CPTable tr td:nth-child(5)').hide();
+                    $('#CPTable tr td:nth-child(6)').hide();
+                    $('#CPTable tr td:nth-child(7)').hide();
+                    $('#CPTable tr td:nth-child(8)').hide();
+                    $('#CPTable tr td:nth-child(9)').hide();
+                    $('#CPTable tr td:nth-child(10)').hide();
+                    $('#CPTable #cpq2').hide();
+                    $('#CPTable #cpd2').hide();
+                    $('#CPTable #cpq3').hide();
+                    $('#CPTable #cpd3').hide();
+                    $('#CPTable #cpq4').hide();
+                    $('#CPTable #cpd4').hide();
+                    $('#thcp1').hide();
+                    $('#thcp2').hide();
+                    $('#thcp3').hide();
+                    $('#thcp4').hide();
+
+                    $("input[name='VersionListLevel[]']").each(function () {
+                        if ($(this).is(':checked')) {
+                            if ($(this).val() == "1" && ver != "1") {
+                                $('#CPTable tr td:nth-child(5)').show();
+                                $('#CPTable tr td:nth-child(6)').show();
+                                $('#CPTable #cpq2').show();
+                                $('#CPTable #cpd2').show();
+                                $('#thcp2').show();
+                            }
+                            else if ($(this).val() == "2" && ver != "2") {
+                                $('#CPTable tr td:nth-child(5)').show();
+                                $('#CPTable tr td:nth-child(6)').show();
+                                $('#CPTable #cpq2').show();
+                                $('#CPTable #cpd2').show();
+                                $('#thcp2').show();
+                            }
+                            else if ($(this).val() == "3" && ver != "3") {
+                                $('#CPTable tr td:nth-child(7)').show();
+                                $('#CPTable tr td:nth-child(8)').show();
+                                $('#CPTable #cpq3').show();
+                                $('#CPTable #cpd3').show();
+                                $('#thcp3').show();
+                            }
+                            else if ($(this).val() == "4" && ver != "4") {
+                                $('#CPTable tr td:nth-child(9)').show();
+                                $('#CPTable tr td:nth-child(10)').show();
+                                $('#CPTable #cpq4').show();
+                                $('#CPTable #cpd4').show();
+                                $('#thcp4').show();
+                            }
+                        }
+                    });
+                }
+                else {
+                    GetPropCateTable();
+                }
+            }
+
+
+            function VerPropertyListData() {
+                var c = new Array();
+                $.each($("input[name='Category[]']:checked"), function () {
+                    c.push($(this).val());
+                });
+                c = c.join(',');
+                return {
+                    'category': c,
+                    'urn': $("#versiontype").data("kendoDropDownList").value(),
+                }
+            }
+
+            function GetPropCateTable() {
+                //Check file ddl
+                var v = $("#filetype").data("kendoDropDownList").text();
+                if (v == "Select File") {
+                    alert("Select File");
+                    return false;
+                }
+
+                //Check Base version ddl
+                var v = $("#versiontype").data("kendoDropDownList").text();
+                if (v == "Select Base Version") {
+                    alert("Select Base Version");
+                    return false;
+                }
+                else {
+                    v = v.split('-')[0].trim();
+                }
+
+                //check diff version ddl
+                var diffVersion = new Array();
+                $.each($("input[name='VersionListLevel[]']:checked"), function () {
+                    diffVersion.push($(this).val());
+                });
+                if (diffVersion == "") {
+                    alert("Select atleast 1 diff version");
+                    return false;
+                }
+
+                //check prop category ddl
+                var c = new Array();
+                $.each($("input[name='CategoryLevel[]']:checked"), function () {
+                    c.push($(this).val());
+                });
+                if (c == "") {
+                    alert("Select atleast 1 Category");
+                    return false;
+                }
+                c = c.join(',');
+
+                //check property value ddl
+                var propvalue = new Array();
+                var Levelvalue = "";
+                $.each($("input[name='PropValue[]']:checked"), function () {
+                    propvalue.push($(this).val());
+                    Levelvalue += $(this).val();
+                });
+                if (propvalue == "") {
+                    alert("Select atleast 1 Property Value");
+                    return false;
+                }
+                propvalue = propvalue.join(',');
+                console.log("-----level name-----");
+                console.log(propvalue);
+                console.log(Levelvalue);
+
+                $("#PropertyTableDiv").append();
+                if ($("#CPTable").length) {
+                    $("#CPTable").hide();
+                }
+
+                $("#PropertyTableDiv").html('<div id="diffLoader" class="k-loading-mask __web-inspector-hide-shortcut__" style="width:100%; height: 50%;display:none;"><span class="k-loading-text">Loading...</span><div class="k-loading-image"></div><div class="k-loading-color"></div></div>');
+                $('#diffLoader').show();
+                var Cate = c;
+                var FileName = $("#filetype").data("kendoDropDownList").text();
+                var BaseVer = $("#versiontype").data("kendoDropDownList").text();
+                BaseVer = BaseVer.split('-')[0].trim();
+                var cpversion1 = "", cpversion2 = "", cpversion3 = "", cpversion4 = "";
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetVersionTagging", "VersionTag")',
+                    dataType: "json",
+                    data: JSON.stringify({ 'FileName': FileName }),
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].VersionNo == "1" && data[i].VersionTag)
+                                cpversion1 = data[i].VersionTag
+                            if (data[i].VersionNo == "2" && data[i].VersionTag)
+                                cpversion2 = data[i].VersionTag
+                            if (data[i].VersionNo == "3" && data[i].VersionTag)
+                                cpversion3 = data[i].VersionTag
+                            if (data[i].VersionNo == "4" && data[i].VersionTag)
+                                cpversion4 = data[i].VersionTag
+                        }
+
+                        //var CPtabledata = '<br/><table id="CPTable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px">';
+                        var CPtabledata = '<table id="CPTable" class="table table-bordered dataTable table-hover" style="width:100%;">';
+                        CPtabledata += '<thead>';
+                        CPtabledata += '<tr>';
+                        CPtabledata += '<th rowspan="2" width="15%" align="center">Item Category</th>';
+                        CPtabledata += '<th rowspan="2" width="15%" align="center">Item Description</th>';
+                        CPtabledata += '<th rowspan="2" width="25%" align="center">Level</th>';
+                        console.log("BaseVer");
+                        console.log(BaseVer);
+                        if (BaseVer == "1") {
+                            if (cpversion1)
+                                CPtabledata += '<th width="9%" style="text-align:center">' + cpversion1 + '</th>';
+                            else
+                                CPtabledata += '<th width="9%" style="text-align:center">Version1</th>';
+                        }
+                        else if (BaseVer == "2") {
+                            if (cpversion2)
+                                CPtabledata += '<th width="9%" style="text-align:center">' + cpversion2 + '</th>';
+                            else
+                                CPtabledata += '<th width="9%" style="text-align:center">Version2</th>';
+                        }
+                        else if (BaseVer == "3") {
+                            if (cpversion3)
+                                CPtabledata += '<th width="9%" style="text-align:center">' + cpversion3 + '</th>';
+                            else
+                                CPtabledata += '<th width="9%" style="text-align:center">Version3</th>';
+                        }
+                        else if (BaseVer == "4") {
+                            if (cpversion4)
+                                CPtabledata += '<th width="9%" style="text-align:center">' + cpversion4 + '</th>';
+                            else
+                                CPtabledata += '<th width="9%" style="text-align:center">Version4</th>';
+                        }
+
+                        if (BaseVer == '1') {
+                            if (cpversion2)
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">' + cpversion2 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">Version2</th>';
+                            if (cpversion3)
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">' + cpversion3 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">Version3</th>';
+                            if (cpversion4)
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">' + cpversion4 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">Version4</th>';
+                        }
+                        else if (BaseVer == '2') {
+                            if (cpversion1)
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">' + cpversion1 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">Version1</th>';
+                            if (cpversion3)
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">' + cpversion3 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">Version3</th>';
+                            if (cpversion4)
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">' + cpversion4 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">Version4</th>';
+                        }
+                        else if (BaseVer == '3') {
+                            if (cpversion1)
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">' + cpversion1 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">Version1</th>';
+                            if (cpversion2)
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">' + cpversion2 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">Version2</th>';
+                            if (cpversion4)
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">' + cpversion4 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp4" width="16%" style="text-align:center">Version4</th>';
+                        }
+                        else if (BaseVer == '4') {
+                            if (cpversion1)
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">' + cpversion1 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp1" width="16%" style="text-align:center">Version1</th>';
+                            if (cpversion2)
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">' + cpversion2 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp2" width="16%" style="text-align:center">Version2</th>';
+                            if (cpversion3)
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">' + cpversion3 + '</th>';
+                            else
+                                CPtabledata += '<th colspan="2" id="thcp3" width="16%" style="text-align:center">Version3</th>';
+                        }
+                        CPtabledata += '</tr>';
+                        CPtabledata += '<tr>';
+                        CPtabledata += '<th id="cpq1" width="9%">Qty.</th>';
+                        CPtabledata += '<th id="cpq2" width="8%">Qty.</th><th id="cpd2" width="8%">Diff.</th>';
+                        CPtabledata += '<th id="cpq3" width="8%">Qty.</th><th id="cpd3" width="8%">Diff.</th>';
+                        CPtabledata += '<th id="cpq4" width="8%">Qty.</th><th id="cpd4" width="8%">Diff.</th>';
+                        CPtabledata += '</tr>';
+                        CPtabledata += '</thead>';
+                        //CPtabledata += '<tbody>';
+
+                        var value = JSON.stringify({
+                            'FileName': FileName,
+                            'CategoryName': Cate,
+                            'BaseVersion': BaseVer,
+                            'propvalue': propvalue,
+                        });
+
+                        $.ajax({
+                            type: "POST",
+                            contentType: 'application/json',
+                            beforeSend: function () {
+                                $('#diffLoader').show();
+                            },
+                            complete: function () {
+                                $('#diffLoader').hide();
+                            },
+                            url: '@Url.Action("GetPropertywiseDiff", "QuantityTest")',
+                            dataType: "json",
+                            data: value,
+                            success: function (data) {
+                                CPtabledata += '<tbody>';
+                                for (var i = 0; i < data.length; ++i) {
+                                    CPtabledata += '<tr id="row_' + i + '">';
+                                    CPtabledata += '<td width="15%">' + data[i].Category_Name + '</td>';
+                                    CPtabledata += '<td width="15%">' + data[i].Family_Type + '</td>';
+                                    CPtabledata += '<td width="25%">' + data[i].Property_Value + '</td>';
+                                    if (data[i].v1Q != null) {
+                                        data[i].v1Q = parseFloat(data[i].v1Q).toFixed(2)
+                                        CPtabledata += '<td width="9%">' + data[i].v1Q + '</td>';
+                                    }
+                                    else
+                                        CPtabledata += '<td width="8%">-</td>';
+
+                                    if (data[i].v2Q != null) {
+                                        data[i].v2Q = parseFloat(data[i].v2Q).toFixed(2)
+                                        CPtabledata += '<td width="8%">' + data[i].v2Q + '</td>';
+                                    }
+                                    else
+                                        CPtabledata += '<td width="8%">-</td>';
+
+                                    if (data[i].v2D != null) {
+                                        data[i].v2D = parseFloat(data[i].v2D).toFixed(2)
+                                        if (parseInt(data[i].v2D) == 0)
+                                            CPtabledata += '<td width="8%" style="color:green">' + data[i].v2D + '</td>';
+                                        else if (parseInt(data[i].v2D) < 0)
+                                            CPtabledata += '<td width="8%" style="color:red">' + data[i].v2D + '</td>';
+                                        else
+                                            CPtabledata += '<td width="8%">' + data[i].v2D + '</td>';
+                                    }
+                                    else {
+                                        CPtabledata += '<td width="8%">-</td>';
+                                    }
+
+                                    if (data[i].v3Q != null) {
+                                    data[i].v3Q = parseFloat(data[i].v3Q).toFixed(2)
+                                    CPtabledata += '<td width="8%">' + data[i].v3Q + '</td>';
+                                }
+                                    else
+                                        CPtabledata += '<td width="8%">-</td>';
+
+                                    if (data[i].v3D != null) {
+                                        data[i].v3D = parseFloat(data[i].v3D).toFixed(2)
+                                        if (parseInt(data[i].v3D) == 0)
+                                            CPtabledata += '<td width="8%" style="color:green">' + data[i].v3D + '</td>';
+                                        else if (parseInt(data[i].v3D) < 0)
+                                            CPtabledata += '<td width="8%" style="color:red">' + data[i].v3D + '</td>';
+                                        else
+                                            CPtabledata += '<td width="8%">' + data[i].v3D + '</td>';
+                                    }
+                                    else {
+                                        CPtabledata += '<td width="8%">-</td>';
+                                    }
+
+                                    if (data[i].v4Q != null) {
+                                        data[i].v4Q = parseFloat(data[i].v4Q).toFixed(2)
+                                        CPtabledata += '<td width="8%">' + data[i].v4Q + '</td>';
+                                    }
+                                    else
+                                        CPtabledata += '<td width="8%">-</td>';
+
+                                    if (data[i].v4D != null) {
+                                        data[i].v4D = parseFloat(data[i].v4D).toFixed(2)
+                                        if (parseInt(data[i].v4D) == 0)
+                                            CPtabledata += '<td width="8%" style="color:green">' + data[i].v4D + '</td>';
+                                        else if (parseInt(data[i].v4D) < 0)
+                                            CPtabledata += '<td width="8%" style="color:red">' + data[i].v4D + '</td>';
+                                        else
+                                            CPtabledata += '<td width="8%">' + data[i].v4D + '</td>';
+                                    }
+                                    else {
+                                        CPtabledata += '<td width="8%">-</td>';
+                                    }
+                                    CPtabledata += '</tr>';
+                                }
+
+                                CPtabledata += '</tbody></table>';
+                                $('#diffLoader').hide();
+                                $("#PropertyTableDiv").html('');
+                                $("#PropertyTableDiv").html(CPtabledata);
+                                $("#CPTable").tableHeadFixer({ "left": 2 });
+                                //var btn = document.getElementById('btnSendEmail');
+                                //btn.disabled = false;
+                                $('#CPTable tr td:nth-child(5)').hide();
+                                $('#CPTable tr td:nth-child(6)').hide();
+                                $('#CPTable tr td:nth-child(7)').hide();
+                                $('#CPTable tr td:nth-child(8)').hide();
+                                $('#CPTable tr td:nth-child(9)').hide();
+                                $('#CPTable tr td:nth-child(10)').hide();
+                                $('#CPTable #cpq2').hide();
+                                $('#CPTable #cpd2').hide();
+                                $('#CPTable #cpq3').hide();
+                                $('#CPTable #cpd3').hide();
+                                $('#CPTable #cpq4').hide();
+                                $('#CPTable #cpd4').hide();
+                                $('#thcp1').hide();
+                                $('#thcp2').hide();
+                                $('#thcp3').hide();
+                                $('#thcp4').hide();
+
+
+                                $("input[name='VersionListLevel[]']").each(function () {
+                                    if ($(this).is(':checked')) {
+                                        if ($(this).val() == "1" && BaseVer != "1") {
+                                            $('#CPTable tr td:nth-child(5)').show();
+                                            $('#CPTable tr td:nth-child(6)').show();
+                                            $('#CPTable #cpq2').show();
+                                            $('#CPTable #cpd2').show();
+                                            $('#thcp1').show();
+                                        }
+                                        else if ($(this).val() == "2" && BaseVer != "2") {
+                                            $('#CPTable tr td:nth-child(5)').show();
+                                            $('#CPTable tr td:nth-child(6)').show();
+                                            $('#CPTable #cpq2').show();
+                                            $('#CPTable #cpd2').show();
+                                            $('#thcp2').show();
+                                        }
+                                        else if ($(this).val() == "3" && BaseVer != "3") {
+                                            $('#CPTable tr td:nth-child(7)').show();
+                                            $('#CPTable tr td:nth-child(8)').show();
+                                            $('#CPTable #cpq3').show();
+                                            $('#CPTable #cpd3').show();
+                                            $('#thcp3').show();
+                                        }
+                                        else if ($(this).val() == "4" && BaseVer != "4") {
+                                            $('#CPTable tr td:nth-child(9)').show();
+                                            $('#CPTable tr td:nth-child(10)').show();
+                                            $('#CPTable #cpq4').show();
+                                            $('#CPTable #cpd4').show();
+                                            $('#thcp4').show();
+                                        }
+                                    }
+                                });
+                                $("#CPTable").show();
+                            },
+                            error: function (result) {
+                                alert("Error");
+                            }
+                        });
+                    },
+                    error: function (result) {
+                        alert("Error");
+                    }
+                });
+            }
+
+
+
+            function downloadModelExcel() {
+                //  $('#exportModel').prop("disabled", true);
+                // $('#exportModel').hide();
+                $('#exportmodelLoader').show();
+                var FileName = $("#filetype").data("kendoDropDownList").text();
+                var v = $("#versiontype").data("kendoDropDownList").value();
+                var b = $("#versiontype").data("kendoDropDownList").text();
+                b = b.split('-')[0].trim();
+                var c = FileName + " (V" + b + ") ";
+                getForgeToken(function (access_token, expires_in) {
+
+                    var loader = $('#exportmodelLoader');
+                    var excel = $('#exportModel');
+                    ForgeXLS.downloadXLSX(c, v, access_token, statusCallback, loader, excel);
+
+                });
+
+            }
+
+
+            function statusCallback(completed, message) {
+                // $.notify(message, 'info');
+                //  $('#exportModel').prop("enable", !completed);
+                // $('#exportModel').prop("enable", true);
+            }
+
+            function getForgeToken(callback) {
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetAuthentication", "Home")',
+                    dataType: "json",
+                    success: function (result) {
+                        if (callback)
+                            callback(result.auth, result.expires_in);
+                    },
+                });
+            }
+    </script>
+
+    <script>
+        function customonFileChange() {
+            var ddl = $("#customversiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+
+        }
+
+        function customGridSearchModelData(e) {
+            var VersionNo = $("#customversiontype").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#customfiletype").data("kendoDropDownList").text();
+            var urn = $("#customversiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName
+            }
+        }
+
+        function customonVersionChange() {
+            var ddl = $("#GridCategoryAdmin").data("kendoGrid");
+            ddl.dataSource.read();
+        }
+
+        function customCategoryData() {
+            var urn = $("#customversiontype").data("kendoDropDownList").value();
+            var v = $("#customversiontype").data("kendoDropDownList").text();
+            v = v.split('-')[0].trim();
+            return {
+                urn: urn,
+                version: v
+            }
+        }
+
+        function customonCategoryChange() {
+            $("#customPropValue").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onCustomPropChangeDate() {
+            var v = $("#customversiontype").data("kendoDropDownList").value();
+            v = v.split('-')[0].trim();
+            var cate = $("#customCategory").data("kendoDropDownList").text();
+            return {
+                urn: v,
+                category: cate,
+                propname: '',
+                GetProp: '1'
+            }
+        }
+
+        function GetCusQuantity() {
+            var grid = $("#GridCustomQuantity").data("kendoGrid");
+            grid.dataSource.read();
+        }
+
+        function GridCustomQuantityData() {
+            // var u = $("#customversiontype").data("kendoDropDownList").value();
+            // u = u.split('-')[0].trim();
+            //  var v = $("#customversiontype").data("kendoDropDownList").text();
+            //  v = v.split('-')[0].trim();
+            //  console.log(v);
+            ////  var cate = $("#customCategory").data("kendoDropDownList").text();
+            ////  var PropName = $("#customPropValue").data("kendoDropDownList").text();
+            return {
+                urn: '',
+                // version: v,
+
+            }
+
+        }
+        var Category_Data = '';
+
+        function GridSearchModelData(e) {
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text();
+            VersionNo = VersionNo.split('-')[0].trim();
+            var FileName = $("#filetype").data("kendoDropDownList").text();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+                filename: FileName,
+                categoryname: Category_Data
+            }
+        }
+
+        function onChangeTreeList(e) {
+            // var treelist = $("#Quantitygrid1").data("kendoTreeList");
+            // var selectedItem = treelist.dataItem(treelist.select());
+            // ItemType = selectedItem["ItemType"];
+            // if (ItemType.toLowerCase() == "p") {
+            // Category_Data = selectedItem["Category_Name"];
+            // $("#Quantitygrid1").data("kendoTreeList").dataSource.read();
+            // }
+
+            createChart2();
+        }
+
+        function OnTreeDataBound() {
+            //  $('.k-Quantitygrid1-group').eq(0).addClass('k-state-selected');
+            // var treelist = $("#Quantitygrid1").data("kendoTreeList");
+            //  var selectedItem = treelist.dataItem(treelist.select());
+
+            // Quantitygrid1.expand($(".k-Quantitygrid1-group:eq(0)"));
+        }
+    </script>
+
+    <script>
+        var CategoryGlobal = "";
+        var PropertyFormGlobal = "";
+        var MeasurementGlobal = "";
+        var GroupBYGlobal = "";
+
+        function onEditPropertyMap(e) {
+
+            $("#GridCategoryAdmin").data("kendoGrid").select(".k-grid-edit-row");
+            CategoryGlobal = e.model.get("CategoryName");
+            PropertyFormGlobal = e.model.get("PropertyName");
+            MeasurementGlobal = e.model.get("MeasurementName");
+            GroupBYGlobal = e.model.get("GroupBy");
+            $("#ddlCatPropertyList").data("kendoDropDownList").dataSource.read();
+            $("#ddlMeasurementList").data("kendoDropDownList").dataSource.read();
+            $("#ddlCatGroupList").data("kendoDropDownList").dataSource.read();
+        }
+
+        function onChangePropertyMap(e) {
+            var grid = $("#GridCategoryAdmin").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            CategoryGlobal = selectedItem["CategoryName"];
+            PropertyFormGlobal = selectedItem["PropertyName"];
+            MeasurementGlobal = selectedItem["MeasurementName"];
+            GroupBYGlobal = selectedItem["GroupBy"];
+
+        }
+
+
+        function filterTemplateCSSTemplate1() {
+            // var urn = $("#customversiontype").data("kendoDropDownList").value();
+
+            return {
+                urn: '',
+                category: CategoryGlobal
+            };
+        }
+
+        function filterTemplateGroup1() {
+            // var urn = $("#customversiontype").data("kendoDropDownList").value();
+
+            return {
+                urn: '',
+                category: CategoryGlobal
+            };
+        }
+
+        function ddlPropertyFromBound() {
+            console.log(PropertyFormGlobal);
+            var dropdowngroup = $("#ddlCatPropertyList").data("kendoDropDownList");
+            dropdowngroup.select(function (dataItem) {
+                return dataItem.PropertyName === PropertyFormGlobal;
+            });
+        }
+
+        function ddlGroupFromBound() {
+            console.log(GroupBYGlobal);
+            var dropdowngroup1 = $("#ddlCatGroupList").data("kendoDropDownList");
+            dropdowngroup1.select(function (dataItem) {
+                return dataItem.PropertyName === GroupBYGlobal;
+            });
+        }
+
+
+        function ddlMeasurementBound() {
+            console.log(MeasurementGlobal);
+            var dropdowngroup2 = $("#ddlMeasurementList").data("kendoDropDownList");
+            dropdowngroup2.select(function (dataItem) {
+                return dataItem.Name === MeasurementGlobal;
+            });
+        }
+
+        function onUpdatePropertyMap(e) {
+            // var urn = $("#customversiontype").data("kendoDropDownList").value();
+
+            var grid = $("#SettingS").data("kendoGrid");
+            var selectedItem = grid.dataItem(grid.select());
+            var categoryname = selectedItem["CategoryName"];
+
+            var propertyForm = $("#ddlCatPropertyList").data().kendoDropDownList.text();
+            var Measurement = $("#ddlMeasurementList").data().kendoDropDownList.text();
+            var Groupby = $("#ddlCatGroupList").data().kendoDropDownList.text();
+
+            //if (urn == '') {
+            //    alert("Please Select File");
+            //    return;
+            //}
+            if (categoryname == 'Select Category') {
+                alert("Please Select Category Name");
+                e.preventDefault();
+            }
+            if (propertyForm == 'Select Property') {
+                alert("Please Select Property  Name");
+                e.preventDefault();
+            }
+            if (Measurement == 'Select Unit') {
+                alert("Please Select Unit  Name");
+                e.preventDefault();
+            }
+            if (Groupby == 'Select Group') {
+                alert("Please Select Group  Name");
+                e.preventDefault();
+
+            }
+
+            e.model.set("CategoryName", categoryname);
+            e.model.set("PropertyName", propertyForm);
+            e.model.set("MeasurementName", Measurement);
+            e.model.set("GroupbyName", Groupby);
+            e.model.set("Urn", '');
+        }
+
+        function onRunruleRequestEnd(e) {
+            console.log(e);
+            console.log(e.status);
+
+            if (e.status == "customerror") {
+                alert(e.errors);
+                $("#GridCategoryAdmin").data("kendoGrid").dataSource.read();
+            }
+
+            //if (e.status == "destroy") {
+            //    alert(e.errors);
+            //    $("#GridCategoryAdmin").data("kendoGrid").dataSource.read();
+            //}
+        }
+    </script>
+
+    <script>
+
+        $("#btnsavebounding").click(function (e) {
+
+            window.parent.RoomBox();
+
+        });
+
+        function RoomElementCount() {
+            $("#roomdatatable tbody").html('');
+            $("#roomdatatableexcel tbody").html('');
+
+            var RoomForgeid = $("#ddlroomName").data("kendoDropDownList").value();
+            var version = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+
+            if (RoomForgeid == "") {
+                alert("Please Select Room");
+                return;
+            }
+            else {
+
+
+                //window.parent.GetRoomElement(RoomForgeid);
+
+                $("#loading").show();
+                var value = JSON.stringify({
+                    'Urn': urn,
+                    'VersionNo': version,
+                    'Roomid': RoomForgeid,
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetRoomElement", "QuantityTest")',
+                    data: value,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#roomdatatable tbody").html('');
+                        $("#roomdatatableexcel tbody").html('');
+                        var Category_Name = "";
+                        var forgeid = "";
+                        var valuess = "";
+                        var loop = 0;
+                        var count = 0;
+
+                        for (var i = 0; i < data.length; i++) {
+                             forgeid = data[i].Forgeid;
+                             valuess = data[i].count;
+
+                           // var boolen = getpoint(Roomid, forgeid)
+
+                            //if (boolen == true) {
+
+                             if (Category_Name != "" && Category_Name != data[i].Category_Name) {
+
+                                 $("#roomdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                                 $("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                                    count = 0;
+                               }
+
+                                Category_Name = data[i].Category_Name;
+
+
+                                $("#roomdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + valuess + '</td><td style="width:2%"><input type ="button" value = ' + forgeid + '  id =' + forgeid + ' onclick="window.parent.ADAHighlightbox1(this.id)"/></td></tr>');
+
+                                $("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + valuess + '</td><td style="width:2%">' + forgeid + '</td></tr>');
+
+                                count++;
+                          //  }
+                        }
+
+                        $("#roomdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+                        $("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                        $("#loading").hide();
+                        $("#roomdatatable").show();
+                        $("#roomdatatable").tableHeadFixer();
+
+                    },
+                    error: function (result) {
+                        alert("Error in getting room elements");
+                        $("#loading").hide();
+                    }
+                });
+
+            }
+
+
+        }
+
+        function RoomModelData(e) {
+
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+
+            }
+        }
+
+        function RoomModelDataGroup(e) {
+
+            var VersionNo = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+            return {
+                urn: urn,
+                version: VersionNo,
+
+            }
+        }
+
+
+        function RoomElementCountGroup() {
+            $("#roomdatatableGroup tbody").html('');
+
+            var RoomForgeid = $("#ddlroomNameGroup").data("kendoDropDownList").value();
+            var version = $("#versiontype").data("kendoDropDownList").text().split('-')[0].trim();
+            var urn = $("#versiontype").data("kendoDropDownList").value();
+
+            if (RoomForgeid == "") {
+                alert("Please Select Room");
+            }
+            else {
+
+                //window.parent.GetRoomElement(RoomForgeid);
+
+                $("#loadingGroup").show();
+                var value = JSON.stringify({
+                    'Urn': urn,
+                    'VersionNo': version,
+                    'Roomid': RoomForgeid,
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetRoomElementGroup", "QuantityTest")',
+                    data: value,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#roomdatatableGroup tbody").html('');
+
+                        var Category_Name = "";
+                        var loop = 0;
+                        var count = 0;
+
+                        for (var i = 0; i < data.length; i++) {
+                            var forgeid = data[i].Category_Name;
+                            var valuess = data[i].Family_Type;
+                            var valuess = data[i].count;
+
+                            // var boolen = getpoint(Roomid, forgeid)
+
+                            //if (boolen == true) {
+
+                           // if (Category_Name != "" && Category_Name != data[i].Category_Name) {
+
+                            $("#roomdatatableGroup tbody").append('<tr><td style="width:3%">' + data[i].Category_Name + '</td><td style="width:3%">' + data[i].Family_Type + '</td><td style="width:3%">' + data[i].count + '</td></tr>');
+
+                               // count = 0;
+                         //   }
+
+                           // Category_Name = data[i].Category_Name;
+
+
+                            //$("#roomdatatableGroup tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + valuess + '</td><td style="width:2%"><input type ="button" value = ' + forgeid + '  id =' + forgeid + ' onclick="window.parent.ADAHighlightbox1(this.id)"/></td></tr>');
+
+                           // count++;
+                            //  }
+                        }
+
+                       // $("#roomdatatableGroup tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td></tr>');
+
+                        $("#loadingGroup").hide();
+                        $("#roomdatatableGroup").show();
+                        $("#roomdatatableGroup").tableHeadFixer();
+
+                    },
+                    error: function (result) {
+                        alert("Error in getting room elements");
+                        $("#loadingGroup").hide();
+
+                    }
+                });
+
+            }
+
+
+        }
+
+
+    </script>
+
+    <script>
+        //function GetVersionType() {
+        //    this.select(1);
+        //    console.log(this.value());
+
+        //}
+        var urn = sessionStorage.getItem("urn");
+        var filename = sessionStorage.getItem("filename");
+
+        function GetFileName() {
+
+
+
+
+            var dropdownlist = $("#filetype").data("kendoDropDownList");
+            if (filename != null) {
+                dropdownlist.text('' + filename.trim() + '');
+            }
+
+            document.getElementById("PropertyTableDiv").innerHTML = "";
+            document.getElementById("VerisonTableDiv").innerHTML = "";
+            document.getElementById("chart").innerHTML = "";
+            $("#CategoryList ul").html('');
+            if ($("#vTable").length) {
+                $("#vTable").hide();
+            }
+            var ddl = $("#versiontype").data("kendoDropDownList");
+            ddl.dataSource.read();
+        }
+
+
+        function Getversion1() {
+            var version = parseInt(sessionStorage.getItem("version"));
+
+            this.select(version);
+            GridSearchModelData();
+            onVersionChange();
+        }
+    </script>
+
+    @*//Consolated Quantity*@
+    <script>
+ function genrateConsolidatedQuantity() {
+     var condutData = '';
+            $("#tableConsolidateQty tbody").html(""); // clear table data
+
+                var value = JSON.stringify({
+                    'urn': sessionStorage.getItem("urn"),
+                });
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetConsolidatedQuantity", "QuantityTest")',
+
+                    data: value,
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#img2").show();
+
+                    },
+                    complete: function () {
+                        $("#img2").hide();
+
+                    },
+                    success: function (result) {
+
+                        console.log(result)
+                        if (result["Table"].length == "0") {
+                            condutData += '<tr><td colspan="5" style="text-align:center;font-weight:bold;">NO DATA FOUND</td></tr>';
+                        }
+                        else {
+                            for (var i = 0; i < result["Table"].length; i++) {
+                                condutData += '<tr><td style="text-align:left;">' + result["Table"][i].Description + '</td><td style="text-align:center;">' + result["Table"][i].UOM + '</td><td style="text-align:center;">' + result["Table"][i].QTY_Needed + '</td><td style="text-align:center;">' + result["Table"][i].GBID + '</td><td style="text-align:left;">' + result["Table"][i].GB_DESCRIPTION + '</td></tr>';
+                            }
+                        }
+
+                        $("#tableConsolidateQty tbody").append(condutData);
+                        $("#tableConsolidateQty").show();
+                        $("#tableConsolidateQty").tableHeadFixer({});
+                    }
+                });
+            }
+
+
+    </script>
+
+    <script type="text/javascript">
+        function GetQtyScopeBox() {
+            $("#ScopeBoxdatatable tbody").html('');
+            //$("#roomdatatableexcel tbody").html('');
+
+            var urn = sessionStorage.getItem("urn");
+
+            if (urn == "") {
+                alert("Please Select Room");
+                return;
+            }
+            else {
+
+                $("#loading").show();
+                var value = JSON.stringify({
+                    'Urn': urn,
+                    'VersionNo': 1,
+                    'Roomid': '11332',
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: '@Url.Action("GetScopeBoxElement", "QuantityTest")',
+                    data: value,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#ScopeBoxdatatable tbody").html('');
+                        //$("#roomdatatableexcel tbody").html('');
+                        var Category_Name = "";
+                        var forgeid = "";
+                        var valuess = "";
+                        var loop = 0;
+                        var count = 0;
+
+                        for (var i = 0; i < data.length; i++) {
+                             forgeid = data[i].Forgeid;
+                             valuess = data[i].count;
+
+                             if (Category_Name != "" && Category_Name != data[i].Category_Name) {
+
+                                 $("#ScopeBoxdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                                 //$("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                                    count = 0;
+                               }
+
+                                Category_Name = data[i].Category_Name;
+
+
+                            $("#ScopeBoxdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + valuess + '</td><td style="width:2%"><input type ="button" value = ' + forgeid + '  id =' + forgeid + ' onclick="window.parent.ADAHighlightbox1(this.id)"/></td></tr>');
+
+                                //$("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:4%">' + valuess + '</td><td style="width:2%">' + forgeid + '</td></tr>');
+
+                                count++;
+                          //  }
+                        }
+
+                        $("#ScopeBoxdatatable tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+                        //$("#roomdatatableexcel tbody").append('<tr><td style="width:4%">' + Category_Name + '</td><td style="width:2%">' + count + '</td><td style="width:4%"></td></tr>');
+
+                        $("#loading").hide();
+                        $("#ScopeBoxdatatable").show();
+                        $("#ScopeBoxdatatable").tableHeadFixer();
+
+                    },
+                    error: function (result) {
+                        alert("Error in getting room elements");
+                        $("#loading").hide();
+                    }
+                });
+
+            }
+
+
+        }
+
+    </script>
+</body>
+</html>

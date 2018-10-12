@@ -1,0 +1,18 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+            .Name("ddlGBID")
+            .DataTextField("Material")
+            .DataValueField("ID")
+            .OptionLabel("Select GBID")
+            .HtmlAttributes(new { style = "width:100%" })
+            .DataSource(source =>
+            {
+                source.Read(read =>
+                {
+                    read.Action("GetDescriptionDataForGB", "Home").Data("GetDataForDescription");
+                });
+            })
+// .Events(e => { e.Change("onGBDESCChange");
+//})
+)

@@ -104,6 +104,9 @@
     <Compile Include="Models\GetPropertyName_Result2.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GetPropertyValueByPropName_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GetPropertyValue_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
@@ -182,6 +185,18 @@
     <Compile Include="Models\SP_GetCompany_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SP_GetConduitMaterialByUrn_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetConsolidatedGBData_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetConsolidatedSCMDataNew_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetConsolidatedSCMData_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SP_GetCustomQuantities_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
@@ -231,6 +246,12 @@
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_GetFoldersDetails_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetGbId_GBDescListByCategory_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetGB_DescriptionByGBID_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_GetGlueDocDetails_Result.cs">
@@ -293,10 +314,19 @@
     <Compile Include="Models\SP_GetPropertyNameValue_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SP_GetQuantitySetting_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetReferrenceLevelByUrn_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SP_GetRuleData_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_GetstdBends_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GetSupplyChainMasterDetails_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Sp_GetTagName_Result.cs">
@@ -330,6 +360,12 @@
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_Getversion_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GET_CONSOLIDATED_DESC_Result.cs">
+      <DependentUpon>SanveoInspiredb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GET_SettingDataDesc_Result.cs">
       <DependentUpon>SanveoInspiredb.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

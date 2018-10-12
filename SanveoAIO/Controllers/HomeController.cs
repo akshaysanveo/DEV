@@ -187,7 +187,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             try
@@ -253,12 +253,13 @@ namespace SanveoAIO.Controllers
 
                 Int32 Length = data.Count;
                 int loop = 1;
+                int flag = 1;
                 foreach (KeyValuePair<string, dynamic> categoryOfElements in new DynamicDictionaryItems(hierarchy.data
                     .objects[0].objects))
                 {
                     int datalength = Length;
 
-                    Single percentage = ((Single) loop / (Single) datalength) * (Single) 50;
+                    Single percentage = ((Single)loop / (Single)datalength) * (Single)50;
 
                     Int32 hhvf = Convert.ToInt32(percentage);
 
@@ -272,7 +273,10 @@ namespace SanveoAIO.Controllers
 
                     foreach (long id in ids)
                     {
+
                         Dictionary<string, object> props = GetProperties(id, properties);
+
+                        int type_name_chk = 0;
 
                         foreach (KeyValuePair<string, object> prop in props)
                         {
@@ -300,6 +304,11 @@ namespace SanveoAIO.Controllers
 
                             if (prop.Key.ToString() == "Type Name")
                             {
+                                if (categorname != "Conduits" || categorname != "Conduit fittings")
+                                {
+                                    type_name_chk = 1;
+                                }
+
                                 Family_Type = prop.Value.ToString();
                                 Family_Type = Family_Type.Replace(",", ";");
                                 if (Family_Type.Contains("{") && Family_Type.Contains("}"))
@@ -317,45 +326,79 @@ namespace SanveoAIO.Controllers
 
 
                                 }
-                            }
 
-                            //Instance_Name = Family_Name + "[" + Revitid + "]";
+
+                            }
                         }
 
-                        foreach (KeyValuePair<string, object> prop in props)
+                        if (type_name_chk == 1)
                         {
-
-                            if (prop.Key.ToString() != "ID" && prop.Key.ToString() != "Name")
+                            double angle1 = 0;
+                            double radius1 = 0;
+                            double len1 = 0;
+                            double CondLen = 0;
+                            foreach (KeyValuePair<string, object> prop in props)
                             {
-                                string Property_value = prop.Value.ToString();
-                                if (Property_value.Contains("{") && Property_value.Contains("}"))
+                                if (prop.Key.ToString() != "ID" && prop.Key.ToString() != "Name")
                                 {
-                                    var dd = Property_value.Split('"');
-                                    Property_value = dd[3].ToString();
+                                    string Property_value = prop.Value.ToString();
+                                    if (Property_value.Contains("{") && Property_value.Contains("}"))
+                                    {
+                                        var dd = Property_value.Split('"');
+                                        Property_value = dd[3].ToString();
+                                    }
+
+                                    datarray[inc1] = urn + "|>|" + Revitid + "|>|" + Forgeid + "|>|" + categorname + "|>|" +
+                                                     prop.Key.ToString() + "|>|" + Property_value + "|>|" + Family_Name +
+                                                     "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
+                                                     "|>|" + user.Comp_ID;
+
+                                    inc1++;
+
+                                    if (prop.Key.ToString() == "Angle")
+                                    {
+
+                                        string strAngle = Property_value.Replace("degree", "").Trim();
+                                        angle1 = Convert.ToDouble(strAngle);
+                                    }
+
+                                    if (prop.Key.ToString() == "Bend Radius")
+                                    {
+                                        string strRadius = Property_value.Replace("inch", "").Trim();
+                                        radius1 = Convert.ToDouble(strRadius);
+                                    }
+
+                                    if (prop.Key.ToString() == "Conduit Length")
+                                    {
+                                        string strCondLength = Property_value.Replace("inch", "").Trim();
+                                        CondLen = Convert.ToDouble(strCondLength);
+                                    }
+
                                 }
+                            }
+
+                            if (categorname == "Conduit Fittings")
+                            {
+
+                                string propName = "Length";
+                                len1 = Convert.ToDouble(6.28 * (radius1) * (angle1 / 360));
+                                len1 = Math.Round(((len1 + (2 * CondLen)) / 12), 2);
 
                                 datarray[inc1] = urn + "|>|" + Revitid + "|>|" + Forgeid + "|>|" + categorname + "|>|" +
-                                                 prop.Key.ToString() + "|>|" + Property_value + "|>|" + Family_Name +
-                                                 "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
-                                                 "|>|" + user.Comp_ID;
+                                               propName + "|>|" + len1 + "|>|" + Family_Name +
+                                               "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
+                                               "|>|" + user.Comp_ID;
 
                                 inc1++;
                             }
 
-
                         }
-
-
                     }
 
                     loop++;
                 }
-
-
                 Array.Resize(ref datarray, inc1 - 1);
-
                 DateTime dt2 = System.DateTime.Now;
-
 
                 DataTable dt = new DataTable();
 
@@ -371,13 +414,16 @@ namespace SanveoAIO.Controllers
                 dt.Columns.Add("Version");
                 dt.Columns.Add("CompId");
 
+
+
+
                 int gg = datarray.Length;
 
                 DateTime dt3 = System.DateTime.Now;
 
                 for (int i = 0; i < datarray.Length; i++)
                 {
-                    Single percentage = ((Single) i / (Single) gg) * (Single) 40;
+                    Single percentage = ((Single)i / (Single)gg) * (Single)40;
 
                     Int32 hhj = Convert.ToInt32(percentage) + 50;
 
@@ -456,14 +502,14 @@ namespace SanveoAIO.Controllers
 
                 ///---For Data Delete After Dextract(Custom Change for only one module)
                 List<SqlParameter> parameters2 = new List<SqlParameter>();
-                parameters.Add(new SqlParameter()
+                parameters2.Add(new SqlParameter()
                 {
-                    ParameterName = "@Mguid",
-                    SqlDbType = SqlDbType.Structured,
-                    Value = "",
+                    ParameterName = "@MGuid",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = urn,
                     Direction = System.Data.ParameterDirection.Input
                 });
-                DataSet delete = SqlManager.ExecuteDataSet("SP_AfterDextract", parameters2.ToArray());
+               // DataSet delete = SqlManager.ExecuteDataSet("SP_AfterDextract", parameters2.ToArray());
                 vt = "Model data Save Successfully";
 
                 return Json(vt, JsonRequestBehavior.AllowGet);
@@ -479,7 +525,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             try
@@ -545,12 +591,13 @@ namespace SanveoAIO.Controllers
 
                 Int32 Length = data.Count;
                 int loop = 1;
+                int flag = 1;
                 foreach (KeyValuePair<string, dynamic> categoryOfElements in new DynamicDictionaryItems(hierarchy.data
                     .objects[0].objects))
                 {
                     int datalength = Length;
 
-                    Single percentage = ((Single) loop / (Single) datalength) * (Single) 50;
+                    Single percentage = ((Single)loop / (Single)datalength) * (Single)50;
 
                     Int32 hhvf = Convert.ToInt32(percentage);
 
@@ -573,6 +620,8 @@ namespace SanveoAIO.Controllers
                         foreach (long id in ids)
                         {
                             Dictionary<string, object> props = GetProperties(id, properties);
+
+                            int type_name_chk = 0; 
 
                             foreach (KeyValuePair<string, object> prop in props)
                             {
@@ -600,6 +649,12 @@ namespace SanveoAIO.Controllers
 
                                 if (prop.Key.ToString() == "Type Name")
                                 {
+
+                                    if (categorname != "Conduits" || categorname != "Conduit fittings")
+                                    {
+                                        type_name_chk = 1;
+                                    }
+
                                     Family_Type = prop.Value.ToString();
                                     Family_Type = Family_Type.Replace(",", ";");
                                     if (Family_Type.Contains("{") && Family_Type.Contains("}"))
@@ -617,32 +672,70 @@ namespace SanveoAIO.Controllers
                                     }
                                 }
 
-                                //Instance_Name = Family_Name + "[" + Revitid + "]";
+                               
                             }
-
-                            foreach (KeyValuePair<string, object> prop in props)
+                            if (type_name_chk == 1)
                             {
-
-                                if (prop.Key.ToString() != "ID" && prop.Key.ToString() != "Name")
+                                double angle1 = 0;
+                                double radius1 = 0;
+                                double len1 = 0;
+                                double CondLen = 0;
+                                foreach (KeyValuePair<string, object> prop in props)
                                 {
-                                    string Property_value = prop.Value.ToString();
-                                    if (Property_value.Contains("{") && Property_value.Contains("}"))
+                                    if (prop.Key.ToString() != "ID" && prop.Key.ToString() != "Name")
                                     {
-                                        var dd = Property_value.Split('"');
-                                        Property_value = dd[3].ToString();
+                                        string Property_value = prop.Value.ToString();
+                                        if (Property_value.Contains("{") && Property_value.Contains("}"))
+                                        {
+                                            var dd = Property_value.Split('"');
+                                            Property_value = dd[3].ToString();
+                                        }
+
+                                        datarray[inc1] = urn + "|>|" + Revitid + "|>|" + Forgeid + "|>|" + categorname + "|>|" +
+                                                         prop.Key.ToString() + "|>|" + Property_value + "|>|" + Family_Name +
+                                                         "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
+                                                         "|>|" + user.Comp_ID;
+
+                                        inc1++;
+
+                                        if (prop.Key.ToString() == "Angle")
+                                        {
+                                            
+                                            string strAngle = Property_value.Replace("°", "").Trim();
+                                            angle1 = Convert.ToDouble(strAngle);
+                                        }
+
+                                        if (prop.Key.ToString() == "Bend Radius")
+                                        {
+                                            string strRadius = Property_value.Replace("mm", "").Trim();
+                                            radius1 = Convert.ToDouble(strRadius);
+                                        }
+
+                                        if (prop.Key.ToString() == "Conduit Length")
+                                        {
+                                            string strCondLength = Property_value.Replace("mm", "").Trim();
+                                            CondLen = Convert.ToDouble(strCondLength);
+                                        }
+
                                     }
+                                }
+
+                                if (categorname == "Conduit Fittings")
+                                {
+
+                                    string propName = "Length";
+                                    len1 = Convert.ToDouble(6.28 * (radius1) * (angle1 / 360));
+                                    len1 = Math.Round(((len1 + (2 * CondLen)) / 12), 2);
 
                                     datarray[inc1] = urn + "|>|" + Revitid + "|>|" + Forgeid + "|>|" + categorname + "|>|" +
-                                                     prop.Key.ToString() + "|>|" + Property_value + "|>|" + Family_Name +
-                                                     "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
-                                                     "|>|" + user.Comp_ID;
+                                                   propName + "|>|" + len1 + "|>|" + Family_Name +
+                                                   "|>|" + Family_Type + "|>|" + Instance_Name + "|>| " + VersionNo +
+                                                   "|>|" + user.Comp_ID;
 
                                     inc1++;
                                 }
 
-
                             }
-
 
                         }
                     }
@@ -676,7 +769,7 @@ namespace SanveoAIO.Controllers
 
                 for (int i = 0; i < datarray.Length; i++)
                 {
-                    Single percentage = ((Single) i / (Single) gg) * (Single) 40;
+                    Single percentage = ((Single)i / (Single)gg) * (Single)40;
 
                     Int32 hhj = Convert.ToInt32(percentage) + 50;
 
@@ -763,7 +856,6 @@ namespace SanveoAIO.Controllers
                 return Json("", JsonRequestBehavior.AllowGet);
             }
         }
-
 
         private Dictionary<string, object> GetProperties(long id, dynamic properties)
         {
@@ -923,7 +1015,7 @@ namespace SanveoAIO.Controllers
                     if (dataSet2.Tables[0].Rows[j]["ModifiedDate"].ToString() != "")
                         modified = Convert.ToDateTime(dataSet2.Tables[0].Rows[j]["ModifiedDate"].ToString());
 
-                    //* For cross check to Dextract or not
+                    // For cross check to Dextract or not
                     string errormessage = "";
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     parameters.Add(new SqlParameter()
@@ -1010,7 +1102,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
             string ActiveProject = "";
             List<SqlParameter> parameters2 = new List<SqlParameter>();
@@ -1054,7 +1146,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
             string ActiveProject = "";
             if (Request.Files.Count > 0)
@@ -1131,7 +1223,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
             string ActiveProject = "";
             List<SqlParameter> parameters2 = new List<SqlParameter>();
@@ -1193,6 +1285,8 @@ namespace SanveoAIO.Controllers
             initializeOAuth();
 
             ApiResponse<object> response = objectsApi.DeleteObjectWithHttpInfo(BUCKET_KEY, ModelName);
+
+
 
             return Json("", JsonRequestBehavior.AllowGet);
         }
@@ -1260,7 +1354,7 @@ namespace SanveoAIO.Controllers
 
                     long fileSize = new System.IO.FileInfo(path).Length;
                     finalRes = objectsApi.UploadObject(BucketName,
-                       FILE_PATH, (int) streamReader.BaseStream.Length, streamReader.BaseStream,
+                       FILE_PATH, (int)streamReader.BaseStream.Length, streamReader.BaseStream,
                        "application/octet-stream");
                 }
                 //long fileSize = new System.IO.FileInfo(path).Length;
@@ -1409,7 +1503,7 @@ namespace SanveoAIO.Controllers
                     response = client.DownloadString(Url);
                 }
                 var obj = JObject.Parse(response);
-                string progress = (string) obj["progress"];
+                string progress = (string)obj["progress"];
                 if (progress == "progress")
                 {
                     Thread.Sleep(1000);
@@ -1447,7 +1541,7 @@ namespace SanveoAIO.Controllers
 
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
 
                 IEnumerable<SP_GetFolderFiles_Result> items = db.Database
                     .SqlQuery<SP_GetFolderFiles_Result>("SP_GetFolderFiles @compid={0},@userid={1},@groupid={2}",
@@ -1470,7 +1564,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             if (filename.Trim() != "" && filename.Trim() != "Select File")
@@ -1513,6 +1607,166 @@ namespace SanveoAIO.Controllers
             }
         }
 
+        public JsonResult GetPropertyNameByCategory(string urn, string category)
+        {
+            if (urn != "")
+            {
+
+                IEnumerable<GetCatPropertyMapName_Result> items = db.Database
+                    .SqlQuery<GetCatPropertyMapName_Result>("GetCatPropertyMapName @Urn={0},@category={1}", urn, category).ToList().Select(
+                        c => new GetCatPropertyMapName_Result
+                        {
+
+                            Id = c.Id,
+                            PropertyName = c.PropertyName
+                        });
+                return Json(items, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult GetPropertyValueByLevel(string urn, string category, string propname)
+        {
+            if (urn != "")
+            {
+
+                IEnumerable<GetCatPropertyMapName_Result> items = db.Database
+                    .SqlQuery<GetPropertyValueByPropName_Result>("GetPropertyValue @Guid={0},@category={1},@propname={2}", urn, category, propname).ToList().Select(
+                        c => new GetCatPropertyMapName_Result
+                        {
+
+                            Id = c.ID,
+                            PropertyName = c.Property_Value
+                        });
+                return Json(items, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetReferrenceLevel(string urn,string category)
+        {
+            if (urn != "")
+            {
+
+                IEnumerable<SP_GetReferrenceLevelByUrn_Result> items = db.Database
+                    .SqlQuery<SP_GetReferrenceLevelByUrn_Result>("SP_GetReferrenceLevelByUrn @Urn={0},@category={1}", urn, category).ToList().Select(
+                        c => new SP_GetReferrenceLevelByUrn_Result
+                        {
+
+                            Property_Value = c.Property_Value,
+                            FileID = c.FileID
+                        });
+                return Json(items, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult GetConduitMaterial(string urn, string Level,string Category)
+        {
+            if (urn != "")
+            {
+
+                IEnumerable<SP_GetConduitMaterialByUrn_Result> items = db.Database
+                    .SqlQuery<SP_GetConduitMaterialByUrn_Result>("SP_GetConduitMaterialByUrn @Urn={0},@Level={1},@Category={2}", urn, Level, Category).ToList().Select(
+                        c => new SP_GetConduitMaterialByUrn_Result
+                        {
+
+                            FileId = c.FileId,
+                            Property_Value = c.Property_Value
+                        });
+                return Json(items, JsonRequestBehavior.AllowGet);
+
+            }
+            else
+            {
+
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public JsonResult GetDescription()
+        {
+          
+                IEnumerable<SP_GET_CONSOLIDATED_DESC_Result> items = db.Database
+                    .SqlQuery<SP_GET_CONSOLIDATED_DESC_Result>("SP_GET_CONSOLIDATED_DESC ").ToList().Select(
+                        c => new SP_GET_CONSOLIDATED_DESC_Result
+                        {
+
+                            ID = c.ID,
+                            SAP_UNSPSC_DESCRIPTION = c.SAP_UNSPSC_DESCRIPTION
+                        });
+                return Json(items, JsonRequestBehavior.AllowGet);
+
+           
+        }
+
+
+        public JsonResult GetDescriptionDataForGB(string urn,string SearchtextDesc)
+        {
+
+            
+
+            IEnumerable<SP_GetGbId_GBDescListByCategory_Result> items = db.Database
+                .SqlQuery<SP_GetGbId_GBDescListByCategory_Result>("SP_GetGbId_GBDescListByCategory @Urn={0},@SearchtextDesc={1}", urn, SearchtextDesc).ToList().Select(
+                    c => new SP_GetGbId_GBDescListByCategory_Result
+                    {
+
+                        ID = c.ID,
+                        Material = c.Material,
+                        Material_Description = c.Material_Description
+                    });
+            return Json(items, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+
+        public JsonResult GetDescriptionTextDataForGB(string urn, string Searchtext)
+        {
+            if(urn == "")
+            {
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+           
+            else
+            {
+                try
+                {
+                    IEnumerable<SP_GetGB_DescriptionByGBID_Result> items = db.Database
+                      .SqlQuery<SP_GetGB_DescriptionByGBID_Result>("SP_GetGB_DescriptionByGBID @Urn={0},@Searchtext={1}", urn, Searchtext).ToList().Select(
+                          c => new SP_GetGB_DescriptionByGBID_Result
+                          {
+
+                              ID = c.ID,
+                              NewDescription = c.NewDescription
+                          });
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+                catch(Exception e)
+                {
+                    return Json("", JsonRequestBehavior.AllowGet);
+                }
+               
+               
+            }
+
+        }
+
         public JsonResult GetPropertyName(string urn, string category)
         {
             if (urn != "")
@@ -1540,7 +1794,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
             IEnumerable<SP_GetVersionList_Result> items = db.Database
                 .SqlQuery<SP_GetVersionList_Result>("SP_GetVersionList @urn={0},@compid={1}", urn, user.Comp_ID)
@@ -1560,7 +1814,7 @@ namespace SanveoAIO.Controllers
             UserInfo user = new UserInfo();
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
             else
             {
@@ -1648,7 +1902,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             string nodedata = "";
@@ -1771,7 +2025,7 @@ namespace SanveoAIO.Controllers
             {
                 if (Session["UserInfo"] != null)
                 {
-                    user = (UserInfo) Session["UserInfo"];
+                    user = (UserInfo)Session["UserInfo"];
                 }
 
                 if (AutoCat.Contains("+"))
@@ -1892,7 +2146,7 @@ namespace SanveoAIO.Controllers
             {
                 if (Session["UserInfo"] != null)
                 {
-                    user = (UserInfo) Session["UserInfo"];
+                    user = (UserInfo)Session["UserInfo"];
                 }
 
                 List<SqlParameter> parameters = new List<SqlParameter>();
@@ -1975,7 +2229,7 @@ namespace SanveoAIO.Controllers
             {
                 if (Session["UserInfo"] != null)
                 {
-                    user = (UserInfo) Session["UserInfo"];
+                    user = (UserInfo)Session["UserInfo"];
                 }
 
                 List<SqlParameter> parameters = new List<SqlParameter>();
@@ -2061,7 +2315,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             string ActiveProject = "";
@@ -2090,7 +2344,7 @@ namespace SanveoAIO.Controllers
 
                 foreach (KeyValuePair<string, dynamic> objInfo in new DynamicDictionaryItems(objectsList.items))
                 {
-                    string urn = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(((string) objInfo.Value.objectId)));
+                    string urn = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(((string)objInfo.Value.objectId)));
 
                     if (urn.Contains("=="))
                     {
@@ -2100,7 +2354,7 @@ namespace SanveoAIO.Controllers
                     {
                         urn = urn.Substring(0, urn.Length - 1);
                     }
-                    string filename = (string) objInfo.Value.objectKey;
+                    string filename = (string)objInfo.Value.objectKey;
                     string filesize = Convert.ToString(objInfo.Value.size);
                     var jsondata = objects.GetObjectDetails(ActiveProject, filename, Lastdate, "lastModifiedDate");
                     string json = jsondata.ToString();
@@ -2163,7 +2417,7 @@ namespace SanveoAIO.Controllers
         {
             if (Session["UserInfo"] != null)
             {
-                user = (UserInfo) Session["UserInfo"];
+                user = (UserInfo)Session["UserInfo"];
             }
 
             string nodedata = "";
@@ -2198,7 +2452,7 @@ namespace SanveoAIO.Controllers
                     if (dataSet2.Tables[0].Rows[j]["ModifiedDate"].ToString() != "")
                         modified = Convert.ToDateTime(dataSet2.Tables[0].Rows[j]["ModifiedDate"].ToString());
 
-                    //* For Version auto tracking *//
+                    //* For Version auto tracking /
                     if (ItemId != "")
                     {
                         string projid = "";
@@ -2309,6 +2563,8 @@ namespace SanveoAIO.Controllers
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return Json(System.Convert.ToBase64String(plainTextBytes), JsonRequestBehavior.AllowGet);
         }
+
+
 
     }
 

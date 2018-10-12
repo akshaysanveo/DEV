@@ -1,0 +1,18 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+           .Name("ddldescription")
+            .DataTextField("SAP_UNSPSC_DESCRIPTION")
+            .DataValueField("ID")
+            .OptionLabel("Select Description")
+            .HtmlAttributes(new { style = "width:100%" })
+            .DataSource(source =>
+            {
+                source.Read(read =>
+                {
+                    read.Action("GetDescription", "Home");
+                });
+            })
+                                                    //  .Events(e => { e.Change("onCategoryChange");
+                                                    @*})*@
+)

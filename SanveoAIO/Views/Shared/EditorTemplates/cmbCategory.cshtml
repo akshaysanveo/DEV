@@ -1,0 +1,19 @@
+﻿
+
+@(
+    Html.Kendo().ComboBox()
+        .Name("categoryscombo")
+        .DataTextField("Category_Name")
+        .DataValueField("Id")
+        .Placeholder("Select Category")
+        .HtmlAttributes(new { style = "width:100%" })
+        .DataSource(source =>
+        {
+            source.Read(read =>
+            {
+                read.Action("GetCategoryName", "Home").Data("searchCategoryData");
+            });
+        })
+       // .Events(e => e.DataBound("OnBoundCategoryName").Change("onSearchCategorysChange"))
+
+      )

@@ -55,6 +55,14 @@
     <script src="~/Scripts/tableExport/html2canvas.min.js"></script>
     <script src="~/Scripts/tableHeadFixer.js"></script>
     <script src="~/Scripts/tableExport/tableExport.js"></script>
+
+
+    <script src="~/Scripts/jszip.js"></script>
+    <script src="~/Scripts/FileSaver.js"></script>
+    <script src="~/Scripts/myexcel.js"></script>
+    @*Below Link Added By Prk*@
+
+    <script src="~/Scripts/js1/colResizable-1.6.js"></script>
     <style>
         .modal {
             position: fixed;
@@ -67,10 +75,11 @@
             opacity: 0.6;
             /*-moz-opacity: 0.8;*/
         }
-        #GridBends > div.k-header.k-grid-toolbar.k-grid-top > a{
 
-            background-color:#206086;
+        #GridBends > div.k-header.k-grid-toolbar.k-grid-top > a {
+            background-color: #206086;
         }
+
         .center {
             z-index: 1000;
             margin: 300px auto;
@@ -100,6 +109,17 @@
                 padding-top: 9px;
             }
     </style>
+
+    <style>
+        .k-content {
+            font-size: 11px;
+        }
+
+        .k-button {
+            font-size: 90%;
+            height: 30px;
+        }
+    </style>
 </head>
 <body>
 
@@ -122,7 +142,7 @@
                 <div class="k-content col-xs-12" style="padding-left:0px;">
 
                     <div class="col-xs-3" style="padding-left:0px;">
-                        <span style="font-size:19px;color:#3c8dbc;">Import Excel</span>
+                        <span style="font-size:15px;color:#3c8dbc;">Import Excel</span>
                         @(Html.Kendo().Upload()
                             .Name("Mapfiles")
                             .Async(a => a
@@ -130,7 +150,7 @@
                                 .Remove("Remove", "Electrical360")
                                 .AutoUpload(true)
                              )
-                             .HtmlAttributes(new { style = "" })
+                             .HtmlAttributes(new { @title = "Select feeder schedule excel file. " })
                              .ShowFileList(true)
                              .Multiple(false)
                              .Events(e => e.Complete("OnCompleted").Success("OnSuccessCompleted"))
@@ -152,7 +172,7 @@
                                                 read.Action("GetFiles", "Home");
                                             });
                                         })
-                                        .Events(e => { e.Change("onFileChange"); })
+                                        .Events(e => { e.Change("onFileChange").DataBound("GetFileName1"); })
                         )
 
                     </div>
@@ -173,7 +193,7 @@
                                                 read.Action("GetVersion", "Home").Data("GridSearchModelData");
                                             });
                                         })
-                                        .Events(e => { e.Change("onVersionChange"); })
+                                        .Events(e => { e.Change("onVersionChange").DataBound("Getversion1"); })
                         )
 
 
@@ -182,7 +202,7 @@
                 <div class="k-content col-xs-12" style="padding-left:0px;">
                     <br />
                     <div class="col-xs-7" style="padding-left:0px;">
-                        <table style="height:150px;" class="table table-striped table-bordered" cellspacing="0">
+                        <table id="demo1" style="height:150px;" class="table table-striped table-bordered" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th style="width:45px">
@@ -205,7 +225,7 @@
                                     <td>
                                         1
                                     </td>
-                                    <td>Feeder ID</td>
+                                    <td>Feeder ID<span style="color:red;">*</span></td>
                                     <td>
                                         @(Html.Kendo().DropDownList()
                                       .Name("ddlFeederIdPropertyList")
@@ -250,7 +270,7 @@
                                 <tr>
 
                                     <td>2</td>
-                                    <td>From</td>
+                                    <td>From<span style="color:red;">*</span></td>
                                     <td>
                                         @(Html.Kendo().DropDownList()
                                       .Name("ddlFromPropertyList")
@@ -295,7 +315,7 @@
                                 <tr>
 
                                     <td>3</td>
-                                    <td>To</td>
+                                    <td>To<span style="color:red;">*</span></td>
                                     <td>
                                         @(Html.Kendo().DropDownList()
                                       .Name("ddlToPropertyList")
@@ -340,7 +360,7 @@
                                 <tr>
 
                                     <td>4</td>
-                                    <td>Conduct Type</td>
+                                    <td>Conductor Size</td>
                                     <td>
 
                                         @(Html.Kendo().DropDownList()
@@ -387,7 +407,7 @@
                                 <tr>
 
                                     <td>5</td>
-                                    <td>Conduct Size</td>
+                                    <td>Conductor Type</td>
                                     <td>
 
                                         @(Html.Kendo().DropDownList()
@@ -442,7 +462,7 @@
                 </div>
 
                 <div class="k-content col-xs-12">
-                    <div class="col-xs-3">
+                    <div class="col-xs-3" style="margin-left:-30px;">
                         <input type="button" id="btnSetPara" value="Save" style="text-transform: capitalize;background-color:#3c8dbc;color:white" class="k-button" />
                     </div>
 
@@ -458,12 +478,12 @@
                                      {
                                          columns.Bound(e => e.Id).Title("ID").Visible(false);
                                          columns.Bound(e => e.STD_Bend).Title("STD Bends");
-                                         columns.Command(command => { command.Edit(); command.Destroy(); });
+                                         columns.Command(command => { command.Edit(); command.Destroy(); }).Title("Action Performed");
                                      })
                                      .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
                                      .Editable(editable => editable.Mode(GridEditMode.InLine))
                                      .Pageable(pageable => pageable
-                                     .Refresh(true)
+                                     .Refresh(false)
                                      .PageSizes(new int[] { 20, 50, 100 })
                                      .ButtonCount(5))
                                      .HtmlAttributes(new { style = "width:100%;" })
@@ -504,8 +524,9 @@
             <div id="blankids" class="tab-pane fade" style="padding:0px;">
                 <br />
                 <div class="k-content col-xs-12" style="padding:0px;">
-                    <div class="col-xs-3" style="padding:0px;">
-                        @(
+                    @*<div class="col-xs-3" style="padding:0px;">*@
+                        @*@*@
+                        @*(
                         Html.Kendo().DropDownList()
                             .Name("searchfiletype")
                             .DataTextField("NodeName")
@@ -519,12 +540,13 @@
                                     read.Action("GetFiles", "Home");
                                 });
                             })
-                            .Events(e => { e.Change("onSearchFileChange"); })
-                        )
-                    </div>
+                            .Events(e => { e.Change("onSearchFileChange").DataBound("GetFileName"); })
+                        )*@
+                    @*</div>*@
 
-                    <div class="col-xs-2">
-                        @(
+                    @*<div class="col-xs-2">*@
+                        @*@*@
+                        @*(
                             Html.Kendo().DropDownList()
                                 .Name("searchversiontype")
                                 .DataTextField("version")
@@ -538,11 +560,11 @@
                                         read.Action("GetVersion", "Home").Data("DDLSearchFileData");
                                     });
                                 })
-                               .Events(e => { e.Change("onSearchVersionChange"); })
-                        )
-                    </div>
+                               .Events(e => { e.Change("onSearchVersionChange").DataBound("Getversion"); })
+                        )*@
+                    @*</div>*@
 
-                    <div class="col-xs-2">
+                    <div class="col-xs-2" style="padding-left:0px;">
 
                         @(
                     Html.Kendo().DropDownList()
@@ -564,7 +586,7 @@
 
                     </div>
 
-                    <div class="col-xs-2">
+                    <div class="col-xs-2" style="padding-left:0px;">
 
                         @(Html.Kendo().DropDownList()
                           .Name("PropertyList")
@@ -586,11 +608,11 @@
                         )
                     </div>
 
-                    <div class="col-xs-2">
-                        <input type="text" id="txtPropertyvalue" placeholder="Enter Parameter" class="form-control input">
+                    <div class="col-xs-2" style="padding-left:0px;">
+                        <input type="text" id="txtPropertyvalue" placeholder="Enter Search Parameter" style="font-size:11px;" class="form-control input">
                     </div>
 
-                    <div class="col-xs-1">
+                    <div class="col-xs-1" style="padding-left:0px;">
                         <input type="button" id="btnGetElecData" value="Get Data" style="text-transform: capitalize;background-color:#3c8dbc;color:white" class="k-button" onclick="GetBlankIdData();" />
 
                     </div>
@@ -606,14 +628,14 @@
                           columns.Bound(e => e.Category_Name).Title("Category Name").Width(100);
                           columns.Bound(e => e.Property_Name).Title("Property Name").Width(100);
                           columns.Bound(e => e.Property_Value).Title("Property Value").Width(100);
-                          columns.Command(command => command.Custom("").Click("showViewerElement").Text("Highlight")).Title("Highlight Element").Width(100).HtmlAttributes(new { style = "font-size:15px" });
+                          columns.Command(command => command.Custom("").Click("showViewerElement").Text("Highlight")).Title("Highlight Element").Width(100).HtmlAttributes(new { style = "font-size:12px" });
 
 
                       })
                       .Selectable(selectable => selectable.Enabled(true).Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
                       //.Editable(editable => editable.Mode(GridEditMode.InLine))
                       .Pageable(pageable => pageable
-                          .Refresh(true)
+                          .Refresh(false)
                           .PageSizes(new int[] { 20, 50, 100 })
                           .ButtonCount(5))
                       .HtmlAttributes(new { style = "width:100%;border-radius:3px;" })
@@ -643,7 +665,8 @@
                 <br />
                 <div class="k-content col-xs-12" style="">
                     <div class="col-xs-3">
-                        @(
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("ddlUpdatefiletype")
                                         .DataTextField("NodeName")
@@ -657,14 +680,15 @@
                                                 read.Action("GetFiles", "Home");
                                             });
                                         })
-                                        .Events(e => { e.Change("onUpdateFileChange"); })
-                        )
+                                        .Events(e => { e.Change("onUpdateFileChange").DataBound("GetFileName2"); })
+                        )*@
 
                     </div>
 
-                    <div class="col-xs-2">
+                    <div class="col-xs-2" style="padding-left:0px;">
 
-                        @(
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("ddlUpdateversiontype")
                                         .DataTextField("version")
@@ -678,12 +702,12 @@
                                                 read.Action("GetVersion", "Home").Data("UpdateGridSearchModelData");
                                             });
                                         })
-                                        .Events(e => { e.Change("onUpdateVersionChange"); })
-                        )
+                                        .Events(e => { e.Change("onUpdateVersionChange").DataBound("Getversion2"); })
+                        )*@
 
 
                     </div>
-                  
+
                 </div>
                 <br /><br /><br />
                 <div class="k-content col-xs-12" style="">
@@ -699,7 +723,7 @@
 
                     <center><div id="Updateloading" style="display:none;align-content:center; margin-left: 20px;">Loading..... Please Wait</div></center>
                     <div class="col-xs-3" style="height:400px;overflow:auto;">
-                        <table id="TblBlankFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:273px;">
+                        <table id="TblBlankFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:205px;">
 
                             <thead>
                                 <tr>
@@ -712,7 +736,7 @@
                         </table>
                     </div>
                     <div class="col-xs-2" style="height:400px;overflow:auto;">
-                        <table id="TblMultipleFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:173px;">
+                        <table id="TblMultipleFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:130px;">
 
                             <thead>
                                 <tr>
@@ -725,7 +749,7 @@
                         </table>
                     </div>
                     <div class="col-xs-2" style="height:400px;overflow:auto;">
-                        <table id="TblUpdatedFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:172px;">
+                        <table id="TblUpdatedFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:130px;">
 
                             <thead>
                                 <tr>
@@ -739,7 +763,7 @@
                     </div>
                     <div class="col-xs-2" style="height:400px;overflow:auto;">
 
-                        <table id="TblIsolatedFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:173px;">
+                        <table id="TblIsolatedFeederId" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:120px;">
 
                             <thead>
                                 <tr>
@@ -765,11 +789,12 @@
                 </div>
 
                 <div class="k-content col-xs-12">
-                    <div class="k-content col-xs-3">
+                    <div class="k-content col-xs-3" style="padding-left: 0px;">
                         <input type="button" id="btnsavebounding" value="Save Geometry" style="text-transform: capitalize" class="k-button" />
                     </div>
-                    <div class="col-xs-3">
-                        @(
+                    @*<div class="col-xs-3">*@
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("FeederIdfiletype")
                                         .DataTextField("NodeName")
@@ -783,14 +808,15 @@
                                                 read.Action("GetFiles", "Home");
                                             });
                                         })
-                                        .Events(e => { e.Change("onFeederIdFileChange"); })
-                        )
+                                        .Events(e => { e.Change("onFeederIdFileChange").DataBound("GetFileName3"); })
+                        )*@
 
-                    </div>
+                    @*</div>*@
 
-                    <div class="col-xs-2">
+                    @*<div class="col-xs-2" style="padding-left: 0px;">*@
 
-                        @(
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("FeederIdversiontype")
                                         .DataTextField("version")
@@ -804,12 +830,12 @@
                                                 read.Action("GetVersion", "Home").Data("FeederIdGridSearchModelData");
                                             });
                                         })
-                                        .Events(e => { e.Change("onFeederIdVersionChange"); })
-                        )
+                                        .Events(e => { e.Change("onFeederIdVersionChange").DataBound("Getversion3"); })
+                        )*@
 
 
-                    </div>
-                    <div class="col-xs-2">
+                    @*</div>*@
+                    <div class="col-xs-2" style="padding-left: 0px;">
                         <a id="ExportFeederM" onclick="downloadFeederM();" href="javascript:void(0);" title="Export to Excel" style="font-size:21px;"><span class="fa fa-file-excel-o"></span></a>
                     </div>
 
@@ -822,11 +848,11 @@
                     <div class="col-xs-3" style="height:400px;border:solid">
 
                         <input type="button" id="btnFeederIdCheck" value="FeederId Excel Check" style="text-transform: capitalize;background-color:#3c8dbc;color:white;width:100%" class="k-button" />
-                        <br /><br />
+                        <br />
                         <input type="button" id="btnConduitSizeCheck" value="Conduit Size Check" style="text-transform: capitalize;background-color:#3c8dbc;color:white;width:100%" class="k-button" />
                         <br /><br />
                         <div id="FamilyList" style="border:solid 1px;">
-                            <h1 style="background: #fff; margin-top: -5px; margin-left: 59px; padding: 0 10px; width: 160px;font-size: 14px;">Feeder Geometry Check</h1>
+                            <h1 style="background: #fff; margin-top: -5px; margin-left: 16px; padding: 0 10px; width: 160px;font-size: 12px;">Feeder Geometry Check</h1>
                             <ul style="overflow-y: scroll; height: 190px;width:100%"></ul>
 
                         </div>
@@ -835,7 +861,7 @@
                     </div>
 
 
-                    <div class="col-xs-6" style="height:400px;overflow:auto;width:900px">
+                    <div class="col-xs-6" style="height:400px;overflow:auto;width:662px">
                         <center><div id="loading" style="display:none;align-content:center; margin-left: 20px;">Loading..... Please Wait</div></center>
                         <table id="FeederIdtable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:400px;">
 
@@ -861,7 +887,7 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                        <table id="TblFeederGeomCheck" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:852px;">
+                        <table id="TblFeederGeomCheck" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:630px;">
 
                             <thead>
                                 <tr>
@@ -893,12 +919,13 @@
 
                 <div class="k-content col-xs-12">
 
-                    <div class="k-content col-xs-2">
+                    <div class="k-content col-xs-2" style="padding-left: 0px;margin-left: -14px;">
                         <input type="button" id="btnRunPoints" value="Save Geometry" style="text-transform: capitalize" class="k-button" />
                     </div>
 
-                    <div class="col-xs-3" style="">
-                        @(
+                    @*<div class="col-xs-3" style="padding-left: 0px;margin-left: -43px;">*@
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("ddlFeederIdfiletype")
                                         .DataTextField("NodeName")
@@ -912,14 +939,15 @@
                                                 read.Action("GetFiles", "Home");
                                             });
                                         })
-                                        .Events(e => { e.Change("onFeederFileChange"); })
-                        )
+                                        .Events(e => { e.Change("onFeederFileChange").DataBound("GetFileName4"); })
+                        )*@
 
-                    </div>
+                    @*</div>*@
 
-                    <div class="col-xs-2" style="">
+                    @*<div class="col-xs-2" style="padding-left: 0px;">*@
 
-                        @(
+                        @*@*@
+                        @*(
                                         Html.Kendo().DropDownList()
                                         .Name("ddlFeederIdversiontype")
                                         .DataTextField("version")
@@ -933,13 +961,13 @@
                                                 read.Action("GetVersion", "Home").Data("GridFeederidSearchModelData");
                                             });
                                         })
-                                        .Events(e => { e.Change("onFeederidVersionChange"); })
-                        )
+                                        .Events(e => { e.Change("onFeederidVersionChange").DataBound("Getversion4"); })
+                        )*@
 
 
-                    </div>
+                    @*</div>*@
 
-                    <div class="k-content col-xs-2">
+                    <div class="k-content col-xs-2" style="padding-left: 0px;">
                         @(Html.Kendo().DropDownList()
                                       .Name("ddlFeederId")
                                       .OptionLabel("Select Feeder ID")
@@ -959,23 +987,25 @@
                         )
                     </div>
 
-                    <div class="k-content col-xs-1">
+                    <div class="k-content col-xs-1" style="padding-left: 0px;">
                         <input type="button" id="btnGetRun" value="Get Run" style="text-transform: capitalize" class="k-button" />
 
                     </div>
 
-                    <div class="k-content col-xs-2">
+                    <div class="k-content col-xs-1" style="padding-left: 2px;">
                         <input type="button" id="btnGetFeederDetails" value="QC Report" style="text-transform: capitalize" class="k-button" />
-
+                    </div>
+                    <div class="k-content col-xs-1">
                         <a id="exportFeederDetailsGrid" onclick="downloadFeederDetails();" href="javascript:void(0);" title="Export to Excel" style="font-size:21px;"><span class="fa fa-file-excel-o"></span></a>
                     </div>
+
 
 
                 </div>
                 <br /><br /><br />
                 <center><div id="feerderloading" style="display:none;align-content:center;margin-left: -100px;">Loading..... Please Wait</div></center>
                 <div class="k-content col-xs-12" style="height:400px;overflow:auto;">
-                    <table id="rundatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:400px;">
+                    <table id="rundatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 12px;display:none;width:400px;">
 
                         <thead>
                             <tr>
@@ -988,7 +1018,7 @@
                         <tbody></tbody>
                     </table>
 
-                    <table id="FeederDetailsdatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 14px;display:none;width:1500px;margin-left: -15px;">
+                    <table id="FeederDetailsdatatable" class="table table-striped table-bordered" cellspacing="0" style="font-size: 11px;display:none;width:1500px;margin-left: -15px;">
 
                         <thead style="">
                             <tr>
@@ -1061,6 +1091,20 @@
 
         var ddl = $("#versiontype").data("kendoDropDownList");
         ddl.dataSource.read();
+
+
+
+          //var ddl = $("#versiontype").data("kendoDropDownList");
+        //ddl.dataSource.read();
+
+        //var ddl = $("#versiontype").data("kendoDropDownList");
+        //ddl.dataSource.read();
+
+        //var ddl = $("#versiontype").data("kendoDropDownList");
+        //ddl.dataSource.read();
+
+        //var ddl = $("#versiontype").data("kendoDropDownList");
+        //ddl.dataSource.read();
 
     }
 
@@ -1173,6 +1217,12 @@
 
         var ddl = $("#ddlConductSizeExcelList").data("kendoDropDownList");
         ddl.dataSource.read();
+
+
+        onSearchVersionChange();
+        onUpdateVersionChange();
+        onFeederIdVersionChange();
+        onFeederidVersionChange();
     }
 
 
@@ -1222,12 +1272,12 @@
         }
 
         if (RevitConductType == "Select Parameter") {
-            alert("Please Select Revit Conduct Type");
+            alert("Please Select Revit Conductor Size");
             return false;
         }
 
         if (RevitConductSize == "Select Parameter") {
-            alert("Please Select Revit Conduct Size");
+            alert("Please Select Revit Conductor Type");
             return false;
         }
 
@@ -1487,7 +1537,7 @@
 
     $("#btnFeederIdCheck").click(function () {
 
-        var Urn = $("#FeederIdversiontype").data("kendoDropDownList").value();
+        var Urn = $("#versiontype").data("kendoDropDownList").value();
         if (Urn == "") {
             alert("Please Select File");
             return false;
@@ -1551,7 +1601,7 @@
 
     $("#btnConduitSizeCheck").click(function () {
 
-        var Urn = $("#FeederIdversiontype").data("kendoDropDownList").value();
+        var Urn = $("#versiontype").data("kendoDropDownList").value();
         if (Urn == "") {
             alert("Please Select File");
             return false;
@@ -1616,22 +1666,23 @@
 
     function onFeederIdFileChange() {
         $("#FamilyList ul").html('');
-        var ddl = $("#FeederIdversiontype").data("kendoDropDownList");
+        var ddl = $("#versiontype").data("kendoDropDownList");
         ddl.dataSource.read();
 
     }
 
     function onFeederIdVersionChange() {
+       
         GetFamily();
     }
 
     var Category_Data = '';
     function FeederIdGridSearchModelData(e) {
 
-        var VersionNo = $("#FeederIdversiontype").data("kendoDropDownList").text();
+        var VersionNo = $("#versiontype").data("kendoDropDownList").text();
         VersionNo = VersionNo.split('-')[0].trim();
-        var FileName = $("#FeederIdfiletype").data("kendoDropDownList").text();
-        var urn = $("#FeederIdversiontype").data("kendoDropDownList").value();
+        var FileName = $("#filetype").data("kendoDropDownList").text();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         return {
             urn: urn,
             version: VersionNo,
@@ -1643,8 +1694,8 @@
 
 
     function GetFamily() {
-        var urn = $("#FeederIdversiontype").data("kendoDropDownList").value();
-        var v = $("#FeederIdversiontype").data("kendoDropDownList").text();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
+        var v = $("#versiontype").data("kendoDropDownList").text();
         v = v.split('-')[0].trim();
         $("#FamilyList ul").html('<li style="text-align: center;">Loading...</li>');
 
@@ -1682,7 +1733,7 @@
 
     $("#btnfeederGeomCheck").click(function () {
 
-        var Urn = $("#FeederIdversiontype").data("kendoDropDownList").value();
+        var Urn = $("#versiontype").data("kendoDropDownList").value();
         if (Urn == "") {
             alert("Please Select File");
             return false;
@@ -1770,8 +1821,105 @@
     }
 
 
+    function goXLS(tablename) {
+
+        var tableName1 = "#" + tablename + " th";
+
+        var HeaderCount = $(tableName1).length;
+        var excel = $JExcel.new("Calibri light 10 #333333");			// Default font
+        excel.set({ sheet: 0, value: "Compliant" });
+
+        // excel.addSheet("Non-Compliant");
+        //var HeaderCount = $("#tablescmQty th").length;
+        var headers = new Array();
+        for (i = 0; i <= HeaderCount - 1; i++) {
+            if (document.getElementById(tablename).rows[0].cells[i] === undefined) {
+                //  alert('undefined')
+            }
+            else {
+                // alert('Not Undefined')
+                headers.push(document.getElementById(tablename).rows[0].cells[i].innerHTML)
+            }
+
+            //  alert(document.getElementById("tablescmQty").rows[0].cells[i].innerHTML)
+        }
+
+        // var headers = ["Material Name (Family)", "Standard", "Size", "Qty","UOM"];
+        var formatHeader = excel.addStyle({
+            border: "none,none,none,thin #333333",
+            font: "Calibri 12 #0000AA B"
+        });
+
+
+
+
+        for (var i = 0; i < headers.length; i++) {
+            excel.set(0, i, 0, headers[i], formatHeader);
+            excel.set(0, i, undefined, "auto");
+        }
+
+
+        var rowCount = $("#" + tablename + " td").closest("tr").length;
+
+        for (var i = 1; i <= rowCount; i++) {
+            for (j = 0; j <= HeaderCount - 1; j++) {
+                var value = document.getElementById(tablename).rows[i].cells[j].innerHTML;
+                if (value == "&nbsp;") {
+                    value = "";
+                }
+                excel.set(0, j, i, value);
+                excel.set(0, j, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+            }
+
+            //var Standard = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+            //var Size = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+            //var Qty = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+            //var UOM = document.getElementById("tablescmQty").rows[i].cells[j].innerHTML;
+
+
+            //excel.set(0, 1, i, Standard);
+            //excel.set(0, 1, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+            //excel.set(0, 2, i, Size);
+            //excel.set(0, 2, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+            //excel.set(0, 3, i, Qty);
+            //excel.set(0, 3, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+            //excel.set(0, 4, i, UOM);
+            //excel.set(0, 4, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+
+        }
+
+        // excel.set({ sheet: 1, value: "NonCompliant" });
+        //for (var i = 0; i < headers.length; i++) {
+        //    excel.set(1, i, 0, headers[i], formatHeader);
+        //    excel.set(1, i, undefined, "auto");
+        //}
+
+        //for (var i = 1; i < noncompData.length; i++) {
+
+        //    var Bulkdatasplit = noncompData[i].split(":");
+        //    var Revitid = Bulkdatasplit[0];
+        //    var SurfaceId = Bulkdatasplit[1];
+        //    var BaseLevel = Bulkdatasplit[2];
+        //    var Slope = Bulkdatasplit[3];
+
+        //    excel.set(1, 0, i, Revitid);
+        //    excel.set(1, 0, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+        //    excel.set(1, 1, i, SurfaceId);
+        //    excel.set(1, 1, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+        //    excel.set(1, 2, i, BaseLevel);
+        //    excel.set(1, 2, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+        //    excel.set(1, 3, i, Slope);
+        //    excel.set(1, 3, undefined, "auto", excel.addStyle({ align: "L", border: "none,none,none,thin #333333" }));
+
+        //}
+
+        excel.generate("SCM Quantity.xlsx");
+
+    }
+
     function downloadFeederM() {
 
+        goXLS("TblFeederGeomCheck");
         if ($('#TblFeederGeomCheck').css('display') != 'none') {
             $("#TblFeederGeomCheck").table2excel({
                 exclude: ".flotTClass",
@@ -1815,13 +1963,19 @@
 
     function GetBlankIdData() {
 
-        urn = $("#searchversiontype").data("kendoDropDownList").value()
+        filename = $("#filetype").data("kendoDropDownList").value()
+        urn = $("#versiontype").data("kendoDropDownList").value()
         categoryname = $("#categorys").data("kendoDropDownList").text();
         propertyname = $("#PropertyList").data("kendoDropDownList").text();
         propertyvalue = $('#txtPropertyvalue').val();
 
-        if (urn == '') {
+        if (filename == '') {
             alert("Please Select File");
+            return;
+        }
+
+        if (urn == '') {
+            alert("Please Select Version");
             return;
         }
 
@@ -1850,11 +2004,12 @@
     }
 
     function onSearchFileChange() {
-        $("#searchversiontype").data("kendoDropDownList").dataSource.read();
+        $("#ElectricalGrid").data('kendoGrid').dataSource.data([]);
+        $("#versiontype").data("kendoDropDownList").dataSource.read();
     }
 
     function onSearchVersionChange() {
-
+        
         $("#categorys").data("kendoDropDownList").dataSource.read();
     }
 
@@ -1865,13 +2020,13 @@
 
     function DDLSearchFileData() {
         return {
-            filename: $("#searchfiletype").data("kendoDropDownList").text()
+            filename: $("#filetype").data("kendoDropDownList").text()
         };
     }
 
     function searchCategoryData() {
         return {
-            urn: $("#searchversiontype").data("kendoDropDownList").value()
+            urn: $("#versiontype").data("kendoDropDownList").value()
         };
     }
 
@@ -1881,7 +2036,7 @@
 
 
         return {
-            urn: $("#searchversiontype").data("kendoDropDownList").value(),
+            urn: $("#versiontype").data("kendoDropDownList").value(),
             category: cat1
         };
     }
@@ -1895,15 +2050,17 @@
         var Revitid = "";
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-
+        console.log(dataItem);
         var grid = $("#ElectricalGrid").data("kendoGrid");
         grid.select($(e.currentTarget).closest("tr"));
         selectedIndex = grid.select().index();
 
         Forgeid = dataItem.Forgeid;
         Revitid = dataItem.Revitid;
+        var selectedfilename = $("#filetype").data("kendoDropDownList").text();
+       // var dropdownlist = $("#filetype").data("kendoDropDownList").value;
 
-        window.parent.Forgeid(Forgeid);
+        window.parent.Forgeid(Forgeid, selectedfilename);
 
     }
 
@@ -1913,13 +2070,13 @@
 <script>
 
     function onFeederidVersionChange() {
-
+       
         var ddl = $("#ddlFeederId").data("kendoDropDownList");
         ddl.dataSource.read();
     }
 
     function FeederIdModelData(e) {
-        var urn = $("#ddlFeederIdversiontype").data("kendoDropDownList").value();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         return {
             urn: urn
         }
@@ -1928,10 +2085,10 @@
     var Category_Data = '';
     function GridFeederidSearchModelData(e) {
 
-        var VersionNo = $("#ddlFeederIdversiontype").data("kendoDropDownList").text();
+        var VersionNo = $("#versiontype").data("kendoDropDownList").text();
         VersionNo = VersionNo.split('-')[0].trim();
-        var FileName = $("#ddlFeederIdfiletype").data("kendoDropDownList").text();
-        var urn = $("#ddlFeederIdversiontype").data("kendoDropDownList").value();
+        var FileName = $("#filetype").data("kendoDropDownList").text();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         return {
             urn: urn,
             version: VersionNo,
@@ -1943,7 +2100,7 @@
 
     function onFeederFileChange() {
 
-        var ddl = $("#ddlFeederIdversiontype").data("kendoDropDownList");
+        var ddl = $("#versiontype").data("kendoDropDownList");
         ddl.dataSource.read();
 
     }
@@ -1969,7 +2126,7 @@
 
     $("#btnGetFeederDetails").click(function (e) {
 
-        var urn = $("#ddlFeederIdversiontype").data("kendoDropDownList").value();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         //var FeederID = $("#ddlFeederId").data("kendoDropDownList").text();
 
         if (urn == '') {
@@ -2108,7 +2265,7 @@
 
     $("#btnGetRun").click(function (e) {
 
-        var urn = $("#ddlFeederIdversiontype").data("kendoDropDownList").value();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         var FeederID = $("#ddlFeederId").data("kendoDropDownList").text();
 
         if (urn == '') {
@@ -2217,6 +2374,7 @@
 
 
                 $("#rundatatable").show();
+                $("#rundatatable").tableHeadFixer();
                 $("#feerderloading").hide();
             },
             error: function (result) {
@@ -2237,7 +2395,7 @@
 <script>
     function onUpdateFileChange() {
         $("#UpdatePropertyList ul").html('');
-        var ddl = $("#ddlUpdateversiontype").data("kendoDropDownList");
+        var ddl = $("#versiontype").data("kendoDropDownList");
         ddl.dataSource.read();
 
     }
@@ -2247,10 +2405,10 @@
     var Category_Data = '';
     function UpdateGridSearchModelData(e) {
 
-        var VersionNo = $("#ddlUpdateversiontype").data("kendoDropDownList").text();
+        var VersionNo = $("#versiontype").data("kendoDropDownList").text();
         VersionNo = VersionNo.split('-')[0].trim();
-        var FileName = $("#ddlUpdatefiletype").data("kendoDropDownList").text();
-        var urn = $("#ddlUpdateversiontype").data("kendoDropDownList").value();
+        var FileName = $("#filetype").data("kendoDropDownList").text();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
         return {
             urn: urn,
             version: VersionNo,
@@ -2261,13 +2419,14 @@
 
 
     function onUpdateVersionChange() {
+       
         GetUpdateProperties();
     }
 
     function GetUpdateProperties() {
 
-        var urn = $("#ddlUpdateversiontype").data("kendoDropDownList").value();
-        var v = $("#ddlUpdateversiontype").data("kendoDropDownList").text();
+        var urn = $("#versiontype").data("kendoDropDownList").value();
+        var v = $("#versiontype").data("kendoDropDownList").text();
         v = v.split('-')[0].trim();
         $("#UpdatePropertyList ul").html('<li style="text-align: center;">Loading...</li>');
 
@@ -2316,10 +2475,10 @@
         }
     }
 
- 
+
     $("#btnFindUpdate").click(function () {
 
-        var Urn = $("#ddlUpdateversiontype").data("kendoDropDownList").value();
+        var Urn = $("#versiontype").data("kendoDropDownList").value();
         if (Urn == "") {
             alert("Please Select File");
             return false;
@@ -2436,7 +2595,7 @@
 
                 var UpdatedIdsArray = [];
 
-       
+
                 TotalCFPointsArray = data.Table;
 
                 while (TotalCFPointsArray.length > 0) {
@@ -2478,7 +2637,7 @@
 
                                         $("#TblUpdatedFeederId tbody").append('<tr><td style="width:2%;"><input style="" type ="button" value = ' + perivousConforgeid + '  id =' + perivousConforgeid + ' onclick="window.parent.Forgeid(this.id)"/></td><td style="width:2%">' + RunPropName + '</td></tr>');
                                     }
-                                   
+
                                 }
                                 else if (perivousConFitfeederid == '' && perivousConfeederid != '') {
 
@@ -2506,7 +2665,7 @@
                                 var ConduitsFittingForgeidcheck = TotalCFPointsArray[j].ConduitsFittingForgeid;
 
                                 RunPropName = TotalCFPointsArray[j].Property_Name;
-                                
+
                                 perivousConfeederid = TotalCFPointsArray[j].ConduitsFeederid;
                                 perivousConFitfeederid = TotalCFPointsArray[j].ConduitsFittingFeederid;
 
@@ -2585,7 +2744,7 @@
 
                                         if (perivousConFitfeederid != '' && perivousConfeederid == '') {
 
-                                            
+
                                             if (UpdatedIdsArray.indexOf(perivousConforgeid) == -1) {
                                                 UpdatedIdsArray.push(perivousConforgeid);
                                                 $("#TblUpdatedFeederId tbody").append('<tr><td style="width:2%;"><input style="" type ="button" value = ' + perivousConforgeid + '  id =' + perivousConforgeid + ' onclick="window.parent.Forgeid(this.id)"/></td><td style="width:2%">' + RunPropName + '</td></tr>');
@@ -2690,4 +2849,97 @@
 
     });
 
+</script>
+
+@*Script For AutoPopulate File*@
+<script>
+    var urn = sessionStorage.getItem("urn");
+    var filename = sessionStorage.getItem("filename");
+    function GetFileName() {
+        var dropdownlist = $("#filetype").data("kendoDropDownList");
+        dropdownlist.text('' + filename.trim() + '');
+
+        var ddl = $("#versiontype").data("kendoDropDownList");
+        ddl.dataSource.read();
+
+    }
+
+    function GetFileName1() {
+
+        var dropdownlist = $("#filetype").data("kendoDropDownList");
+        dropdownlist.text('' + filename.trim() + '');
+
+        var ddl = $("#versiontype").data("kendoDropDownList");
+        ddl.dataSource.read();
+    }
+    function GetFileName2() {
+        var dropdownlist = $("#filetype").data("kendoDropDownList");
+        dropdownlist.text('' + filename.trim() + '');
+        var ddl = $("#versiontype").data("kendoDropDownList");
+        ddl.dataSource.read();
+    }
+
+    function GetFileName3() {
+        var dropdownlist = $("#filetype").data("kendoDropDownList");
+        dropdownlist.text('' + filename.trim() + '');
+        var ddl = $("#versiontype").data("kendoDropDownList");
+        ddl.dataSource.read();
+    }
+
+    function GetFileName4() {
+        var dropdownlist = $("#filetype").data("kendoDropDownList");
+        dropdownlist.text('' + filename.trim() + '');
+        var ddl = $("#versiontype").data("kendoDropDownList");
+        ddl.dataSource.read();
+    }
+
+    function Getversion1() {
+        this.select(1);
+        GridSearchModelData();
+        onVersionChange();
+    }
+
+    function Getversion2() {
+        this.select(1);
+        UpdateGridSearchModelData();
+        onUpdateVersionChange();
+    }
+    function Getversion() {
+        this.select(1);
+        DDLSearchFileData();
+        onSearchVersionChange();
+    }
+    function Getversion3() {
+        this.select(1);
+        FeederIdGridSearchModelData();
+        onFeederIdVersionChange();
+    }
+
+    function Getversion4() {
+        this.select(1);
+        GridFeederidSearchModelData();
+        onFeederidVersionChange();
+    }
+
+
+</script>
+
+
+@* script for html table column resizable*@
+<script>
+    $(window).on('load', function () {
+        $("#demo1").colResizable({ liveDrag: true });
+    })
+
+    $(document).ready(function (e) {
+
+        //alert("HElloo");
+        //$(function () {
+        //    //alert("hiiii");
+        //    $("#demo1").colResizable({ liveDrag: true });
+        //});
+
+
+    });
+  
 </script>

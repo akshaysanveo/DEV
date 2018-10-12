@@ -1,0 +1,22 @@
+﻿
+
+@(Html.Kendo().DropDownList()
+               .Name("ddlDESC")
+
+                .DataTextField("NewDescription")
+                .DataValueField("ID")
+                .OptionLabel("Select Description")
+                .HtmlAttributes(new { style = "width:100%" })
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetDescriptionTextDataForGB", "Home").Data("GetTextDataForDescription");
+                    });
+                })
+                 .Events(e =>
+                 {
+                     e.Change("onGBDESCChange");
+                 })
+
+)

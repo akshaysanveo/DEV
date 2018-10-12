@@ -1,0 +1,19 @@
+﻿@(
+       Html.Kendo().DropDownList()
+                   .Name("DDLPropNameForStandard")  //is this Name important?
+                   .DataTextField("Property_Name")
+                   .DataValueField("Id")
+                   .OptionLabel("Select and Click")
+                   .Events(e => e.DataBound("OnBoundPropNameForGroup"))
+                  .DataSource(source =>
+                  {
+                      source.Read(read =>
+                      {
+                          read.Action("GetPropertyName", "QuantityTest").Data("AdditionalPropName");
+                      });
+                  })
+               
+
+)
+
+
